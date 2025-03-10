@@ -39,7 +39,7 @@ const Register = () => {
 
   // If user is already authenticated, redirect to dashboard
   if (isAuthenticated) {
-    navigate("/dashboard");
+    navigate("/Main");
   }
 
   return (

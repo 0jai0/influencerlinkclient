@@ -15,7 +15,7 @@ const Chat = () => {
   const socketRef = useRef(null);
 
   if (!socketRef.current) {
-    socketRef.current = socketIOClient("http://localhost:5000");
+    socketRef.current = socketIOClient(process.env.REACT_APP_SERVER_API);
   }
 
   const socket = socketRef.current;
@@ -23,7 +23,7 @@ const Chat = () => {
   // ✅ Wrap fetchContacts in useCallback to prevent unnecessary re-creation
   const fetchContacts = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/collection/users/${userId}`);
+      const response = await fetch(`${process.env.REACT_APP_SERVER_API}/api/collection/users/${userId}`);
       const data = await response.json();
 
       if (data.collections && data.collections.length > 0) {
@@ -62,7 +62,7 @@ const Chat = () => {
     setActiveContact(contact);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/messages/conversation/${userId}/${contact._id}`
+        `${process.env.REACT_APP_SERVER_API}/api/messages/conversation/${userId}/${contact._id}`
       );
       const data = await response.json();
       console.log(data, "11");

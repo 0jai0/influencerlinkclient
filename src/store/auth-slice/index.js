@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-const dotenv = require("dotenv");
-dotenv.config();
+
 
 
 const initialState = {
@@ -12,8 +11,9 @@ const initialState = {
   token: localStorage.getItem("token") || null,
 };
 
-const API_BASE_URL = `${process.env.SERVER_API}/api/pageowners`;
+const API_BASE_URL = `${process.env.REACT_APP_SERVER_API}/api/pageowners`;
  // Change as needed
+ console.log(API_BASE_URL);
 
 export const updateUser = createAsyncThunk(
   "/auth/updateUser", // You can modify this path to suit your endpoint

@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import Profile from "./Profile";
 import Navbar from "./Navbar";
 import Banner from "./Banner";
-const dotenv = require("dotenv");
-dotenv.config();
 
 const Main = () => {
   const [users, setUsers] = useState([]);
@@ -22,7 +20,7 @@ const Main = () => {
 
   useEffect(() => {
     // Fetch data from API
-    fetch("http://localhost:5000/api/pageowners/users")
+    fetch(`${process.env.REACT_APP_SERVER_API}/api/pageowners/users`)
       .then((response) => response.json())
       .then((data) => {
         setUsers(data.data);

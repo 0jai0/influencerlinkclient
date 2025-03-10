@@ -11,7 +11,7 @@ const InstagramVerification = ({ profile, setProfile, userId }) => {
   // Memoize checkUserExists to prevent unnecessary re-renders
   const checkUserExists = useCallback(async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/otp/userId?userId=${userId}`);
+      const response = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/otp/userId?userId=${userId}`);
       const userFound = response.data.success && response.data.otpDetails;
       setUserExists(userFound);
       setMessage(userFound ? "User found. You can request an OTP." : "User not found. Please check your details.");
@@ -26,7 +26,7 @@ const InstagramVerification = ({ profile, setProfile, userId }) => {
 
   const sendOtp = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/api/otp/send-otp", { userId });
+      const response = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/otp/send-otp`, { userId });
       setMessage(response.data.message);
       setOtpSent(true);
     } catch (error) {
@@ -36,7 +36,7 @@ const InstagramVerification = ({ profile, setProfile, userId }) => {
 
   const verifyOtp = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/api/otp/verify-otp", { userId, otp });
+      const response = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/otp/verify-otp`, { userId, otp });
       setMessage(response.data.message);
       setVerified(true);
       setProfile((prevProfile) => ({

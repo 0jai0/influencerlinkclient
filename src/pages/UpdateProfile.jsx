@@ -7,10 +7,9 @@ import Verification from "../components/Verification";
 import PastPosts from "../components/PastPosts";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Navbar from "./Navbar";
-const dotenv = require("dotenv");
-dotenv.config();
 
-const CLIENT_ID = process.env.CLIENT_ID;
+
+const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
 
 
 const UpdateProfile = () => {
@@ -43,7 +42,7 @@ const UpdateProfile = () => {
     const fetchUser = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/pageowners/user/${user?.id}`
+          `${process.env.REACT_APP_SERVER_API}/api/pageowners/user/${user?.id}`
         );
         if (!response.ok) throw new Error("User not found");
         const data = await response.json();
@@ -93,7 +92,7 @@ const UpdateProfile = () => {
   const handleSaveProfile = async () => {
     setSaving(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/pageowners/updateUser/${user?.id}`, {
+      const response = await fetch(`${process.env.REACT_APP_SERVER_API}/api/pageowners/updateUser/${user?.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

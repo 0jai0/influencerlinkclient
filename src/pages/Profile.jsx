@@ -19,7 +19,7 @@ const Profile = ({ User, onClose }) => {
   
     try {
       console.log("Making API call with User ID:", user?.id, "and Target User ID:", User?._id);
-      await axios.post(`http://localhost:5000/api/collection/users/add`, {
+      await axios.post(`${process.env.REACT_APP_SERVER_API}/api/collection/users/add`, {
         userId: user?.id,
         targetUserId: User?._id,
       });
@@ -34,7 +34,7 @@ const Profile = ({ User, onClose }) => {
   // Function to remove userId from collection
   const handleRemoveFromList = async () => {
     try {
-      await axios.post(`http://localhost:5000/api/collection/users/remove`, {
+      await axios.post(`${process.env.REACT_APP_SERVER_API}/api/collection/users/remove`, {
         userId: user?.id,
         targetUserId: User?._id,
       });
