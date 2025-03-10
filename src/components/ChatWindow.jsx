@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-const ChatWindow = ({ messages, currentUser }) => {
+const ChatWindow = ({ messages }) => {
   const chatEndRef = useRef(null);
 
   useEffect(() => {

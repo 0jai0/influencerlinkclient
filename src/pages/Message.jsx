@@ -7,7 +7,7 @@ import ChatWindow from "../components/ChatWindow";
 import MessageInput from "../components/MessageInput";
 import Navbar from "./Navbar";
 const Chat = () => {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const {  user } = useSelector((state) => state.auth);
   const [contacts, setContacts] = useState([]);
   const [activeContact, setActiveContact] = useState(null);
   const [messages, setMessages] = useState([]);

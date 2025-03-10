@@ -14,7 +14,7 @@ const Main = () => {
     []
   );
   const [showAdDropdown, setShowAdDropdown] = useState(false);
-  const [showContentDropdown, setShowContentDropdown] = useState(false);
+  //const [showContentDropdown, setShowContentDropdown] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [subscription, setSubscription] = useState(false);
 

@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { format } from "date-fns"; // Install date-fns for date formatting
+import React, { useState, useEffect } from "react";// Install date-fns for date formatting
 
 const ContactList = ({ contacts, onSelectContact, activeContactId }) => {
   const [users, setUsers] = useState([]);

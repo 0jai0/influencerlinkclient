@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import PersonalDetails from "../components/PersonalDetails";
 import AccountDetails from "../components/AccountDetails";
@@ -27,13 +27,13 @@ const UpdateProfile = () => {
     profilePicUrl: "",
   });
 
-  const [loading, setLoading] = useState(false);
+  //const [loading, setLoading] = useState(false);
   const [user1, setUser1] = useState(null);
-  const [error, setError] = useState(null);
+  const [ setError] = useState(null);
   const [currentStep, setCurrentStep] = useState(0); // Step tracking
   const [saving, setSaving] = useState(false); // Track save button state
 
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // Fetch user data

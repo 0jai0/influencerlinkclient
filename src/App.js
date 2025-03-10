@@ -1,7 +1,7 @@
 
 import './App.css';
 import { useDispatch, useSelector } from "react-redux";
-import React, { useState, useEffect } from "react";
+import React, {  useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -15,9 +15,7 @@ import { checkAuth } from "./store/auth-slice";
 
 function App() {
 
-  const { user, isAuthenticated, isLoading } = useSelector(
-    (state) => state.auth
-  );
+  
   const dispatch = useDispatch();
 
   useEffect(() => {

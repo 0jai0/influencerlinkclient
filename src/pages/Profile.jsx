@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import {  useSelector } from "react-redux";
 import axios from "axios";
 const Profile = ({ User, onClose }) => {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const {  user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const userId = user?.id;
   const [ListisClicked, setListIsClicked] = useState(false);
