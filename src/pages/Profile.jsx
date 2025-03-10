@@ -11,6 +11,7 @@ const Profile = ({ User, onClose }) => {
   const [ChatisClicked, setChatIsClicked] = useState(false);
   const instaRef = useRef(null);
   const fbRef = useRef(null);
+  console.log(user?.id);
   const handleAddToList = async () => {
     if (!user?.id || !User?._id) {
       console.error("Both User ID and Target User ID are required");

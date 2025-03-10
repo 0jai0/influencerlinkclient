@@ -65,6 +65,7 @@ export const loginUser = createAsyncThunk(
       const { token, expiresIn } = response.data;
       const expirationDate = new Date().getTime() + expiresIn * 100000; // expiresIn is in seconds
       localStorage.setItem("token", token);
+      console.log(localStorage.getItem("token"));
       localStorage.setItem("tokenExpiration", expirationDate);
       console.log(response.data);
       return response.data;
@@ -91,37 +92,36 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
-// Check Auth
+// Check Auth 
 export const checkAuth = createAsyncThunk(
   "/auth/checkauth",
   async (_, { rejectWithValue }) => {
     const token = localStorage.getItem("token");
 
-    if (!token) {
-      console.log("No token found in localStorage");
-      return rejectWithValue("No token found");
-    }
+    if (!token) return rejectWithValue("No token found");
 
     try {
-      console.log("Sending token:", token); // Debugging token
       const response = await axios.get(
-        `${API_BASE_URL}/check-auth`, // Update URL here
+        `${API_BASE_URL}/check-auth`,
         {
           withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${token}`, // Ensure token is sent correctly
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       return response.data;
     } catch (error) {
-      console.error("Error during checkAuth:", error.response?.data); // Debugging error
-      localStorage.removeItem("token");
-      localStorage.removeItem("tokenExpiration");
+      console.error("Auth check error:", error.response?.data);
+
+      if (error.response?.status === 401) {  // Only remove token if unauthorized
+        localStorage.removeItem("token");
+        localStorage.removeItem("tokenExpiration");
+      }
+      
       return rejectWithValue(error.response?.data?.message || "Auth check failed");
     }
   }
 );
+
 
 // Refresh Token (Optional)
 export const refreshAuthToken = createAsyncThunk(
@@ -250,17 +250,23 @@ export const { login, logout } = authSlice.actions;
 export default authSlice.reducer;
 
 // Validate Token on App Load
-export const validateAuthToken = () => (dispatch) => {
+export const validateAuthToken = () => async (dispatch) => {
   const token = localStorage.getItem("token");
   const expiration = localStorage.getItem("tokenExpiration");
 
-  if (token && expiration && new Date().getTime() < parseInt(expiration, 10)) {
-    // Token is valid, dispatch checkAuth to sync state
-    dispatch(checkAuth());
-  } else {
-    // Token is invalid or expired
-    localStorage.removeItem("token");
-    localStorage.removeItem("tokenExpiration");
-    dispatch(logout());
+  if (token && expiration) {
+    const isTokenValid = new Date().getTime() < parseInt(expiration, 10);
+    
+    if (isTokenValid) {
+      console.log("Token valid, checking authentication...");
+      dispatch(checkAuth());
+      return;
+    }
   }
+  
+  console.log("Token expired or not found, logging out...");
+  localStorage.removeItem("token");
+  localStorage.removeItem("tokenExpiration");
+  dispatch(logout());
 };
+
