@@ -47,7 +47,7 @@ const UpdateProfile = () => {
         const data = await response.json();
         setUser1(data.data);
       } catch (err) {
-        setError(err.message);
+        //setError(err.message);
       }
     };
     fetchUser();
