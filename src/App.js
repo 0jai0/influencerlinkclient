@@ -9,7 +9,6 @@ import EditPage from "./pages/EditPage";
 import UpdateProfile from "./pages/UpdateProfile";
 import Dashboard from "./pages/Dashboard";
 import Main from "./pages/Main";
-import Text from "./pages/text";
 import Chat from './pages/Message';
 import { checkAuth } from "./store/auth-slice";
 
@@ -32,7 +31,6 @@ function App() {
           <Route path="/UpdateProfile" element={<UpdateProfile />} />
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/Main" element={<Main />} />
-          <Route path="/text" element={<Text />} />
           <Route path="/MessagingApp/:userId" element={<Chat />} />
         </Routes>
       </div>
