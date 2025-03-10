@@ -30,12 +30,7 @@ const Main = () => {
         const uniqueAdCategories = [
           ...new Set(data.data.flatMap((user) => user.adCategories || [])),
         ];
-        const uniqueContentCategories = [
-          ...new Set(
-            data.data.flatMap((user) => user.pageContentCategory || [])
-          ),
-        ];
-
+        
         setAdCategories(uniqueAdCategories);
         //setPageContentCategories(uniqueContentCategories);
       })
