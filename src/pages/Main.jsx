@@ -7,7 +7,7 @@ const Main = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [adCategories, setAdCategories] = useState([]);
-  const [pageContentCategories, setPageContentCategories] = useState([]);
+  //const [pageContentCategories, setPageContentCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAdCategories, setSelectedAdCategories] = useState([]);
   const [selectedContentCategories, setSelectedContentCategories] = useState(
@@ -37,7 +37,7 @@ const Main = () => {
         ];
 
         setAdCategories(uniqueAdCategories);
-        setPageContentCategories(uniqueContentCategories);
+        //setPageContentCategories(uniqueContentCategories);
       })
       .catch((error) => console.error("Error fetching users:", error));
   }, []);

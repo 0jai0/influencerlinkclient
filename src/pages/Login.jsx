@@ -20,7 +20,7 @@ const Login = () => {
     try {
       const resultAction = await dispatch(loginUser(formData));
       if (loginUser.fulfilled.match(resultAction)) {
-        navigate("/dashboard"); // Redirect on successful login
+        navigate("/Main"); // Redirect on successful login
       }
     } catch (err) {
       console.error("Login failed:", err);

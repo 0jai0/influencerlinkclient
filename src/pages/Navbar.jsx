@@ -10,18 +10,16 @@ const Navbar = () => {
 
       {/* Navigation Links */}
       <div className="flex space-x-6">
-        <a
-          href="#"
+        <p
           className="bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] bg-clip-text text-transparent hover:from-[#59FFA7] hover:to-[#2BFFF8]"
         >
           HOME
-        </a>
-        <a
-          href="#"
+        </p>
+        <p
           className="bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] bg-clip-text text-transparent hover:from-[#59FFA7] hover:to-[#2BFFF8]"
         >
           ABOUT US
-        </a>
+        </p>
       </div>
 
       {/* Buttons Section */}
