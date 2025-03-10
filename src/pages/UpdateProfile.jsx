@@ -7,8 +7,10 @@ import Verification from "../components/Verification";
 import PastPosts from "../components/PastPosts";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Navbar from "./Navbar";
+const dotenv = require("dotenv");
+dotenv.config();
 
-const CLIENT_ID = "264166008170-nnjc496qlj2bvlhkgqg5v5qbd1fmdc33.apps.googleusercontent.com";
+const CLIENT_ID = process.env.CLIENT_ID;
 
 
 const UpdateProfile = () => {

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {  useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+const dotenv = require("dotenv");
+dotenv.config();
+
 const API_KEYS = {
-    youtube: "AIzaSyB5fdI0TNi42RdSILBaVCNr0dNoNW3DAVA", // Replace with your YouTube API key
+    youtube: process.env.YOUTUBE_API, // Replace with your YouTube API key
   };
 
 

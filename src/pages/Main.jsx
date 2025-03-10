@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Profile from "./Profile";
 import Navbar from "./Navbar";
 import Banner from "./Banner";
+const dotenv = require("dotenv");
+dotenv.config();
 
 const Main = () => {
   const [users, setUsers] = useState([]);
