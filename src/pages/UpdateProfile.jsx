@@ -29,7 +29,7 @@ const UpdateProfile = () => {
 
   //const [loading, setLoading] = useState(false);
   const [user1, setUser1] = useState(null);
-  const [error, setError] = useState(null);
+  //const [error, setError] = useState(null);
   const [currentStep, setCurrentStep] = useState(0); // Step tracking
   const [saving, setSaving] = useState(false); // Track save button state
 

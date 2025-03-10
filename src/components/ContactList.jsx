@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from "react";// Install date-fns for date formatting
+import React, { useState, useEffect } from "react";
 
 const ContactList = ({ contacts, onSelectContact, activeContactId }) => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedAdCategories, setSelectedAdCategories] = useState([]);
-  const [selectedContentCategories, setSelectedContentCategories] = useState([]);
-  const [activeFilter, setActiveFilter] = useState("all"); // Tracks the active filter
 
   // Populate users state with contacts data
   useEffect(() => {
@@ -15,43 +12,10 @@ const ContactList = ({ contacts, onSelectContact, activeContactId }) => {
   }, [contacts]);
 
   // Filter Logic
-  const filterUsers = (search, adCats, contentCats, filterType) => {
-    let filtered = users.filter((user) =>
+  const filterUsers = (search) => {
+    const filtered = users.filter((user) =>
       user.ownerName.toLowerCase().includes(search.toLowerCase())
     );
-
-    // Apply ad category filter
-    if (adCats.length > 0) {
-      filtered = filtered.filter((user) =>
-        user.adCategories?.some((cat) => adCats.includes(cat))
-      );
-    }
-
-    // Apply content category filter
-    if (contentCats.length > 0) {
-      filtered = filtered.filter((user) =>
-        user.pageContentCategory?.some((cat) => contentCats.includes(cat))
-      );
-    }
-
-    // Apply additional filters based on the active filter type
-    switch (filterType) {
-      case "category":
-        // Filter by content categories (example logic)
-        filtered = filtered.filter((user) => user.pageContentCategory?.length > 0);
-        break;
-      case "followers":
-        // Filter by followers (example logic)
-        filtered = filtered.filter((user) => user.followers >= 1000); // Example: users with 1000+ followers
-        break;
-      case "price":
-        // Filter by price (example logic)
-        filtered = filtered.filter((user) => user.subscriptionPrice <= 50); // Example: users with subscription price <= $50
-        break;
-      default:
-        // No additional filtering for "all"
-        break;
-    }
 
     setFilteredUsers(filtered);
   };
@@ -60,11 +24,10 @@ const ContactList = ({ contacts, onSelectContact, activeContactId }) => {
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    filterUsers(value, selectedAdCategories, selectedContentCategories, activeFilter);
+    filterUsers(value);
   };
 
-
- 
+  // Format date function
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const today = new Date();
@@ -83,22 +46,22 @@ const ContactList = ({ contacts, onSelectContact, activeContactId }) => {
 
   return (
     <div className="w-1/4 border-spacing-4 border-r border-[#121212] bg-[#121212] overflow-y-auto">
-      {/* Search Bar */}
-      <div className="bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] ml-5 mt-3 bg-clip-text text-transparent  text-xl">
-  Chats
-</div>
+      {/* Title */}
+      <div className="bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] ml-5 mt-3 bg-clip-text text-transparent text-xl">
+        Chats
+      </div>
 
+      {/* Search Bar */}
       <div className="p-4">
         <input
           type="text"
           placeholder="Search"
-          className="w-full px-3 py-2 text-sm text-white bg-black rounded-2xl "
+          className="w-full px-3 py-2 text-sm text-white bg-black rounded-2xl"
           value={searchTerm}
           onChange={handleSearch}
         />
       </div>
 
-      
       {/* Contact List */}
       {Array.isArray(filteredUsers) && filteredUsers.length > 0 ? (
         filteredUsers.map((contact) => (
@@ -109,30 +72,28 @@ const ContactList = ({ contacts, onSelectContact, activeContactId }) => {
             }`}
             onClick={() => onSelectContact(contact)}
           >
-            {/* Contact Name */}
+            {/* Contact Name and Profile */}
             <div className="flex items-center justify-between w-full">
-  {/* Profile Picture & Name */}
-  <div className="flex items-center space-x-3">
-    <div className="w-[40px] h-[40px] relative overflow-hidden rounded-full">
-      <img
-        src={contact.profilePicUrl || "https://via.placeholder.com/100"}
-        alt={`${contact.ownerName}'s profile`}
-        className="w-full h-full object-cover"
-      />
-    </div>
-    <strong className="text-white">{contact.ownerName}</strong>
-  </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-[40px] h-[40px] relative overflow-hidden rounded-full">
+                  <img
+                    src={contact.profilePicUrl || "https://via.placeholder.com/100"}
+                    alt={`${contact.ownerName}'s profile`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <strong className="text-white">{contact.ownerName}</strong>
+              </div>
 
-  {/* Last Message Timestamp */}
-  {contact.lastMessageTimestamp && (
-    <span className="text-xs text-gray-500">
-      {formatDate(contact.lastMessageTimestamp)}
-    </span>
-  )}
-</div>
+              {/* Last Message Timestamp */}
+              {contact.lastMessageTimestamp && (
+                <span className="text-xs text-gray-500">
+                  {formatDate(contact.lastMessageTimestamp)}
+                </span>
+              )}
+            </div>
 
-
-            {/* Last Message */}
+            {/* Last Message Preview */}
             <p className="mt-1 text-sm text-gray-400 truncate">
               {contact.lastMessage || "No messages yet"}
             </p>
