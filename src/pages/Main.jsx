@@ -23,8 +23,6 @@ const Main = () => {
   //const [showContentDropdown, setShowContentDropdown] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [subscription, setSubscription] = useState(false);
-  const [ListisClicked, setListIsClicked] = useState(false);
-  const [ChatisClicked, setChatIsClicked] = useState(false);
 
   useEffect(() => {
     // Fetch data from API
@@ -67,7 +65,6 @@ const Main = () => {
   };
   const handleChatNow = async () => {
     await handleAddToList(); // Add user._id first if not present
-    setChatIsClicked(true);
   navigate(`/MessagingApp/${userId}`); // Navigate to chat page
 };
 const handleAddToList = async (User) => {
@@ -82,7 +79,6 @@ const handleAddToList = async (User) => {
       userId: user?.id,
       targetUserId: User?._id,
     });
-    setListIsClicked(true);
     console.log("Successfully added target user to collection");
   } catch (error) {
     console.error("Error adding to collection:", error);
