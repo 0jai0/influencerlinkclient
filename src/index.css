@@ -38,12 +38,12 @@ code {
   border-radius: 6px;
   min-height: 5px;
   max-height: 6px;
-  margin-right: 15px;
+  margin-right: 1px;
 }
 .custom-scrollbar {
   overflow-y: auto;
   max-height: 60vh; /* Ensure it has a height limit */
-  padding-right: 15px; /* Prevent content from touching scrollbar */
+  padding-right: 8px; /* Prevent content from touching scrollbar */
   scrollbar-gutter: stable; /* Avoid content shifting */
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {

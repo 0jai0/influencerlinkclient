@@ -177,7 +177,7 @@ const AccountDetails = ({ profile, setProfile }) => {
       </div>
 
       {/* Social Media Profile Details */}
-      <div className="mt-4 w-[90%] flex flex-col items-center">
+      <div className="mt-4 w-[100%] flex flex-col items-center">
         <h3 className="text-white font-medium self-start">Add Social Media Account</h3>
         {profile.profileDetails?.map((detail, index) => (
           <div key={index} className="border-[#272727] p-3 mb-5 bg-[#272727] rounded w-full">
@@ -206,21 +206,23 @@ const AccountDetails = ({ profile, setProfile }) => {
               className="w-full p-2 border-black bg-black mb-3 text-white rounded"
               required
             />
-            <div className="flex items-center gap-2">
+           <div className="flex items-center w-full">
+              {/* Input Field */}
               <input
                 type="text"
                 placeholder="Followers"
                 value={detail.followers || ""}
                 onChange={(e) => handleProfileDetailChange(index, "followers", e.target.value)}
-                className="flex-1 p-2 border-black rounded bg-black text-white"
+                className="flex-1 h-10 p-2 border border-black rounded bg-black text-white"
               />
-              <button
-  onClick={() => removeAccount(index)}
-  className="bg-[#2B2B2B] text-red h-10 w-[18%] px-4 py-2 rounded flex items-center justify-center"
->
-  <Trash2 size={15} stroke="red" />
-</button>
 
+              {/* Delete Button */}
+              <button
+                onClick={() => removeAccount(index)}
+                className="bg-[#2B2B2B] text-red h-10 px-1 py-2 rounded flex items-center justify-center"
+              >
+                <Trash2 size={25} stroke="red" />
+              </button>
             </div>
           </div>
         ))}

@@ -5,7 +5,7 @@ import ContactList from "../components/ContactList";
 import ChatWindow from "../components/ChatWindow";
 import MessageInput from "../components/MessageInput";
 import Navbar from "./Navbar";
-import { ArrowRight , X } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 
 const Chat = () => {
   const { user } = useSelector((state) => state.auth);
@@ -22,7 +22,7 @@ const Chat = () => {
 
   const socket = socketRef.current;
 
-  // ✅ Wrap fetchContacts in useCallback to prevent unnecessary re-creation
+  // Fetch contacts
   const fetchContacts = useCallback(async () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_SERVER_API}/api/collection/users/${userId}`);
@@ -36,7 +36,7 @@ const Chat = () => {
     } catch (error) {
       console.error("Error fetching contacts:", error);
     }
-  }, [userId]); // ✅ Only re-create if userId changes
+  }, [userId]);
 
   useEffect(() => {
     if (userId) {
@@ -58,7 +58,7 @@ const Chat = () => {
     return () => {
       socket.off("receive_message", handleMessage);
     };
-  }, [userId, fetchContacts, activeContact, socket]); // ✅ Now includes dependencies
+  }, [userId, fetchContacts, activeContact, socket]);
 
   const loadConversation = async (contact) => {
     setActiveContact(contact);
@@ -67,7 +67,6 @@ const Chat = () => {
         `${process.env.REACT_APP_SERVER_API}/api/messages/conversation/${userId}/${contact._id}`
       );
       const data = await response.json();
-      console.log(data, "11");
       setMessages(data.conversation || []);
     } catch (error) {
       console.error("Error loading conversation:", error);
@@ -96,25 +95,24 @@ const Chat = () => {
   return (
     <div className="flex flex-col h-screen w-full bg-[#121212]">
       <Navbar />
-  
+
       {/* Main Container */}
       <div className="flex flex-1 border-t-[5px] border-t-black overflow-hidden relative">
-        
         {/* Mobile Sidebar Toggle Button */}
         {!isSidebarOpen && (
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="sm:hidden absolute bottom-20  bg-[#121212] text-white p-2 rounded-md z-50"
+            className="sm:hidden absolute bottom-40 left-2 bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black p-2 rounded-full z-50 shadow-lg"
             aria-label="Open sidebar"
           >
-            <ArrowRight  size={24} />
+            <ArrowRight size={24} />
           </button>
         )}
-  
+
         {/* Contact List (Sidebar) */}
         <div
-          className={`fixed inset-y-0 left-0 bg-black bg-opacity-75 z-40 sm:static sm:bg-transparent
-            ${isSidebarOpen ? "w-[80%]" : "hidden"} sm:w-[300px] md:w-[350px] border-r-[5px] border-r-black
+          className={`fixed inset-y-0 left-0 bg-black bg-opacity-75 z-40 sm:static sm:bg-transparent sm:bg-[#151515]
+            ${isSidebarOpen ? "w-[80%] sm:w-[300px]" : "hidden sm:block sm:w-[300px]"} border-r-[5px] border-r-black
             transition-all duration-300 ease-in-out`}
         >
           <div className="bg-[#151515] h-full p-4 relative">
@@ -127,7 +125,7 @@ const Chat = () => {
                 <X size={24} />
               </button>
             )}
-  
+
             <ContactList
               contacts={contacts}
               onSelectContact={(contact) => {
@@ -138,7 +136,7 @@ const Chat = () => {
             />
           </div>
         </div>
-  
+
         {/* Chat Section */}
         {activeContact ? (
           <div className="flex-1 flex flex-col border-l-black">
@@ -155,14 +153,14 @@ const Chat = () => {
                 {activeContact.ownerName}
               </span>
             </div>
-  
+
             {/* Chat Messages */}
-            <div className="flex-1 h-screen flex flex-col ">
+            <div className="flex-1 h-screen flex flex-col">
               <ChatWindow messages={messages} currentUser={user} />
             </div>
-  
+
             {/* Message Input */}
-            <div className="absolute bottom-0 p-2">
+            <div className="sticky bottom-0 p-2 bg-[#151515] border-t border-gray-800">
               <MessageInput onSend={handleSendMessage} />
             </div>
           </div>
@@ -174,8 +172,6 @@ const Chat = () => {
       </div>
     </div>
   );
-  
 };
-
 
 export default Chat;

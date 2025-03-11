@@ -21,7 +21,7 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen flex justify-center items-center bg-black">
+      <div className="min-h-screen flex justify-center items-center custom-scrollbar bg-black">
         <Routes>
           <Route path="/" element={<Register />} />
           <Route path="/login" element={<Login />} />

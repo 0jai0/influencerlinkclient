@@ -7,39 +7,88 @@ const ChatWindow = ({ messages }) => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Function to format the date in a WhatsApp-like style
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
-    return !isNaN(date.valueOf()) ? date.toLocaleString() : "Invalid Date";
+    if (isNaN(date.valueOf())) return "Invalid Date";
+
+    const now = new Date();
+    const isToday = date.toDateString() === now.toDateString();
+    const isYesterday =
+      new Date(now.setDate(now.getDate() - 1)).toDateString() === date.toDateString();
+
+    if (isToday) {
+      return "Today";
+    } else if (isYesterday) {
+      return "Yesterday";
+    } else {
+      return date.toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" });
+    }
   };
 
+  // Function to group messages by date
+  const groupMessagesByDate = (messages) => {
+    const groupedMessages = {};
+    messages.forEach((msg) => {
+      const dateKey = new Date(msg.timestamp).toDateString();
+      if (!groupedMessages[dateKey]) {
+        groupedMessages[dateKey] = [];
+      }
+      groupedMessages[dateKey].push(msg);
+    });
+    return groupedMessages;
+  };
+
+  // Group messages by date
+  const groupedMessages = groupMessagesByDate(messages);
+
   return (
-    <div className="flex-1 p-5 min-h-full custom-scrollbar border-b-[56px] border-[#151515] bg-[#121212]">
+    <div className="flex-1 p-5 min-h-full custom-scrollbar border-b-[5px] border-[#151515] bg-[#121212]">
       {messages.length === 0 ? (
         <p className="text-center text-gray-500">No messages yet.</p>
       ) : (
-        messages.map((msg, index) => {
-          const isSender = msg.status === "sent";
-          const formattedDate = formatDate(msg.timestamp);
-
-          return (
-            <div
-              key={index}
-              className={`flex mb-2 ${isSender ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`p-3 max-w-[60%] break-words rounded-lg text-sm shadow-md 
-                ${isSender ? "bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black" : "bg-gray-800 text-white"}`}
-              >
-                {msg.content || "(No content)"}
-                <div
-                  className={`text-xs mt-1 ${isSender ? "text-black text-right" : "text-gray-400 text-left"}`}
-                >
-                  {formattedDate}
-                </div>
+        Object.entries(groupedMessages).map(([dateKey, messagesForDate]) => (
+          <div key={dateKey}>
+            {/* Date Separator */}
+            <div className="flex justify-center my-4">
+              <div className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">
+                {formatDate(new Date(dateKey))}
               </div>
             </div>
-          );
-        })
+
+            {/* Messages for this date */}
+            {messagesForDate.map((msg, index) => {
+              const isSender = msg.status === "sent";
+              const formattedTime = new Date(msg.timestamp).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              });
+
+              return (
+                <div
+  key={index}
+  className={`flex mb-2 ${isSender ? "justify-end" : "justify-start"}`}
+>
+  <div
+    className={`p-3 max-w-[60%] break-words rounded-lg text-sm shadow-md flex items-end gap-2 
+      ${isSender ? "bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black" : "bg-gray-800 text-white"}`}
+  >
+    {/* Message Content */}
+    <span>{msg.content || "(No content)"}</span>
+
+    {/* Timestamp */}
+    <span
+      className={`text-xs whitespace-nowrap ${isSender ? "text-black" : "text-gray-400"}`}
+    >
+      {formattedTime}
+    </span>
+  </div>
+</div>
+              );
+            })}
+          </div>
+        ))
       )}
       <div ref={chatEndRef} />
     </div>

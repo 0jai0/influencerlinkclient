@@ -12,20 +12,19 @@ const MessageInput = ({ onSend }) => {
   };
 
   return (
-    <form 
-      onSubmit={handleSubmit} 
-      className="absolute bottom-0 w-full flex items-center p-3 bg-[#121212]  border-gray-700 shadow-lg"
-    >
+    <form onSubmit={handleSubmit} className="w-full flex items-center justify-between gap-2">
+      {/* Input on the left */}
       <input
         type="text"
         placeholder="Type a message..."
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        className="flex-1 px-4 py-2 text-white bg-black rounded-3xl outline-none"
+        className="flex-1 px-4 py-2 text-white bg-[#121212] rounded-full outline-none border border-gray-700 focus:border-[#59FFA7]"
       />
+      {/* Button on the right */}
       <button
         type="submit"
-        className="ml-3 px-4 py-2 items-end bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black font-semibold rounded-full transition duration-300"
+        className="px-4 py-2 bg-[#59FFA7] text-black font-semibold rounded-full hover:bg-[#2BFFF8] transition duration-300"
       >
         Send
       </button>
