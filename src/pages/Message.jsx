@@ -5,11 +5,13 @@ import ContactList from "../components/ContactList";
 import ChatWindow from "../components/ChatWindow";
 import MessageInput from "../components/MessageInput";
 import Navbar from "./Navbar";
+import { ArrowRight , X } from "lucide-react";
 
 const Chat = () => {
   const { user } = useSelector((state) => state.auth);
   const [contacts, setContacts] = useState([]);
   const [activeContact, setActiveContact] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [messages, setMessages] = useState([]);
   const userId = user?.id;
   const socketRef = useRef(null);
@@ -94,13 +96,54 @@ const Chat = () => {
   return (
     <div className="flex flex-col h-screen w-full bg-[#121212]">
       <Navbar />
-
-      <div className="flex flex-1 border-t-[5px] border-t-black overflow-hidden">
-        <ContactList contacts={contacts} onSelectContact={loadConversation} activeContactId={activeContact?._id} />
-
+  
+      {/* Main Container */}
+      <div className="flex flex-1 border-t-[5px] border-t-black overflow-hidden relative">
+        
+        {/* Mobile Sidebar Toggle Button */}
+        {!isSidebarOpen && (
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="sm:hidden absolute bottom-20  bg-[#121212] text-white p-2 rounded-md z-50"
+            aria-label="Open sidebar"
+          >
+            <ArrowRight  size={24} />
+          </button>
+        )}
+  
+        {/* Contact List (Sidebar) */}
+        <div
+          className={`fixed inset-y-0 left-0 bg-black bg-opacity-75 z-40 sm:static sm:bg-transparent
+            ${isSidebarOpen ? "w-[80%]" : "hidden"} sm:w-[300px] md:w-[350px] border-r-[5px] border-r-black
+            transition-all duration-300 ease-in-out`}
+        >
+          <div className="bg-[#151515] h-full p-4 relative">
+            {/* Close Button (Mobile) */}
+            {isSidebarOpen && (
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="sm:hidden absolute top-3 right-3 text-white"
+              >
+                <X size={24} />
+              </button>
+            )}
+  
+            <ContactList
+              contacts={contacts}
+              onSelectContact={(contact) => {
+                loadConversation(contact);
+                setIsSidebarOpen(false); // Close sidebar on mobile when a contact is selected
+              }}
+              activeContactId={activeContact?._id}
+            />
+          </div>
+        </div>
+  
+        {/* Chat Section */}
         {activeContact ? (
-          <div className="flex-1 border-l-[5px] border-l-black flex flex-col">
-            <div className="flex items-center text-left bg-[#121212] py-2.5 font-bold px-4 shadow-2xl shadow-black drop-shadow-[0_10px_10px_rgba(0,0,0,0.4)]">
+          <div className="flex-1 flex flex-col border-l-black">
+            {/* Chat Header */}
+            <div className="flex items-center text-left bg-[#121212] py-3 px-4 font-bold shadow-lg shadow-black">
               <div className="w-[40px] h-[40px] mr-4 relative overflow-hidden rounded-full">
                 <img
                   src={activeContact.profilePicUrl || "https://via.placeholder.com/100"}
@@ -112,23 +155,27 @@ const Chat = () => {
                 {activeContact.ownerName}
               </span>
             </div>
-
-            <div className="flex-1 h-[500px] flex flex-col">
+  
+            {/* Chat Messages */}
+            <div className="flex-1 h-screen flex flex-col ">
               <ChatWindow messages={messages} currentUser={user} />
             </div>
-
-            <div className="flex-1 flex flex-col">
+  
+            {/* Message Input */}
+            <div className="absolute bottom-0 p-2">
               <MessageInput onSend={handleSendMessage} />
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex justify-center items-center text-gray-500">
+          <div className="flex-1 flex justify-center items-center text-gray-500 text-center px-4">
             <h3>Select a contact to start chatting</h3>
           </div>
         )}
       </div>
     </div>
   );
+  
 };
+
 
 export default Chat;

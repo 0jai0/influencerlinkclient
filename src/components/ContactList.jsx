@@ -45,7 +45,7 @@ const ContactList = ({ contacts, onSelectContact, activeContactId }) => {
   };
 
   return (
-    <div className="w-1/4 border-spacing-4 border-r border-[#121212] bg-[#121212] overflow-y-auto">
+    <div className="w-full border-spacing-4 border-r border-[#121212] bg-[#121212] overflow-y-auto">
       {/* Title */}
       <div className="bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] ml-5 mt-3 bg-clip-text text-transparent text-xl">
         Chats

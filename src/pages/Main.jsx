@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axios from "axios";
 import Profile from "./Profile";
 import Navbar from "./Navbar";
 import Banner from "./Banner";
 
 const Main = () => {
+  const {  user } = useSelector((state) => state.auth);
+  const userId = user?.id;
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [adCategories, setAdCategories] = useState([]);
@@ -17,6 +23,8 @@ const Main = () => {
   //const [showContentDropdown, setShowContentDropdown] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [subscription, setSubscription] = useState(false);
+  const [ListisClicked, setListIsClicked] = useState(false);
+  const [ChatisClicked, setChatIsClicked] = useState(false);
 
   useEffect(() => {
     // Fetch data from API
@@ -57,7 +65,29 @@ const Main = () => {
 
     setFilteredUsers(filtered);
   };
+  const handleChatNow = async () => {
+    await handleAddToList(); // Add user._id first if not present
+    setChatIsClicked(true);
+  navigate(`/MessagingApp/${userId}`); // Navigate to chat page
+};
+const handleAddToList = async (User) => {
+  if (!user?.id || !User?._id) {
+    console.error("Both User ID and Target User ID are required");
+    return;
+  }
 
+  try {
+    console.log("Making API call with User ID:", user?.id, "and Target User ID:", User?._id);
+    await axios.post(`${process.env.REACT_APP_SERVER_API}/api/collection/users/add`, {
+      userId: user?.id,
+      targetUserId: User?._id,
+    });
+    setListIsClicked(true);
+    console.log("Successfully added target user to collection");
+  } catch (error) {
+    console.error("Error adding to collection:", error);
+  }
+};
   // Handle Search Input Change
   const handleSearch = (e) => {
     const value = e.target.value;
@@ -80,6 +110,21 @@ const Main = () => {
       setSelectedContentCategories(updated);
       filterUsers(searchTerm, selectedAdCategories, updated);
     }
+  };
+  const isFormatted = (followers) => {
+    return typeof followers === "string" && (followers.includes("k") || followers.includes("M"));
+  };
+  
+  // Function to format followers count
+  const formatFollowers = (count) => {
+    if (typeof count === "number") {
+      if (count >= 1000000) {
+        return (count / 1000000).toFixed(1) + "M"; // Converts 1,200,000 to "1.2M"
+      } else if (count >= 1000) {
+        return (count / 1000).toFixed(0) + "K"; // Converts 10,500 to "10k"
+      }
+    }
+    return count; // Return the original value if it's already formatted or not a number
   };
 
   return (
@@ -176,21 +221,22 @@ const Main = () => {
   </div>
 
   {/* Influencer List Section */}
-  <div className={`p-6 bg-[#151515] border border-gray-800 relative top-[-25px] rounded-b-md h-[500px] transition-all duration-300 ${
-        subscription ? "overflow-y-auto custom-scrollbar" : "overflow-hidden"
-      }`}>
-    {filteredUsers.length === 0 ? (
-      <div className="text-center text-gray-400">No influencers found</div>
-    ) : (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-        {filteredUsers.map((user) => (
-          <div
-            key={user._id}
-            className="relative p-4 border border-gray-800 rounded-lg shadow-md bg-[#202020] hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-            onClick={() => setSelectedUser(user)}
-          >
+  <div className={`p-6 bg-[#151515] border border-gray-800 relative top-[-25px] rounded-b-md h-[550px] transition-all duration-300 ${
+  subscription ? "overflow-y-auto custom-scrollbar" : "overflow-hidden"
+}`}>
+  {filteredUsers.length === 0 ? (
+    <div className="text-center text-gray-400">No influencers found</div>
+  ) : (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+      {filteredUsers.map((user) => (
+        <div
+          key={user._id}
+          className="relative p-4 border border-gray-800 rounded-3xl shadow-md bg-[#202020] hover:shadow-lg transition-all duration-300 cursor-pointer group h-[100px] hover:h-[160px] overflow-hidden"
+          onClick={() => setSelectedUser(user)}
+        >
+          <div className="flex items-center space-x-4">
             {/* Profile Picture */}
-            <div className="w-full h-32 mb-2 relative overflow-hidden rounded-lg">
+            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#59FFA7]">
               <img
                 src={user.profilePicUrl || "https://via.placeholder.com/100"}
                 alt={`${user.ownerName}'s profile`}
@@ -199,44 +245,71 @@ const Main = () => {
             </div>
 
             {/* User Details */}
-            <h3 className="font-bold text-lg text-white truncate mb-1">
-              {user.ownerName}
-            </h3>
-            <p className="text-sm text-gray-400 truncate mb-2">
-              {user.followers || "N/A"} Followers
-            </p>
+            <div>
+              <h3 className="font-bold text-lg text-white truncate">
+                {user.ownerName}
+              </h3>
+              {user.profileDetails.length > 0 ? (
+            user.profileDetails.map((profile, index) => (
+              <div key={index} className="text-sm md:text-lg">
+                {profile.platform.toLowerCase() === "instagram" && profile.followers && (
+                  <p className="bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-transparent bg-clip-text font-sans">
+                    {isFormatted(profile.followers) ? profile.followers : formatFollowers(profile.followers)} Followers
+                  </p>
+                )}
+              </div>
+            ))
+          ) : (
+            <p className="text-sm">No profile details available.</p>
+          )}
+       
+            </div>
+          </div>
 
-            {/* Action Buttons */}
+          {/* Action Buttons (Visible on Hover) */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-full flex justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <button
-              className="absolute top-2 right-2 px-2 py-1 bg-orange-500 text-white text-xs rounded hover:bg-orange-600 transition"
-              onClick={() => alert("Chat Now")}
-            >
-              Chat Now
-            </button>
-            <button
-              className="mt-2 w-full px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded hover:bg-gray-700 transition"
-              onClick={() => alert("Added to My List")}
+              onClick={handleAddToList(user)}
+              className="px-4 py-2 rounded-md transition-all duration-300 border border-[#59FFA7] bg-transparent text-white hover:bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] hover:text-black"
             >
               Add to List
             </button>
+
+            <button
+              onClick={handleChatNow}
+              className="px-4 py-2 rounded-md transition-all duration-300 border border-[#59FFA7] bg-transparent text-white hover:bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] hover:text-black"
+            >
+              Chat Now
+            </button>
           </div>
-        ))}
-      </div>
-    )}
-    {!subscription && (
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#151515] via-[#151515]/80 to-transparent pointer-events-none"></div>
-    )}
-  </div>
+        </div>
+      ))}
+    </div>
+  )}
+
+  {!subscription && (
+    <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#151515] via-[#151515]/80 to-transparent pointer-events-none"></div>
+  )}
 
   {/* Unlock Button */}
-  <div className="absolute -bottom-52 left-1/2 transform -translate-x-1/2 p-4 flex justify-center">
-    <button 
-      onClick={() => setSubscription(true)}
-      className="w-full max-w-[300px] px-4 py-2 bg-orange-500 text-white font-bold rounded hover:bg-orange-600 transition"
-    >
-      🔒 Unlock Now
-    </button>
+  <div className="bottom-0 transform p-4 flex justify-center">
+  <button
+  onClick={() => setSubscription(true)}
+  className="w-full max-w-[150px] border border-[#59FFA7] py-2 bg-black text-white font-bold rounded 
+             hover:bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] hover:text-black hover:border-transparent transition 
+             flex items-center justify-center gap-2"
+>
+  <span className="bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-transparent bg-clip-text transition-all duration-300 hover:text-black">
+    🔒
+  </span>
+  Unlock Now
+</button>
+
   </div>
+</div>
+
+
+ 
 
   {/* Profile Modal */}
   {selectedUser && (

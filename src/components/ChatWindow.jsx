@@ -13,7 +13,7 @@ const ChatWindow = ({ messages }) => {
   };
 
   return (
-    <div className="flex-1 p-5  custom-scrollbar border-[10px] border-[#151515] bg-[#121212]">
+    <div className="flex-1 p-5 min-h-full custom-scrollbar border-b-[56px] border-[#151515] bg-[#121212]">
       {messages.length === 0 ? (
         <p className="text-center text-gray-500">No messages yet.</p>
       ) : (
