@@ -67,7 +67,7 @@ export const loginUser = createAsyncThunk(
       localStorage.setItem("token", token);
       console.log(localStorage.getItem("token"));
       localStorage.setItem("tokenExpiration", expirationDate);
-      console.log(response.data);
+      console.log(response.data,"sgn");
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Login failed");
@@ -108,6 +108,7 @@ export const checkAuth = createAsyncThunk(
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      console.log(response.data,"rthg0");
       return response.data;
     } catch (error) {
       console.error("Auth check error:", error.response?.data);
