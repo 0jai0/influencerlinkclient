@@ -14,7 +14,7 @@ const Payment = () => {
 
     try {
       // Create the payment transaction by calling the backend API.
-      const response = await axios.post('http://localhost:5000/api/payment/pay', {
+      const response = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/payment/pay`, {
         userId,
         totalAmount: Number(totalAmount)
       });
