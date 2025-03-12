@@ -3,13 +3,6 @@ import axios from "axios";
 
 
 
-const initialState = {
-  isAuthenticated: false,
-  isLoading: false,
-  user: null,
-  error: null, // Added for error tracking
-  token: localStorage.getItem("token") || null,
-};
 
 const API_BASE_URL = `${process.env.REACT_APP_SERVER_API}/api/pageowners`;
  // Change as needed
@@ -97,6 +90,7 @@ export const checkAuth = createAsyncThunk(
   "/auth/checkauth",
   async (_, { rejectWithValue }) => {
     const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
 
     if (!token) return rejectWithValue("No token found");
 
@@ -104,11 +98,10 @@ export const checkAuth = createAsyncThunk(
       const response = await axios.get(
         `${API_BASE_URL}/check-auth`,
         {
-          withCredentials: true,
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log(response.data,"rthg0");
+      console.log(user,"rthg0");
       return response.data;
     } catch (error) {
       console.error("Auth check error:", error.response?.data);
@@ -159,12 +152,20 @@ export const refreshAuthToken = createAsyncThunk(
 // Auth Slice
 const authSlice = createSlice({
   name: "auth",
-  initialState,
+  initialState: {
+    isAuthenticated: !!localStorage.getItem("token"),
+    user: JSON.parse(localStorage.getItem("user")) || null,
+    token: localStorage.getItem("token"),
+    isLoading: false,
+    error: null,
+  },
   reducers: {
     login(state, action) {
       state.isAuthenticated = true;
       state.user = action.payload.user;
       state.token = action.payload.token;
+      localStorage.setItem("token", action.payload.token);
+    localStorage.setItem("user", JSON.stringify(action.payload.user));
     },
     logout(state) {
       state.isAuthenticated = false;

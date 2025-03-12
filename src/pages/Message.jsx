@@ -15,6 +15,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const userId = user?.id;
   const socketRef = useRef(null);
+  console.log(user, "khg");
 
   if (!socketRef.current) {
     socketRef.current = socketIOClient(process.env.REACT_APP_SERVER_API);
