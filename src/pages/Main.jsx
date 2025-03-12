@@ -8,7 +8,7 @@ import Banner from "./Banner";
 
 const Main = () => {
   const {  user } = useSelector((state) => state.auth);
-  const userId = user?.id;
+  const userId = user?._id;
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -68,15 +68,15 @@ const Main = () => {
   navigate(`/MessagingApp/${userId}`); // Navigate to chat page
 };
 const handleAddToList = async (User) => {
-  if (!user?.id || !User?._id) {
+  if (!user?._id || !User?._id) {
     console.error("Both User ID and Target User ID are required");
     return;
   }
 
   try {
-    console.log("Making API call with User ID:", user?.id, "and Target User ID:", User?._id);
+    console.log("Making API call with User ID:", user?._id, "and Target User ID:", User?._id);
     await axios.post(`${process.env.REACT_APP_SERVER_API}/api/collection/users/add`, {
-      userId: user?.id,
+      userId: user?._id,
       targetUserId: User?._id,
     });
     console.log("Successfully added target user to collection");
@@ -264,19 +264,19 @@ const handleAddToList = async (User) => {
 
           {/* Action Buttons (Visible on Hover) */}
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-full flex justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <button
-              onClick={handleAddToList(user)}
-              className="px-4 py-2 rounded-md transition-all duration-300 border border-[#59FFA7] bg-transparent text-white hover:bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] hover:text-black"
-            >
-              Add to List
-            </button>
+          <button
+  onClick={() => handleAddToList(user)}  // Wrap in arrow function
+  className="px-4 py-2 rounded-md transition-all duration-300 border border-[#59FFA7] bg-transparent text-white hover:bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] hover:text-black"
+>
+  Add to List
+</button>
 
-            <button
-              onClick={handleChatNow}
-              className="px-4 py-2 rounded-md transition-all duration-300 border border-[#59FFA7] bg-transparent text-white hover:bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] hover:text-black"
-            >
-              Chat Now
-            </button>
+<button
+  onClick={() => handleChatNow(user)}  // Wrap in arrow function and pass user
+  className="px-4 py-2 rounded-md transition-all duration-300 border border-[#59FFA7] bg-transparent text-white hover:bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] hover:text-black"
+>
+  Chat Now
+</button>
           </div>
         </div>
       ))}

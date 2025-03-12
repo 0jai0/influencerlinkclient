@@ -6,22 +6,22 @@ import axios from "axios";
 const Profile = ({ User, onClose }) => {
   const {  user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  const userId = user?.id;
+  const userId = user?._id;
   const [ListisClicked, setListIsClicked] = useState(false);
   const [ChatisClicked, setChatIsClicked] = useState(false);
   const instaRef = useRef(null);
   const fbRef = useRef(null);
   console.log(user?.id);
   const handleAddToList = async () => {
-    if (!user?.id || !User?._id) {
+    if (!user?._id || !User?._id) {
       console.error("Both User ID and Target User ID are required");
       return;
     }
   
     try {
-      console.log("Making API call with User ID:", user?.id, "and Target User ID:", User?._id);
+      console.log("Making API call with User ID:", user?._id, "and Target User ID:", User?._id);
       await axios.post(`${process.env.REACT_APP_SERVER_API}/api/collection/users/add`, {
-        userId: user?.id,
+        userId: user?._id,
         targetUserId: User?._id,
       });
       setListIsClicked(true);
@@ -36,7 +36,7 @@ const Profile = ({ User, onClose }) => {
   const handleRemoveFromList = async () => {
     try {
       await axios.post(`${process.env.REACT_APP_SERVER_API}/api/collection/users/remove`, {
-        userId: user?.id,
+        userId: user?._id,
         targetUserId: User?._id,
       });
       console.log("Successfully removed target user to collection");

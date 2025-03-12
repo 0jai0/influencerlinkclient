@@ -13,9 +13,9 @@ const Chat = () => {
   const [activeContact, setActiveContact] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [messages, setMessages] = useState([]);
-  const userId = user?.id;
+  const userId = user?._id;
   const socketRef = useRef(null);
-  console.log(user, "khg");
+  console.log(userId, "khg");
 
   if (!socketRef.current) {
     socketRef.current = socketIOClient(process.env.REACT_APP_SERVER_API);

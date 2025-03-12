@@ -48,19 +48,15 @@ export const loginUser = createAsyncThunk(
   "/auth/login",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/login` , // Update URL here
-        formData,
-        { withCredentials: true }
-      );
+      const response = await axios.post(`${API_BASE_URL}/login`, formData, { withCredentials: true });
+      const { token, expiresIn, user } = response.data; // Destructure user from response
 
-      // Save token to localStorage with expiration
-      const { token, expiresIn } = response.data;
-      const expirationDate = new Date().getTime() + expiresIn * 100000; // expiresIn is in seconds
+      // Save token, expiration, and user data
+      const expirationDate = new Date().getTime() + expiresIn * 1000; // Fix expiration calculation
       localStorage.setItem("token", token);
-      console.log(localStorage.getItem("token"));
       localStorage.setItem("tokenExpiration", expirationDate);
-      console.log(response.data,"sgn");
+      localStorage.setItem("user", JSON.stringify(user)); // Save user data
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Login failed");
@@ -85,37 +81,30 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
-// Check Auth 
 export const checkAuth = createAsyncThunk(
-  "/auth/checkauth",
+  "auth/checkAuth",
   async (_, { rejectWithValue }) => {
     const token = localStorage.getItem("token");
-    const user = JSON.parse(localStorage.getItem("user"));
-
     if (!token) return rejectWithValue("No token found");
 
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/check-auth`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      console.log(user,"rthg0");
+      const response = await axios.get(`${API_BASE_URL}/check-auth`, {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Save user data from check-auth response
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+
       return response.data;
     } catch (error) {
-      console.error("Auth check error:", error.response?.data);
-
-      if (error.response?.status === 401) {  // Only remove token if unauthorized
-        localStorage.removeItem("token");
-        localStorage.removeItem("tokenExpiration");
-      }
-      
+      // Clear invalid token
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
       return rejectWithValue(error.response?.data?.message || "Auth check failed");
     }
   }
 );
-
 
 // Refresh Token (Optional)
 export const refreshAuthToken = createAsyncThunk(
