@@ -36,7 +36,7 @@ const UpdateProfile = () => {
     const fetchUser = async () => {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_SERVER_API}/api/pageowners/user/${user?.id}`
+          `${process.env.REACT_APP_SERVER_API}/api/pageowners/user/${user?._id}`
         );
         if (!response.ok) throw new Error("User not found");
         const data = await response.json();
@@ -46,7 +46,7 @@ const UpdateProfile = () => {
       }
     };
     fetchUser();
-  }, [user?.id]);
+  }, [user?._id]);
 
   useEffect(() => {
     if (user1) {
@@ -93,7 +93,7 @@ const UpdateProfile = () => {
         <Verification
           profileDetails={profile.profileDetails}
           setProfile={setProfile}
-          userId={user?.id}
+          userId={user?._id}
         />
       ),
     },
@@ -107,7 +107,7 @@ const UpdateProfile = () => {
     setSaving(true);
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_SERVER_API}/api/pageowners/updateUser/${user?.id}`,
+        `${process.env.REACT_APP_SERVER_API}/api/pageowners/updateUser/${user?._id}`,
         {
           method: "PUT",
           headers: {
