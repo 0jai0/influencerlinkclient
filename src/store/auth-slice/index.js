@@ -111,7 +111,7 @@ export const checkAuth = createAsyncThunk(
       
       const response = await axios.get(`${API_BASE_URL}/check-auth`, {
         withCredentials: true,
-        headers: { Authorization: `Bearer ${token}`,"x-user-id": userId },
+        headers: { Authorization: `Bearer ${token}`,"userid": userId },
       });
       
       localStorage.setItem("user", JSON.stringify(response.data.user));
