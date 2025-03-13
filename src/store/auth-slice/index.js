@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-
+import {jwtDecode} from "jwt-decode";
 
 
 
@@ -49,13 +49,16 @@ export const loginUser = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_BASE_URL}/login`, formData, { withCredentials: true });
-      const { token, expiresIn, user } = response.data; // Destructure user from response
+      const { token, user } = response.data;
+
+      // Decode token to get `exp`
+      const decodedToken = jwtDecode(token);
+      const expirationDate = decodedToken.exp * 1000; // Convert to milliseconds
 
       // Save token, expiration, and user data
-      const expirationDate = new Date().getTime() + expiresIn * 1000; // Fix expiration calculation
       localStorage.setItem("token", token);
       localStorage.setItem("tokenExpiration", expirationDate);
-      localStorage.setItem("user", JSON.stringify(user)); // Save user data
+      localStorage.setItem("user", JSON.stringify(user));
 
       return response.data;
     } catch (error) {
@@ -84,27 +87,44 @@ export const logoutUser = createAsyncThunk(
 export const checkAuth = createAsyncThunk(
   "auth/checkAuth",
   async (_, { rejectWithValue }) => {
+    
     const token = localStorage.getItem("token");
+    const expiration = localStorage.getItem("tokenExpiration");
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?._id;
+    console.log(userId);
+
     if (!token) return rejectWithValue("No token found");
+    
+    // Check token expiration
+    
+    if (expiration && new Date().getTime() > parseInt(expiration, 10)) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("tokenExpiration");
+      localStorage.removeItem("user");
+      
+      return rejectWithValue("Token expired");
+    }
+    
 
     try {
+      
       const response = await axios.get(`${API_BASE_URL}/check-auth`, {
         withCredentials: true,
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}`,"x-user-id": userId },
       });
-
-      // Save user data from check-auth response
+      
       localStorage.setItem("user", JSON.stringify(response.data.user));
-
+      
       return response.data;
     } catch (error) {
-      // Clear invalid token
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      
+      
       return rejectWithValue(error.response?.data?.message || "Auth check failed");
     }
   }
 );
+
 
 // Refresh Token (Optional)
 export const refreshAuthToken = createAsyncThunk(
@@ -213,6 +233,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = action.payload.success ? action.payload.user : null;
         state.isAuthenticated = action.payload.success;
+        state.token = localStorage.getItem("token");
       })
       .addCase(checkAuth.rejected, (state, action) => {
         state.isLoading = false;
@@ -244,18 +265,17 @@ export default authSlice.reducer;
 export const validateAuthToken = () => async (dispatch) => {
   const token = localStorage.getItem("token");
   const expiration = localStorage.getItem("tokenExpiration");
-
-  if (token && expiration) {
-    const isTokenValid = new Date().getTime() < parseInt(expiration, 10);
-    
-    if (isTokenValid) {
-      console.log("Token valid, checking authentication...");
-      dispatch(checkAuth());
+  
+  if (token && expiration && new Date().getTime() < parseInt(expiration, 10)) {
+    try {
+      await dispatch(checkAuth()).unwrap(); // Ensures it waits for checkAuth
+      console.log("yhs");
       return;
+    } catch {
+      console.log("Auth check failed, logging out...");
     }
   }
-  
-  console.log("Token expired or not found, logging out...");
+
   localStorage.removeItem("token");
   localStorage.removeItem("tokenExpiration");
   dispatch(logout());

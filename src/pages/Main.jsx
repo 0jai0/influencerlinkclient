@@ -23,7 +23,7 @@ const Main = () => {
   //const [showContentDropdown, setShowContentDropdown] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [subscription, setSubscription] = useState(false);
-
+  console.log(process.env.REACT_APP_SERVER_API);
   useEffect(() => {
     // Fetch data from API
     fetch(`${process.env.REACT_APP_SERVER_API}/api/pageowners/users`)
