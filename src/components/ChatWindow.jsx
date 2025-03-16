@@ -44,7 +44,7 @@ const ChatWindow = ({ messages }) => {
     switch (status) {
       case "sent":
         return "✅"; // Sent
-      case "delivered":
+      case "recevied":
         return "✅✅"; // Delivered
       case "read":
         return "🔵✅✅"; // Read
