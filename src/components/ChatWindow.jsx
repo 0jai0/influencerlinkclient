@@ -39,20 +39,6 @@ const ChatWindow = ({ messages }) => {
     return groupedMessages;
   };
 
-  // Get appropriate status icon for messages
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "sent":
-        return "✅"; // Sent
-      case "recevied":
-        return "✅✅"; // Delivered
-      case "read":
-        return "🔵✅✅"; // Read
-      default:
-        return "";
-    }
-  };
-
   // Group messages by date
   const groupedMessages = groupMessagesByDate(messages);
 
@@ -91,11 +77,12 @@ const ChatWindow = ({ messages }) => {
     {/* Message Content */}
     <span>{msg.content || "(No content)"}</span>
 
-    {/* Timestamp and Status */}
-    <span className={`text-xs whitespace-nowrap flex items-center ${isSender ? "text-black" : "text-gray-400"}`}>
-                      {formattedTime}{" "}
-                      {isSender && <span className="ml-1">{getStatusIcon(msg.status)}</span>}
-                    </span>
+    {/* Timestamp */}
+    <span
+      className={`text-xs whitespace-nowrap ${isSender ? "text-black" : "text-gray-400"}`}
+    >
+      {formattedTime}
+    </span>
   </div>
 </div>
               );
