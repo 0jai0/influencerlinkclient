@@ -188,61 +188,75 @@ style={{marginTop: "0px"}}>
 
         {/* Accounts Section */}
         <div className="w-full">
-          <h3 className="text-sm md:text-lg font-semibold">Accounts</h3>
-          <div className="max-h-40 md:max-h-60 overflow-y-auto custom-scrollbar space-y-2">
-  {User.profileDetails.map((profile, index) => (
-    <div 
-      key={index} 
-      className="flex items-center h-14 justify-between bg-[#2a2a2a] p-3 rounded-md"
-    >
-      {/* Platform Logo */}
-      <img 
-        src={
-          profile.platform === "Instagram"
-            ? "https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"
-            : profile.platform === "Facebook"
-            ? "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"
-            : profile.platform === "Twitter"
-            ? "https://upload.wikimedia.org/wikipedia/en/6/60/Twitter_Logo_as_of_2021.svg"
-            : profile.platform === "YouTube"
-            ? "https://upload.wikimedia.org/wikipedia/commons/f/fd/YouTube_full-color_icon_%282024%29.svg"
-            : profile.platform === "WhatsApp"
-            ? "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-            : "https://via.placeholder.com/40" // Default placeholder
-        } 
-        alt={profile.platform} 
-        className="w-10 h-10 rounded-full border border-gray-500" 
-      />
-      
-      {/* Profile Details */}
-      <div className="flex-1 flex flex-col px-3">
-  <div className="flex items-center space-x-2 max-w-[50px] md:max-w-[110px]">
-    <span 
-      className="font-semibold text-sm md:text-base truncate overflow-hidden text-ellipsis"
-      style={{ whiteSpace: "nowrap" }} // Ensures single-line truncation
-    >
-      {profile.profileName}
-    </span>
-   
+  <h3 className="text-sm md:text-lg font-semibold">Accounts</h3>
+  <div className="max-h-40 md:max-h-60 space-y-2">
+    {User.profileDetails.map((profile, index) => (
+      <div
+        key={index}
+        className="flex items-center h-14 justify-between bg-[#2a2a2a] p-3 rounded-md relative group"
+      >
+        {/* Platform Logo */}
+        <img
+          src={
+            profile.platform === "Instagram"
+              ? "https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"
+              : profile.platform === "Facebook"
+              ? "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"
+              : profile.platform === "Twitter"
+              ? "https://upload.wikimedia.org/wikipedia/en/6/60/Twitter_Logo_as_of_2021.svg"
+              : profile.platform === "YouTube"
+              ? "https://upload.wikimedia.org/wikipedia/commons/f/fd/YouTube_full-color_icon_%282024%29.svg"
+              : profile.platform === "WhatsApp"
+              ? "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+              : "https://via.placeholder.com/40" // Default placeholder
+          }
+          alt={profile.platform}
+          className="w-10 h-10 rounded-full border border-gray-500"
+        />
+
+        {/* Profile Details & Visit Profile in a Flex Container */}
+        <div className="flex-1 flex flex-col px-3">
+          <div className=" flex items-center space-x-2">
+            {/* Truncated Name */}
+            <span
+              className="font-semibold text-sm md:text-base truncate overflow-hidden max-w-[70px] md:max-w-[120px]"
+              style={{ whiteSpace: "nowrap" }}
+            >
+              {profile.profileName}
+            </span>
+
+            {/* Full Name on Hover */}
+            <div className="absolute left-0 bg-[#333] text-white text-sm px-2 top-10 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-10">
+              {profile.profileName}
+            </div>
+          </div>
+        </div>
+
+        <span className="text-gray-400 text-4xl pb-2 pr-3">|</span>
+
+        {/* Followers Section */}
+        <div className="flex flex-col items-center pr-1 min-w-[50px]">
+          <span className="text-sm font-medium bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-transparent bg-clip-text text-right">
+            {isFormatted(profile.followers) ? profile.followers : formatFollowers(profile.followers)}
+          </span>
+          <p className="text-xs text-gray-400 text-center">Followers</p>
+        </div>
+
+        {/* Visit Profile Button */}
+        <a
+          href={profile.profilePicUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-cyan-500 items-end justify-end min-w-[80px] pr-5 md:min-w-[100px] hover:underline text-xs text-right md:text-sm"
+        >
+          Visit Profile
+        </a>
+      </div>
+    ))}
   </div>
 </div>
-<span className="text-gray-400 text-4xl pb-2 pr-3">|</span>
-      <div className="flex flex-col items-end pr-3 min-w-[60px]">
-  <span className="text-sm font-medium bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-transparent bg-clip-text text-right">
-    {isFormatted(profile.followers) ? profile.followers : formatFollowers(profile.followers)}
-  </span>
-  <p className="text-xs text-gray-400 text-center">Followers</p>
-</div>
-      {/* Visit Profile Button */}
-      <button className="text-cyan-500 max-w-[150px] md:max-w-[120px] hover:underline text-xs text-right md:text-sm">
-        Visit Profile
-      </button>
-    </div>
-  ))}
-</div>
 
 
-        </div>
       </div>
 
       {/* Posts Section */}

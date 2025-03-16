@@ -77,6 +77,7 @@ const AccountDetails = ({ profile, setProfile }) => {
           value={adCategoryOptions.filter(option => profile.adCategories?.includes(option.value))}
           onChange={(selectedOptions) => handleSelectChange(selectedOptions, "adCategories")}
           className="w-full h-10"
+          
           styles={{
             control: (provided) => ({
               ...provided,
@@ -178,58 +179,71 @@ const AccountDetails = ({ profile, setProfile }) => {
 
       {/* Social Media Profile Details */}
       <div className="mt-4 w-[100%] flex flex-col items-center">
-        <h3 className="text-white font-medium self-start">Add Social Media Account</h3>
-        {profile.profileDetails?.map((detail, index) => (
-          <div key={index} className="border-[#272727] p-3 mb-5 bg-[#272727] rounded w-full">
-            <select
-              value={detail.platform || ""}
-              onChange={(e) => handleProfileDetailChange(index, "platform", e.target.value)}
-              className="w-full p-2 border-black bg-black mb-3 text-white rounded"
-            >
-              <option value="">Select Platform</option>
-              {platforms.map(platform => (
-                <option key={platform} value={platform}>{platform}</option>
-              ))}
-            </select>
-            <input
-              type="text"
-              placeholder="Profile Name"
-              value={detail.profileName || ""}
-              onChange={(e) => handleProfileDetailChange(index, "profileName", e.target.value)}
-              className="w-full p-2 border-black bg-black mb-3 text-white rounded"
-            />
-            <input
-              type="text"
-              placeholder="Profile Link"
-              value={detail.profilePicUrl || ""}
-              onChange={(e) => handleProfileDetailChange(index, "profilePicUrl", e.target.value)}
-              className="w-full p-2 border-black bg-black mb-3 text-white rounded"
-              required
-            />
-           <div className="flex items-center w-full">
-              {/* Input Field */}
-              <input
-                type="text"
-                placeholder="Followers"
-                value={detail.followers || ""}
-                onChange={(e) => handleProfileDetailChange(index, "followers", e.target.value)}
-                className="flex-1 h-10 p-2 border border-black rounded bg-black text-white"
-              />
-
-              {/* Delete Button */}
-              <button
-                onClick={() => removeAccount(index)}
-                className="bg-[#2B2B2B] text-red h-10 px-1 py-2 rounded flex items-center justify-center"
-              >
-                <Trash2 size={25} stroke="red" />
-              </button>
-            </div>
-          </div>
+  <h3 className="text-white font-medium self-start">Add Social Media Account</h3>
+  {profile.profileDetails?.map((detail, index) => (
+    <div key={index} className="border-[#272727] p-3 mb-5 bg-[#272727] rounded w-full">
+      <select
+        value={detail.platform || ""}
+        disabled={detail.verified}
+        onChange={(e) => handleProfileDetailChange(index, "platform", e.target.value)}
+        className={`w-full p-2 border-black bg-black mb-3 text-white rounded ${
+          detail.verified ? "cursor-not-allowed opacity-50" : ""
+        }`}
+      >
+        <option value="">Select Platform</option>
+        {platforms.map((platform) => (
+          <option key={platform} value={platform}>{platform}</option>
         ))}
-        <button onClick={addProfileDetail} className="bg-green-500 text-white px-4 py-2 rounded mt-2">
-          Add Profile Detail
+      </select>
+
+      <input
+        type="text"
+        placeholder="Profile Name"
+        value={detail.profileName || ""}
+        disabled={detail.verified}
+        onChange={(e) => handleProfileDetailChange(index, "profileName", e.target.value)}
+        className={`w-full p-2 border-black bg-black mb-3 text-white rounded ${
+          detail.verified ? "cursor-not-allowed opacity-50" : ""
+        }`}
+      />
+
+      <input
+        type="text"
+        placeholder="Profile Link"
+        value={detail.profilePicUrl || ""}
+        disabled={detail.verified}
+        onChange={(e) => handleProfileDetailChange(index, "profilePicUrl", e.target.value)}
+        className={`w-full p-2 border-black bg-black mb-3 text-white rounded ${
+          detail.verified ? "cursor-not-allowed opacity-50" : ""
+        }`}
+        required
+      />
+
+      <div className="flex items-center w-full">
+        <input
+          type="text"
+          placeholder="Followers"
+          value={detail.followers || ""}
+          onChange={(e) => handleProfileDetailChange(index, "followers", e.target.value)}
+          className={`flex-1 h-10 p-2 border border-black rounded bg-black text-white`}
+        />
+
+        <button
+          onClick={() => removeAccount(index)}
+          className="bg-[#2B2B2B] text-red h-10 px-1 py-2 rounded flex items-center justify-center"
+        >
+          <Trash2 size={25} stroke="red" />
         </button>
       </div>
+    </div>
+  ))}
+
+  <button onClick={addProfileDetail} className="bg-green-500 text-white px-4 py-2 rounded mt-2">
+    Add Profile Detail
+  </button>
+</div>
+
+
     </div>
   );
 };

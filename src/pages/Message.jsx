@@ -13,9 +13,10 @@ const Chat = () => {
   const [activeContact, setActiveContact] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [messages, setMessages] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState(new Set()); // Store online users
+
   const userId = user?._id;
   const socketRef = useRef(null);
-  console.log(userId, "khg");
 
   if (!socketRef.current) {
     socketRef.current = socketIOClient(process.env.REACT_APP_SERVER_API);
@@ -28,12 +29,7 @@ const Chat = () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_SERVER_API}/api/collection/users/${userId}`);
       const data = await response.json();
-
-      if (data.collections && data.collections.length > 0) {
-        setContacts(data.collections);
-      } else {
-        setContacts([]);
-      }
+      setContacts(data.collections || []);
     } catch (error) {
       console.error("Error fetching contacts:", error);
     }
@@ -45,21 +41,21 @@ const Chat = () => {
       fetchContacts();
     }
 
-    const handleMessage = (message) => {
-      if (
-        (message.sender === activeContact?._id && message.receiver === userId) ||
-        (message.sender === userId && message.receiver === activeContact?._id)
-      ) {
-        setMessages((prevMessages) => [...prevMessages, message]);
-      }
+    // Listen for real-time online status updates
+    const handleUserStatus = ({ userId, isOnline }) => {
+      setOnlineUsers((prev) => {
+        const updatedUsers = new Set(prev);
+        isOnline ? updatedUsers.add(userId) : updatedUsers.delete(userId);
+        return updatedUsers;
+      });
     };
 
-    socket.on("receive_message", handleMessage);
+    socket.on("user_status", handleUserStatus);
 
     return () => {
-      socket.off("receive_message", handleMessage);
+      socket.off("user_status", handleUserStatus);
     };
-  }, [userId, fetchContacts, activeContact, socket]);
+  }, [userId, fetchContacts, socket]);
 
   const loadConversation = async (contact) => {
     setActiveContact(contact);
@@ -129,9 +125,10 @@ const Chat = () => {
 
             <ContactList
               contacts={contacts}
+              onlineUsers={onlineUsers} // Pass online users
               onSelectContact={(contact) => {
                 loadConversation(contact);
-                setIsSidebarOpen(false); // Close sidebar on mobile when a contact is selected
+                setIsSidebarOpen(false);
               }}
               activeContactId={activeContact?._id}
             />
@@ -142,17 +139,24 @@ const Chat = () => {
         {activeContact ? (
           <div className="flex-1 flex flex-col border-l-black">
             {/* Chat Header */}
-            <div className="flex items-center text-left bg-[#121212] py-3 px-4 font-bold shadow-lg shadow-black">
-              <div className="w-[40px] h-[40px] mr-4 relative overflow-hidden rounded-full">
-                <img
-                  src={activeContact.profilePicUrl || "https://via.placeholder.com/100"}
-                  alt={`${activeContact.ownerName}'s profile`}
-                  className="w-full h-full object-cover"
-                />
+            <div className="flex flex-col bg-[#121212] py-3 px-4 font-bold shadow-lg shadow-black">
+              <div className="flex items-center">
+                <div className="w-[40px] h-[40px] mr-4 relative overflow-hidden rounded-full">
+                  <img
+                    src={activeContact.profilePicUrl || "https://via.placeholder.com/100"}
+                    alt={`${activeContact.ownerName}'s profile`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] bg-clip-text text-transparent text-lg">
+                    {activeContact.ownerName}
+                  </span>
+                  <span className="text-sm text-gray-400">
+                    {onlineUsers.has(activeContact._id) ? "Online" : "Offline"}
+                  </span>
+                </div>
               </div>
-              <span className="bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] bg-clip-text text-transparent">
-                {activeContact.ownerName}
-              </span>
             </div>
 
             {/* Chat Messages */}

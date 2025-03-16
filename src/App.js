@@ -1,22 +1,21 @@
-
-import './App.css';
+import "./App.css";
 import { useDispatch } from "react-redux";
-import React, {  useEffect } from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import UpdateProfile from "./pages/UpdateProfile";
 import Main from "./pages/Main";
-import Chat from './pages/Message';
-import Payment from './pages/Payment';
-import PaymentFailure from './pages/PaymentFailure';
+import Chat from "./pages/Message";
+import Payment from "./pages/Payment";
+import PaymentFailure from "./pages/PaymentFailure";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import { checkAuth } from "./store/auth-slice";
+import PrivateRoute from "./PrivateRoute"; // Import PrivateRoute
 
 function App() {
-
-  
   const dispatch = useDispatch();
+  
 
   useEffect(() => {
     dispatch(checkAuth());
@@ -28,13 +27,14 @@ function App() {
         <Routes>
           <Route path="/" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/UpdateProfile" element={<UpdateProfile />} />
-          <Route path="/Main" element={<Main />} />
-          <Route path="payment" element={<Payment/>} />
-          <Route path="/payment-success" element={<PaymentSuccess/>} />
-          <Route path="/payment-failure" element={<PaymentFailure/>} />
-          <Route path="/MessagingApp/:userId" element={<Chat />} />
           
+          {/* Protected Routes */}
+          <Route path="/UpdateProfile" element={<PrivateRoute element={<UpdateProfile />} />} />
+          <Route path="/Main" element={<PrivateRoute element={<Main />} />} />
+          <Route path="/payment" element={<PrivateRoute element={<Payment />} />} />
+          <Route path="/payment-success" element={<PrivateRoute element={<PaymentSuccess />} />} />
+          <Route path="/payment-failure" element={<PrivateRoute element={<PaymentFailure />} />} />
+          <Route path="/MessagingApp/:userId" element={<PrivateRoute element={<Chat />} />} />
         </Routes>
       </div>
     </Router>

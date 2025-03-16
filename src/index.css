@@ -23,7 +23,7 @@ code {
 }
 /* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 10px; /* Adjust width */
+  width: 5px; /* Adjust width */
 }
 
 
