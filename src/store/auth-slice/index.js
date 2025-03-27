@@ -105,7 +105,7 @@ export const checkAuth = createAsyncThunk(
     const token = localStorage.getItem("token");
     const expiration = localStorage.getItem("tokenExpiration");
     const user = JSON.parse(localStorage.getItem("user"));
-    const userId = user._id;
+    const userId = user;
     console.log(userId,"dgf");
 
     if (!token) return rejectWithValue("No token found");
