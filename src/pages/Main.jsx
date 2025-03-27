@@ -160,6 +160,7 @@ const [showLocationsDropdown, setShowLocationsDropdown] = useState(false);
         console.error("Both User ID and Target User ID are required");
         isLoadingRef.current = false;
         setIsLoading(false);
+        console.log(isLoading)
         return;
       }
   
@@ -599,6 +600,7 @@ const handleChatNow = async (targetUser) => {
       <span className="bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-transparent bg-clip-text transition-all duration-300 hover:text-black">
         🔒
       </span>
+      
       Unlock Now
     </button>
   </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useCallback  } from 'react';
 import PropTypes from 'prop-types';
 
 const Alert = ({ 
@@ -12,10 +12,13 @@ const Alert = ({
   const [visible, setVisible] = useState(true);
 
   // Handle closing the alert
-  const handleClose = () => {
-    setVisible(false);
-    onClose?.(); // Safely call onClose if provided
-  };
+ 
+
+const handleClose = useCallback(() => {
+  setVisible(false);
+  onClose?.();
+}, [onClose]); // Only depends on `onClose`
+
 
   // Handle cancel action
   const handleCancel = () => {
@@ -35,7 +38,7 @@ const Alert = ({
       const timer = setTimeout(handleClose, duration);
       return () => clearTimeout(timer);
     }
-  }, [duration]);
+  }, [duration, handleClose]);
 
   if (!visible) return null;
 

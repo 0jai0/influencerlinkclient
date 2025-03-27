@@ -68,6 +68,7 @@ const Profile = ({ User, onClose }) => {
         }, 100); // Add a short delay
         isLoadingRef.current = false;
         setIsLoading(false);
+        console.log(isLoading)
         return;
       }
   
