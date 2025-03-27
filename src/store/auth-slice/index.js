@@ -48,14 +48,28 @@ export const loginUser = createAsyncThunk(
   "/auth/login",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/login`, formData, { withCredentials: true });
+      let response;
+      
+      if (formData.isGoogleAuth) {
+        // Handle Google login
+        response = await axios.post(
+          `${API_BASE_URL}/google`,
+          { credential: formData.credential },
+          { withCredentials: true }
+        );
+      } else {
+        // Handle regular login
+        response = await axios.post(
+          `${API_BASE_URL}/login`,
+          formData,
+          { withCredentials: true }
+        );
+      }
+
       const { token, user } = response.data;
-
-      // Decode token to get `exp`
       const decodedToken = jwtDecode(token);
-      const expirationDate = decodedToken.exp * 1000; // Convert to milliseconds
+      const expirationDate = decodedToken.exp * 1000;
 
-      // Save token, expiration, and user data
       localStorage.setItem("token", token);
       localStorage.setItem("tokenExpiration", expirationDate);
       localStorage.setItem("user", JSON.stringify(user));
@@ -91,8 +105,8 @@ export const checkAuth = createAsyncThunk(
     const token = localStorage.getItem("token");
     const expiration = localStorage.getItem("tokenExpiration");
     const user = JSON.parse(localStorage.getItem("user"));
-    const userId = user?._id;
-    console.log(userId);
+    const userId = user;
+    console.log(userId,"dgf");
 
     if (!token) return rejectWithValue("No token found");
     

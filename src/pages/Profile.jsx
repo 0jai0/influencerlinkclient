@@ -1,35 +1,152 @@
-import React, { useState , useRef } from "react";
+import React, { useEffect, useState,useRef , useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {  useSelector } from "react-redux";
 import axios from "axios";
+import Alert from './Alert';
 const Profile = ({ User, onClose }) => {
   const {  user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const userId = user?._id;
-  const [ListisClicked, setListIsClicked] = useState(false);
-  const [ChatisClicked, setChatIsClicked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const isLoadingRef = useRef(false);
+  const [contacts, setContacts] = useState([]);
   const instaRef = useRef(null);
   const fbRef = useRef(null);
-  console.log(user?.id);
-  const handleAddToList = async () => {
-    if (!user?._id || !User?._id) {
-      console.error("Both User ID and Target User ID are required");
-      return;
-    }
-  
+  const [alert, setAlert] = useState(null);
+  console.log(user?._id);
+
+  const fetchContacts = useCallback(async () => {
     try {
-      console.log("Making API call with User ID:", user?._id, "and Target User ID:", User?._id);
-      await axios.post(`${process.env.REACT_APP_SERVER_API}/api/collection/users/add`, {
-        userId: user?._id,
-        targetUserId: User?._id,
-      });
-      setListIsClicked(true);
-      console.log("Successfully added target user to collection");
+      const response = await fetch(`${process.env.REACT_APP_SERVER_API}/api/collection/users/${user?._id}`);
+      const data = await response.json();
+
+      if (data.collections && data.collections.length > 0) {
+        setContacts(data.collections);
+      } else {
+        setContacts([]);
+      }
     } catch (error) {
-      console.error("Error adding to collection:", error);
+      console.error("Error fetching contacts:", error);
     }
+  }, [user?._id]);
+
+  useEffect(() => {
+    if (user?._id) {
+      fetchContacts();
+    }
+  }, [user?._id, fetchContacts]);
+
+  const handleAddToList = (User) => {
+    return new Promise((resolve, reject) => {
+      if (isLoadingRef.current) return;
+      isLoadingRef.current = true;
+      setIsLoading(true);
+  
+      if (!user?._id || !User?._id) {
+        console.error("Both User ID and Target User ID are required");
+        isLoadingRef.current = false;
+        setIsLoading(false);
+        return;
+      }
+  
+      const isAlreadyInContacts = contacts.some(contact => contact._id === User?._id);
+      if (isAlreadyInContacts) {
+        setAlert(null); // Reset alert first
+        setTimeout(() => {
+          setAlert({ type: 'info', message: 'This user is already in your list.' });
+        }, 100); // Add a short delay
+        isLoadingRef.current = false;
+        setIsLoading(false);
+        return;
+      }
+  
+      if (user.linkCoins < 1) {
+        setAlert(null); // Reset alert first
+        setTimeout(() => {
+          setAlert({ type: 'error', message: 'Insufficient LinkCoins. Please purchase more.' });
+        }, 100); // Add a short delay
+        isLoadingRef.current = false;
+        setIsLoading(false);
+        return;
+      }
+  
+      setAlert({
+        type: 'info',
+        message: 'Spend 1 LinkCoin to add this user to your list. Are you sure?',
+        onConfirm: async () => {
+          try {
+            const response = await axios.post(
+              `${process.env.REACT_APP_SERVER_API}/api/collection/users/add`,
+              {
+                userId: user?._id,
+                targetUserId: User?._id,
+              }
+            );
+  
+            setAlert(null);
+            setTimeout(() => {
+              setAlert({ type: 'success', message: 'User added to collection successfully!' });
+            }, 100);
+  
+            resolve(response.data);
+          } catch (error) {
+            console.error("Error adding to collection:", error.response?.status);
+            setAlert(null);
+            setTimeout(() => {
+              if (error.response && error.response.status === 400) {
+                setAlert({ type: 'error', message: 'Insufficient LinkCoins. Please purchase more.' });
+              } else {
+                setAlert({ type: 'error', message: 'Failed to add user. Please try again.' });
+              }
+            }, 100);
+            reject(error);
+          } finally {
+            isLoadingRef.current = false;
+            setIsLoading(false);
+          }
+        },
+        onCancel: () => {
+          setAlert(null);
+          isLoadingRef.current = false;
+          setIsLoading(false);
+          reject(new Error("User canceled the action"));
+        },
+      });
+    });
   };
+  
+  
+
+const handleChatNow = async (User) => {
+  try {
+    console.log("Starting handleChatNow...");
+    const isAlreadyInContacts = contacts.some(contact => contact._id === User._id);
+    if (isAlreadyInContacts) {
+      navigate(`/MessagingApp/${user?._id}`);
+    }
+    const response = await handleAddToList(User);
+    console.log("Response from handleAddToList:", response);
+
+    if (response && response.message === "Target User ID added successfully") {
+      console.log("User added successfully. Navigating to chat...");
+      navigate(`/MessagingApp/${user?._id}`);
+    } else {
+      console.log("Failed to add user. Response:", response);
+    }
+  } catch (error) {
+    console.error("Error in handleChatNow:", error);
+
+    if (error.message === "User canceled the action") {
+      console.log("User canceled the action. No further action required.");
+    } else {
+      setAlert({ type: 'error', message: 'Failed to start chat. Please try again.' });
+      setAlert(null);
+    }
+  } finally {
+    setIsLoading(false); // Ensure isLoading is reset
+  }
+};
   
 
   // Function to remove userId from collection
@@ -45,11 +162,7 @@ const Profile = ({ User, onClose }) => {
       console.error("Error removing from collection:", error);
     }
   };
-  const handleChatNow = async () => {
-      await handleAddToList(); // Add user._id first if not present
-      setChatIsClicked(true);
-    navigate(`/MessagingApp/${userId}`); // Navigate to chat page
-  };
+  
   const scroll = (ref, direction) => {
     if (ref.current) {
       ref.current.scrollBy({ left: direction * 200, behavior: "smooth" });
@@ -90,6 +203,15 @@ const Profile = ({ User, onClose }) => {
   return (
 <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm top-0 flex items-center justify-center z-20 p-4" 
 style={{marginTop: "0px"}}>
+  {alert && (
+        <Alert
+          type={alert.type}
+          message={alert.message}
+          onClose={alert.onClose}
+          onConfirm={alert.onConfirm}
+          onCancel={alert.onCancel}
+        />
+      )}
   <div
   className="bg-[#151515] p-4 border-[10px] border-[#151515] md:p-6 rounded-2xl min-h-[80vh] shadow-xl w-full max-w-7xl overflow-y-auto custom-scrollbar flex flex-col relative"
   style={{ borderRadius: "10px" }}
@@ -155,26 +277,27 @@ style={{marginTop: "0px"}}>
 {/* Buttons */}
       <div className="flex space-x-4 mt-5">
       <button
-      onClick={handleAddToList}
-      className={`px-4 py-2  rounded-md transition-all duration-300 ${
-        ListisClicked
-          ? 'bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black' // Full background when clicked
-          : 'border border-[#59FFA7] bg-transparent text-white' // Only border when not clicked
-      }`}
-    >
-      Add to List
-    </button>
-       
-        <button
-          onClick={handleChatNow}
-          className={`px-4 py-2  rounded-md transition-all duration-300 ${
-            ChatisClicked
-              ? 'bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black' // Full background when clicked
-              : 'border border-[#59FFA7] bg-transparent text-white' // Only border when not clicked
-          }`}
-        >
-          Chat Now
-        </button>
+              onClick={(e) => {
+                e.stopPropagation(); // Stop event propagation
+                handleAddToList(User);
+              }}
+              disabled={isLoadingRef.current}
+              className="px-4 py-2 rounded-md transition-all duration-300 border border-[#59FFA7] bg-transparent text-white hover:bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] hover:text-black"
+            >
+              {isLoadingRef.current ? "Adding..." : "Add to List"}
+            </button>
+            {/* Display the alert */}
+            
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); // Stop event propagation
+                handleChatNow(User);
+              }}
+              disabled={isLoadingRef.current}
+              className="px-4 py-2 rounded-md transition-all duration-300 border border-[#59FFA7] bg-transparent text-white hover:bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] hover:text-black"
+            >
+              {isLoadingRef.current ? "Loading..." : "Chat Now"}
+            </button>
         <button
           onClick={handleRemoveFromList}
           className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"

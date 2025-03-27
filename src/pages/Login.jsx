@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../store/auth-slice"; // Import the Redux action
+import { loginUser } from "../store/auth-slice";
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import {jwtDecode}  from "jwt-decode"; // For decoding the JWT token
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -11,10 +13,12 @@ const Login = () => {
   // Get loading, error, and authentication state from Redux
   const { isLoading, error, isAuthenticated } = useSelector((state) => state.auth);
 
+  // Handle form input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -27,6 +31,36 @@ const Login = () => {
     }
   };
 
+  // Handle Google login success
+  // Update the handleGoogleSuccess function
+  const handleGoogleSuccess = (credentialResponse) => {
+    console.log('Google credential response:', credentialResponse);
+    
+    // Decode the JWT to see its contents (for debugging only)
+    try {
+      const decoded = jwtDecode(credentialResponse.credential);
+      console.log('Decoded JWT:', decoded);
+    } catch (decodeError) {
+      console.error('JWT decode error:', decodeError);
+    }
+  
+    dispatch(loginUser({ 
+      credential: credentialResponse.credential, 
+      isGoogleAuth: true 
+    }))
+    .unwrap()
+    .then(() => navigate("/Main"))
+    .catch(error => {
+      console.error('Google login dispatch error:', error);
+      // Show user-friendly error message
+    });
+  };
+  
+  // Handle Google login failure
+  const handleGoogleFailure = () => {
+    console.error("Google Login Failed");
+  };
+
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
@@ -37,14 +71,16 @@ const Login = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-800">Logigdfhn</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-800">Login</h2>
 
+        {/* Display error message if any */}
         {error && (
           <div className="p-3 text-red-600 bg-red-100 border border-red-400 rounded">
             {error}
           </div>
         )}
 
+        {/* Login form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-gray-700">Email</label>
@@ -82,6 +118,18 @@ const Login = () => {
             {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>
+
+        {/* Google Login */}
+        <div className="text-center">
+          <p className="text-gray-600">Or</p>
+          <GoogleOAuthProvider clientId="264166008170-nnjc496qlj2bvlhkgqg5v5qbd1fmdc33.apps.googleusercontent.com">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleFailure}
+              useOneTap // Optional: Enable one-tap sign-in
+            />
+          </GoogleOAuthProvider>
+        </div>
       </div>
     </div>
   );

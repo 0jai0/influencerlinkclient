@@ -41,9 +41,15 @@ const ChatWindow = ({ messages }) => {
 
   // Group messages by date
   const groupedMessages = groupMessagesByDate(messages);
+  const getTickMark = (status) => {
+    if (status === "unread") return "✔";
+    if (status === "delivered") return "✔✔";
+    if (status === "read") return "✔✔";
+    return "✔";
+  };
 
   return (
-    <div className="flex-1 p-5 min-h-full custom-scrollbar border-b-[5px] border-[#151515] bg-[#121212]">
+    <div className="flex-1 p-5 min-h-full custom-scrollbar border-b-[5px] border-[#151515] bg-[#121212] overflow-y-auto">
       {messages.length === 0 ? (
         <p className="text-center text-gray-500">No messages yet.</p>
       ) : (
@@ -67,24 +73,31 @@ const ChatWindow = ({ messages }) => {
 
               return (
                 <div
-  key={index}
-  className={`flex mb-2 ${isSender ? "justify-end" : "justify-start"}`}
->
-  <div
-    className={`p-3 max-w-[60%] break-words rounded-lg text-sm shadow-md flex items-end gap-2 
-      ${isSender ? "bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black" : "bg-gray-800 text-white"}`}
-  >
-    {/* Message Content */}
-    <span>{msg.content || "(No content)"}</span>
+                  key={index}
+                  className={`flex mb-2 ${isSender ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`pt-2 pb-1 px-2 w-fit max-w-[80%] md:max-w-[70%] lg:max-w-[60%] break-words rounded-lg text-sm shadow-md flex flex-col
+                      ${isSender ? "bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black" : "bg-gray-800 text-white"}`}
+                  >
+                    {/* Message Content */}
+                    <div className="pb-1 whitespace-pre-wrap break-all word-break">
+                      {msg.content || "(No content)"}
+                    </div>
 
-    {/* Timestamp */}
-    <span
-      className={`text-xs whitespace-nowrap ${isSender ? "text-black" : "text-gray-400"}`}
-    >
-      {formattedTime}
-    </span>
-  </div>
-</div>
+                    {/* Timestamp and status */}
+                    <div className={`flex justify-end items-center gap-1 ${isSender ? "text-black" : "text-gray-400"}`}>
+                      <span className="text-[10px] whitespace-nowrap">
+                        {formattedTime}
+                      </span>
+                      {isSender && (
+                        <span className={`text-xs ${msg.messageStatus === "read" ? "text-blue-500" : "text-gray-400"}`}>
+                          {getTickMark(msg.messageStatus)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
               );
             })}
           </div>

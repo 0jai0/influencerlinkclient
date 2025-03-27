@@ -30,6 +30,7 @@ const Chat = () => {
       const data = await response.json();
 
       if (data.collections && data.collections.length > 0) {
+        console.log(data.collections);
         setContacts(data.collections);
       } else {
         setContacts([]);
@@ -69,6 +70,23 @@ const Chat = () => {
       );
       const data = await response.json();
       setMessages(data.conversation || []);
+      // Mark messages as read
+    await fetch(`${process.env.REACT_APP_SERVER_API}/api/messages/mark-read`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        sender: contact._id,  // Ensure this matches backend
+        receiver: userId,
+      }),
+    });
+
+    // Notify sender that messages have been read
+    socket.emit("mark_as_read", {
+      sender: contact._id,
+      receiver: userId,
+    });
     } catch (error) {
       console.error("Error loading conversation:", error);
     }
