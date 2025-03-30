@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { X } from 'lucide-react'; // Import close icon
 
 const Payment = ({ onClose }) => {
   const { user } = useSelector((state) => state.auth);
-  const userId = user?._id; // Get userId from Redux
-  const [linkCoins, setLinkCoins] = useState(1); // Default to 1 LinkCoin
+  const userId = user?._id;
+  const [linkCoins, setLinkCoins] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -17,14 +18,12 @@ const Payment = ({ onClose }) => {
     setError('');
 
     try {
-      // Create the payment transaction by calling the backend API.
       const response = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/payment/pay`, {
         userId,
         totalAmount,
       });
 
       const { approvalURL } = response.data;
-      // Redirect the user to the PhonePe payment page.
       window.location.href = approvalURL;
     } catch (err) {
       console.error(err);
@@ -33,64 +32,87 @@ const Payment = ({ onClose }) => {
     }
   };
 
-  const handleLinkCoinsChange = (e) => {
-    const value = parseInt(e.target.value, 10);
-    if (!isNaN(value)) {
-      setLinkCoins(Math.max(1, value)); // Ensure the value is at least 1
-    }
-  };
+ 
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 mx-auto max-w-md w-full">
-      <h2 className="text-2xl font-bold text-gray-700 mb-4 text-center">Payment</h2>
+    <div className="bg-[#1E1E1E] border border-[#59FFA7]/30 rounded-xl p-6 mx-auto max-w-md w-full relative">
+      {/* Close Button */}
+      <button 
+        onClick={onClose}
+        disabled={loading}
+        className="absolute top-3 right-3 text-gray-400 hover:text-[#59FFA7] transition-colors disabled:opacity-50"
+      >
+        <X size={24} />
+      </button>
 
-      <div className="my-4 flex flex-col items-center">
-        <label className="text-gray-700 text-lg font-semibold">LinkCoins:</label>
-        <div className="flex items-center mt-2">
+      <h2 className="text-2xl font-bold text-[#59FFA7] mb-6 text-center">Purchase LinkCoins</h2>
+
+      {/* LinkCoins Selection */}
+      <div className="mb-6">
+        <label className="block text-[#59FFA7] text-sm font-medium mb-2">Amount</label>
+        <div className="flex items-center justify-center">
           <button
             onClick={() => setLinkCoins((prev) => Math.max(1, prev - 1))}
             disabled={loading}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-l-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-3 bg-[#252525] text-[#59FFA7] rounded-l-lg hover:bg-[#59FFA7]/10 transition-colors disabled:opacity-50"
           >
             -
           </button>
-          <input
-  type="number"
-  value={linkCoins}
-  onChange={handleLinkCoinsChange}
-  disabled={loading}
-  className="px-4 py-2 bg-gray-200 text-xl text-black font-bold text-center w-20 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-/>
+          <div className="px-6 py-3 bg-[#252525] text-[#59FFA7] font-bold text-xl">
+            {linkCoins}
+          </div>
           <button
             onClick={() => setLinkCoins((prev) => prev + 1)}
             disabled={loading}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-r-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-3 bg-[#252525] text-[#59FFA7] rounded-r-lg hover:bg-[#59FFA7]/10 transition-colors disabled:opacity-50"
           >
             +
           </button>
         </div>
       </div>
 
-      <p className="text-xl font-semibold text-gray-700 text-center">Total Amount: ₹{totalAmount}</p>
+      {/* Conversion Rate */}
+      <div className="text-center text-gray-300 mb-2">
+        1 LinkCoin = ₹5
+      </div>
 
+      {/* Total Amount */}
+      <div className="bg-[#252525] rounded-lg p-4 mb-6">
+        <div className="flex justify-between items-center">
+          <span className="text-gray-300">Total:</span>
+          <span className="text-2xl font-bold text-[#59FFA7]">₹{totalAmount}</span>
+        </div>
+      </div>
+
+      {/* Payment Button */}
       <button
-        type="submit"
         onClick={handlePayment}
         disabled={loading}
-        className="mt-4 px-6 py-3 bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black font-bold rounded-lg shadow-md hover:from-[#59FFA7] hover:to-[#2BFFF8] hover:text-black transition-all duration-300 w-full disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full py-3 px-4 bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black font-bold rounded-lg hover:shadow-lg hover:shadow-[#59FFA7]/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed mb-3"
       >
-        {loading ? 'Processing...' : 'Pay Now'}
+        {loading ? (
+          <span className="flex items-center justify-center">
+            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Processing...
+          </span>
+        ) : (
+          'Proceed to Payment'
+        )}
       </button>
 
-      {error && <p className="text-red-500 mt-3 text-center">{error}</p>}
+      {error && (
+        <div className="text-red-400 text-sm text-center mt-2 p-2 bg-red-900/20 rounded">
+          {error}
+        </div>
+      )}
 
-      <button
-        onClick={onClose}
-        disabled={loading}
-        className="mt-4 px-6 py-3 bg-red-600 text-white font-bold rounded-lg shadow-md hover:bg-red-700 transition-all duration-300 w-full disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        Cancel
-      </button>
+      {/* Info Text */}
+      <p className="text-xs text-gray-400 text-center mt-4">
+        You will be redirected to a secure payment page
+      </p>
     </div>
   );
 };

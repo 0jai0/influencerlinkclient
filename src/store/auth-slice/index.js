@@ -91,6 +91,9 @@ export const logoutUser = createAsyncThunk(
         {},
         { withCredentials: true }
       );
+      localStorage.removeItem("token");
+      localStorage.removeItem("tokenExpiration");
+      localStorage.removeItem("user");
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Logout failed");
