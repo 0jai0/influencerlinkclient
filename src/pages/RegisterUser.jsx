@@ -7,16 +7,16 @@ import { jwtDecode } from "jwt-decode";
 import objectsImage from "../assets/OBJECTS.png";
 import logoImage from "../assets/logo.png";
 
-const Register = () => {
+const RegisterUser = () => {
   const [formData, setFormData] = useState({
     ownerName: "",
     email: "",
     password: "",
-    role: "influencer", // Default role
+    role: "user", // Default role
     mobile: "",
   });
 
-  const [activeRole, setActiveRole] = useState("influencer"); // Track active role selection
+  const [activeRole, setActiveRole] = useState("user"); // Track active role selection
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -133,7 +133,7 @@ const Register = () => {
           )}
 
           {/* Registration Form */}
-          <form onSubmit={handleSubmit} className="space-y-2">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name Field */}
             <div>
               <input
@@ -234,4 +234,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegisterUser;

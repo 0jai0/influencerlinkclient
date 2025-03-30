@@ -12,6 +12,8 @@ import Profile from "./pages/ViewProfile";
 import PaymentFailure from "./pages/PaymentFailure";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import { checkAuth } from "./store/auth-slice";
+import AboutUs from "./pages/AboutUs";
+import RegisterUser from "./pages/RegisterUser";
 import PrivateRoute from "./PrivateRoute"; // Import PrivateRoute
 
 function App() {
@@ -27,11 +29,14 @@ function App() {
       <div className="min-h-screen flex justify-center items-center custom-scrollbar bg-black">
         <Routes>
           <Route path="/" element={<Register />} />
+          <Route path="/RegisterUser" element={<RegisterUser />} />
+
           <Route path="/login" element={<Login />} />
           
           {/* Protected Routes */}
           <Route path="/UpdateProfile" element={<PrivateRoute element={<UpdateProfile />} />} />
-          <Route path="/Main" element={<PrivateRoute element={<Main />} />} />
+          <Route path="/Main" element={<Main />}  />
+          <Route path="/AboutUs" element={<AboutUs />} />
           <Route path="/Profile/:userId" element={<Profile />} />
           <Route path="/payment" element={<PrivateRoute element={<Payment />} />} />
           <Route path="/payment-success" element={<PrivateRoute element={<PaymentSuccess />} />} />
