@@ -17,6 +17,27 @@ const Chat = () => {
   const socketRef = useRef(null);
   console.log(userId, "khg");
 
+  const menuRef = useRef(null);
+  
+  
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  
+
+
+
+
   if (!socketRef.current) {
     socketRef.current = socketIOClient(process.env.REACT_APP_SERVER_API);
   }
@@ -130,6 +151,7 @@ const Chat = () => {
 
         {/* Contact List (Sidebar) */}
         <div
+          ref={menuRef}
           className={`fixed inset-y-0 left-0 bg-black bg-opacity-75 z-40 sm:static sm:bg-transparent sm:bg-[#151515]
             ${isSidebarOpen ? "w-[80%] sm:w-[300px]" : "hidden sm:block sm:w-[300px]"} border-r-[5px] border-r-black
             transition-all duration-300 ease-in-out`}

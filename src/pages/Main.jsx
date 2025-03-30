@@ -41,8 +41,8 @@ const Main = () => {
   const [audienceTypes, setAudienceTypes] = useState([]);
   const [locations, setLocations] = useState([]);
   const [showPlatformsDropdown, setShowPlatformsDropdown] = useState(false);
-const [showAudienceTypesDropdown, setShowAudienceTypesDropdown] = useState(false);
-const [showLocationsDropdown, setShowLocationsDropdown] = useState(false);
+  const [showAudienceTypesDropdown, setShowAudienceTypesDropdown] = useState(false);
+  const [showLocationsDropdown, setShowLocationsDropdown] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -351,7 +351,7 @@ const handleChatNow = async (targetUser) => {
             <div className="flex items-center gap-4">
               <div className="relative">
                 <button
-                  className="px-4 py-2 bg-black rounded-full border border-gray-700"
+                  className="px-1 py-2 bg-black rounded-full border border-gray-700"
                   onClick={() => setShowAdDropdown(!showAdDropdown)}
                 >
                   Category
@@ -377,12 +377,22 @@ const handleChatNow = async (targetUser) => {
               </div>
 
               <button
-                className="px-4 py-2 bg-black rounded-full border border-gray-700"
+                className="px-2 py-2 bg-black rounded-full border border-gray-700"
                 onClick={() => setShowMoreFilters(!showMoreFilters)}
               >
                 {showMoreFilters ? 'Hide Filters' : 'More Filters'}
               </button>
+              <button
+              
+              className="px-4 py-2 rounded-md transition-all duration-300 border border-[#59FFA7] bg-transparent text-white hover:bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] hover:text-black"
+              onClick={() => navigate(`/MessagingApp/${user?._id}`)}
+            >
+              Chat
+            </button>
             </div>
+            
+            
+            
           </div>
 
           {showMoreFilters && (
@@ -398,6 +408,7 @@ const handleChatNow = async (targetUser) => {
           <i className={`fas fa-chevron-${showPlatformsDropdown ? "up" : "down"}`}></i>
         </span>
       </button>
+      
       {showPlatformsDropdown && (
         <div className="mt-2 bg-black border border-gray-700 rounded shadow-md p-3 max-h-40 overflow-y-auto">
           {platforms.map(platform => (

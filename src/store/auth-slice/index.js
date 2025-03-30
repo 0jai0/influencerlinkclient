@@ -40,7 +40,7 @@ export const registerUser = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Registration failed");
     }
-  }
+  } 
 );
 
 // Login User

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react"; // Import icons for menu toggle
 import Payment from "./Payment";
 
@@ -7,9 +8,18 @@ const Navbar = () => {
   const { user } = useSelector((state) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
+  
+  const navigate = useNavigate();
+
+  const routes = {
+    "HOME": "/Main",
+    "ABOUT US": "/aboutus",
+    "INFLUENCER": "/login",
+    "PUBLISH AD": "/login"
+  };
+  // Close navbar if clicked outside
   const menuRef = useRef(null);
 
-  // Close navbar if clicked outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -32,7 +42,7 @@ const Navbar = () => {
     <nav className="flex justify-between items-center p-4 bg-[#151515] text-white relative">
       {/* Logo Section */}
       <div className="text-2xl font-bold flex items-center">
-        <span className="text-[#59FFA7]">AD</span>VERTIZER
+        <span className="text-[#59FFA7]">PROMOTER</span>LINK
       </div>
 
       {/* Buttons Section - Desktop & Mobile */}
@@ -52,6 +62,8 @@ const Navbar = () => {
             hover:text-white hover:bg-gradient-to-r hover:from-[#59FFA7] hover:to-[#2BFFF8] 
             active:bg-gradient-to-r active:from-[#59FFA7] active:to-[#ED6F39] active:text-black 
             border-transparent w-full md:w-auto"
+
+            onClick={() => navigate(routes[item])}
           >
             {item}
           </button>
