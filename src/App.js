@@ -1,5 +1,4 @@
-import "./App.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Register from "./pages/Register";
@@ -14,15 +13,20 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import { checkAuth } from "./store/auth-slice";
 import AboutUs from "./pages/AboutUs";
 import RegisterUser from "./pages/RegisterUser";
-import PrivateRoute from "./PrivateRoute"; // Import PrivateRoute
+import PrivateRoute from "./PrivateRoute";
+import { requestNotificationPermission } from "./firebase"; // Import Firebase function
 
 function App() {
   const dispatch = useDispatch();
-  
+  const { user } = useSelector((state) => state.auth); // Get user from Redux state
 
   useEffect(() => {
     dispatch(checkAuth());
-  }, [dispatch]);
+
+    if (user?._id) {
+      requestNotificationPermission(user?._id); // Pass userId to the function
+    }
+  }, [dispatch, user?._id]); // Re-run when user.id changes
 
   return (
     <Router>
@@ -30,12 +34,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Register />} />
           <Route path="/RegisterUser" element={<RegisterUser />} />
-
           <Route path="/login" element={<Login />} />
-          
+
           {/* Protected Routes */}
           <Route path="/UpdateProfile" element={<PrivateRoute element={<UpdateProfile />} />} />
-          <Route path="/Main" element={<Main />}  />
+          <Route path="/Main" element={<Main />} />
           <Route path="/AboutUs" element={<AboutUs />} />
           <Route path="/Profile/:userId" element={<Profile />} />
           <Route path="/payment" element={<PrivateRoute element={<Payment />} />} />

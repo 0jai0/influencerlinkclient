@@ -44,7 +44,9 @@ const Navbar = () => {
   return (
     <nav className="flex justify-between items-center p-4 bg-[#151515] text-white relative">
       {/* Logo Section */}
-      <div className="text-l font-bold flex items-center">
+      <div 
+      onClick={() => navigate("/main")}
+      className="text-l font-bold flex items-center">
         <span className="text-[#59FFA7]">PROMOTER</span>LINK
       </div>
 
