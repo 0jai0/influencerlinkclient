@@ -123,14 +123,38 @@ const Chat = () => {
       timestamp: new Date().toISOString(),
     };
 
-    socket.emit("send_message", newMessage, (ack) => {
+    socket.emit("send_message", newMessage, async (ack) => {
       if (ack.status === "ok") {
         setMessages((prevMessages) => [...prevMessages, { ...newMessage, status: "sent" }]);
+        
+        // Send notification
+        try {
+          const response = await fetch(`${process.env.REACT_APP_SERVER_API}/api/notifications/send-message`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              sender: userId,
+              receiver: activeContact._id,
+              message: messageContent,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to send notification");
+          }
+
+          console.log("Notification sent successfully");
+        } catch (error) {
+          console.error("Error sending notification:", error);
+        }
       } else {
         console.error("Failed to send message:", ack.error);
       }
     });
-  };
+};
+
 
   return (
     <div className="flex flex-col h-screen w-full bg-[#121212]">
