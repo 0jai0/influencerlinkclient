@@ -42,85 +42,100 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="flex justify-between items-center p-4 bg-[#151515] text-white relative">
-      {/* Logo Section */}
-      <div 
-      onClick={() => navigate("/main")}
-      className="text-l font-bold flex items-center">
-        <span className="text-[#59FFA7]">PROMOTER</span>LINK
-      </div>
-
-      {/* Navigation Buttons */}
-      <div
-        ref={menuRef}
-        className={`z-50 md:flex items-center space-x-4 ${
-          isOpen
-            ? "absolute top-16 w-[97%] left-0 bg-[#151515] p-2 flex flex-col items-center shadow-lg"
-            : "hidden md:flex"
-        }`}
-      >
-        {["HOME", "ABOUT US", "INFLUENCER", "PUBLISH AD"].map((item) => (
-          <button
-            key={item}
-            className="px-4 py-2 border-2 rounded-md font-semibold bg-transparent 
-            text-transparent bg-clip-text bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] 
-            hover:text-white hover:bg-gradient-to-r hover:from-[#59FFA7] hover:to-[#2BFFF8] 
-            active:bg-gradient-to-r active:from-[#59FFA7] active:to-[#ED6F39] active:text-black 
-            border-transparent w-full md:w-auto"
-            onClick={() => navigate(routes[item])}
-          >
-            {item}
-          </button>
-        ))}
-      </div>
-
-      {/* Right-Aligned Buttons */}
-      <div className="flex items-center gap-3 relative" ref={userCardRef}>
-        {/* LinkCoins Button */}
-        {user && (
-          <button
-            onClick={() => setShowPayment(true)}
-            className="bg-black rounded-3xl h-10 px-4 text-[#59FFA7] text-sm font-semibold flex items-center"
-          >
-            LinkCoins: {user?.linkCoins}
-          </button>
-        )}
-
-        {/* Profile Button */}
-        <div className="relative" ref={dropdownRef}>
-          <button
-            onClick={() => setShowUserDropdown(!showUserDropdown)}
-            className="p-2 rounded-full hover:bg-gray-800 transition-colors relative"
-            aria-label="User menu"
-          >
-            <User className="text-[#59FFA7]" size={24} />
-            {showUserDropdown && (
-              <UserDropdown onClose={() => setShowUserDropdown(false)} />
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Payment Modal */}
-      {showPayment && (
-        <>
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[400px]  shadow-lg p-8 z-[1000] flex flex-col justify-center items-center rounded-lg">
-            <Payment onClose={() => setShowPayment(false)} />
-          </div>
-          <div
-            onClick={() => setShowPayment(false)}
-            className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-[999]"
-          ></div>
-        </>
+    <nav className="flex justify-between items-center p-4 bg-[#151515] text-white border-b border-gray-800 sticky top-0 z-50">
+  {/* Hamburger Menu */}
+  <div className="md:hidden">
+    <button 
+      onClick={() => setIsOpen(!isOpen)}
+      className="p-2 rounded-full hover:bg-[#2a2a2a] transition-colors"
+    >
+      {isOpen ? (
+        <X size={24} className="text-[#59FFA7]" />
+      ) : (
+        <Menu size={24} className="text-[#59FFA7]" />
       )}
+    </button>
+  </div>
 
-      {/* Hamburger Menu */}
-      <div className="md:hidden">
-        <button onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
+  {/* Logo Section */}
+  <div 
+    onClick={() => navigate("/main")}
+    className="text-xl font-bold flex items-center cursor-pointer group"
+  >
+    <span className="text-[#59FFA7] group-hover:text-[#2BFFF8] transition-colors">PROMOTER</span>
+    <span className="group-hover:text-gray-300 transition-colors">LINK</span>
+  </div>
+
+  {/* Navigation Buttons */}
+  <div
+    ref={menuRef}
+    className={`z-50 md:flex items-center space-x-1 ${
+      isOpen
+        ? "absolute top-16 left-0 right-0 mx-4 bg-[#202020] p-4 flex flex-col items-center space-y-3 rounded-xl shadow-2xl border border-gray-700"
+        : "hidden md:flex"
+    }`}
+  >
+    {["HOME", "ABOUT US", "INFLUENCER", "PUBLISH AD"].map((item) => (
+      <button
+        key={item}
+        className={`px-4 py-2 rounded-full font-medium transition-all duration-300
+          bg-transparent text-white hover:bg-gradient-to-r hover:from-[#59FFA7]/20 hover:to-[#2BFFF8]/20
+          border border-transparent hover:border-[#59FFA7]/30
+          relative overflow-hidden group w-full md:w-auto text-center`}
+        onClick={() => navigate(routes[item])}
+      >
+        <span className="relative z-10">{item}</span>
+        <span className="absolute inset-0 bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] opacity-0 group-hover:opacity-10 transition-opacity"></span>
+      </button>
+    ))}
+  </div>
+
+  {/* Right-Aligned Buttons */}
+  <div className="flex items-center gap-3 relative" ref={userCardRef}>
+    {/* LinkCoins Button */}
+    {user && (
+      <button
+        onClick={() => setShowPayment(true)}
+        className="bg-[#202020] rounded-full h-10 px-4 text-[#59FFA7] text-sm font-medium flex items-center gap-2
+          border border-[#59FFA7]/30 hover:border-[#59FFA7]/50 transition-colors
+          group relative overflow-hidden"
+      >
+        <span className="relative z-10 flex items-center gap-1">
+          <span className="text-white font-bold">{user?.linkCoins}</span>
+          <span className="hidden sm:inline">LinkCoins</span>
+        </span>
+        <span className="absolute inset-0 bg-[#59FFA7]/5 group-hover:bg-[#59FFA7]/10 transition-colors"></span>
+      </button>
+    )}
+
+    {/* Profile Button */}
+    <div className="relative" ref={dropdownRef}>
+      <button
+        onClick={() => setShowUserDropdown(!showUserDropdown)}
+        className="p-2 rounded-full hover:bg-[#2a2a2a] transition-colors relative group"
+        aria-label="User menu"
+      >
+        <div className="relative">
+          <User className="text-[#59FFA7] group-hover:text-[#2BFFF8] transition-colors" size={24} />
+          <span className="absolute -bottom-1 -right-1 w-2 h-2 bg-[#2BFFF8] rounded-full animate-pulse"></span>
+        </div>
+        {showUserDropdown && (
+          <UserDropdown onClose={() => setShowUserDropdown(false)} />
+        )}
+      </button>
+    </div>
+  </div>
+
+  {/* Payment Modal Backdrop */}
+  {showPayment && (
+    <>
+      <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-[999]" onClick={() => setShowPayment(false)}></div>
+      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md bg-[#202020] border border-gray-700 shadow-2xl rounded-xl p-6 z-[1000]">
+        <Payment onClose={() => setShowPayment(false)} />
       </div>
-    </nav>
+    </>
+  )}
+</nav>
   );
 };
 

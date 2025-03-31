@@ -25,8 +25,9 @@ export const requestNotificationPermission = async (userId) => {
   try {
     if (Notification.permission === "granted") {
       console.log("Notification permission already granted.");
+      return;
     }
-    console.log(userId,"no");
+    //console.log(userId,"no");
 
     if (Notification.permission === "denied") {
       console.warn("Notification permission was denied.");
@@ -41,7 +42,7 @@ export const requestNotificationPermission = async (userId) => {
         vapidKey: "BJCPTIsZ5XvBQAATJbYgoq4wxWKDJ95pT2LClKXqe2YkEYoMiqqpPJXIoshfbXWGKzrIufYJO8uoGOD-xVgH7Po",
       });
 
-      console.log("FCM Token:", token);
+      //console.log("FCM Token:", token);
 
       // Send token to backend
       await fetch(`${process.env.REACT_APP_SERVER_API}/api/notifications/store-token`, {

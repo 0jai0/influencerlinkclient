@@ -43,7 +43,7 @@ code {
 .custom-scrollbar {
   overflow-y: auto;
   max-height: 60vh; /* Ensure it has a height limit */
-  padding-right: 8px; /* Prevent content from touching scrollbar */
+  padding-right: 1px; /* Prevent content from touching scrollbar */
   scrollbar-gutter: stable; /* Avoid content shifting */
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
