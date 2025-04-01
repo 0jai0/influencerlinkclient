@@ -10,7 +10,7 @@ import Content from './Content';
 import Footer from "./Footer";
 
 const Main = () => {
-  const { user } = useSelector((state) => state.auth);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -652,32 +652,36 @@ const Main = () => {
      
       {/* Pagination */}
       <div className="relative bottom-0 left-0 right-0 flex justify-center items-center p-4">
-  <div className="flex items-center gap-2 bg-[#151515] rounded-md p-2 border border-gray-800">
-    <button
-      onClick={() => setPage(p => Math.max(1, p - 1))}
-      disabled={page === 1}
-      className="px-4 py-2 rounded-md border border-gray-700 disabled:opacity-50 hover:bg-gray-800 transition-colors"
-    >
-      Previous
-    </button>
-    <span className="px-4 py-2 text-gray-300">
-      Page {page} of {Math.min(totalPages, Math.max(1, Math.floor((user.linkCoins - 5) / 5)))}
-    </span>
-    <button
-      onClick={() => {
-        const coinLimitedPages = Math.max(1, Math.floor((user.linkCoins - 5) / 5));
-        const actualMaxPages = Math.min(totalPages, coinLimitedPages);
-        if (page < actualMaxPages) {
-          setPage(p => p + 1);
-        }
-      }}
-      disabled={page >= Math.min(totalPages, Math.max(1, Math.floor((user.linkCoins - 5) / 5)))}
-      className="px-4 py-2 rounded-md border border-gray-700 disabled:opacity-50 hover:bg-gray-800 transition-colors"
-    >
-      Next
-    </button>
-  </div>
-</div>
+        <div className="flex items-center gap-2 bg-[#151515] rounded-md p-2 border border-gray-800">
+          <button
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="px-4 py-2 rounded-md border border-gray-700 disabled:opacity-50 hover:bg-gray-800 transition-colors"
+          >
+            Previous
+          </button>
+          <span className="px-4 py-2 text-gray-300">
+            Page {page} of {isAuthenticated && user ? Math.min(totalPages, Math.max(1, Math.floor((user.linkCoins - 5) / 5))) : 1}
+          </span>
+          <button
+            onClick={() => {
+              if (!isAuthenticated || !user) {
+                navigate('/login');
+                return;
+              }
+              const coinLimitedPages = Math.max(1, Math.floor((user.linkCoins - 5) / 5));
+              const actualMaxPages = Math.min(totalPages, coinLimitedPages);
+              if (page < actualMaxPages) {
+                setPage(p => p + 1);
+              }
+            }}
+            disabled={!isAuthenticated || !user || page >= Math.min(totalPages, Math.max(1, Math.floor((user?.linkCoins - 5) / 5)))}
+            className="px-4 py-2 rounded-md border border-gray-700 disabled:opacity-50 hover:bg-gray-800 transition-colors"
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </>
   )}
   {!subscription && (
@@ -686,23 +690,34 @@ const Main = () => {
       <div className="absolute bottom-0 transform p-4 flex justify-center w-full">
         <button
           onClick={() => {
+            if (!isAuthenticated || !user) {
+              navigate('/login');
+              return;
+            }
             if (user.linkCoins >= 5) {
               setSubscription(true);
-              // Here you would typically deduct the coins via an API call
               // deductCoins(5);
             } else {
               alert("You need at least 5 LinkCoins to unlock this content");
             }
           }}
-          className={`w-full max-w-[150px] border ${user.linkCoins >= 5 ? 'border-[#59FFA7]' : 'border-gray-600'} py-2 bg-black text-white font-bold rounded 
+          className={`w-full max-w-[150px] border ${
+            isAuthenticated && user?.linkCoins >= 5 ? 'border-[#59FFA7]' : 'border-gray-600'
+          } py-2 bg-black text-white font-bold rounded 
                      hover:bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] hover:text-black hover:border-transparent transition 
-                     flex items-center justify-center gap-2 ${user.linkCoins < 5 ? 'opacity-70 cursor-not-allowed' : ''}`}
-          disabled={user.linkCoins < 5}
+                     flex items-center justify-center gap-2 ${
+                       !isAuthenticated || !user || user.linkCoins < 5 ? 'opacity-70 cursor-not-allowed' : ''
+                     }`}
+          disabled={!isAuthenticated || !user || user.linkCoins < 5}
         >
-          <span className={`${user.linkCoins >= 5 ? 'bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8]' : 'bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8]'} text-transparent bg-clip-text transition-all duration-300 hover:text-black`}>
+          <span className={`${
+            isAuthenticated && user?.linkCoins >= 5 
+              ? 'bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8]' 
+              : 'text-gray-400'
+          } text-transparent bg-clip-text transition-all duration-300 hover:text-black`}>
             🔒
           </span>
-          {user.linkCoins >= 5 ? "Unlock Now" : "Need 5 Coins"}
+          {!isAuthenticated || !user ? "Unlock Now" : (user.linkCoins >= 5 ? "Unlock Now" : "Need 5 Coins")}
         </button>
       </div>
     </>

@@ -10,7 +10,19 @@ const UserDropdown = ({ onClose }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Replace with your actual logout action
+    // Clear any existing notifications
+    if ("Notification" in window && Notification.permission === "granted") {
+      // Close all currently displayed notifications
+      navigator.serviceWorker?.getRegistrations().then(registrations => {
+        registrations.forEach(registration => {
+          registration.getNotifications().then(notifications => {
+            notifications.forEach(notification => notification.close());
+          });
+        });
+      });
+    }
+  
+    // Perform logout actions
     dispatch(logoutUser());
     navigate("/login");
     onClose();
