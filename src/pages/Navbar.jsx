@@ -92,21 +92,27 @@ const Navbar = () => {
 
   {/* Right-Aligned Buttons */}
   <div className="flex items-center gap-3 relative" ref={userCardRef}>
-    {/* LinkCoins Button */}
-    {user && (
-      <button
-        onClick={() => setShowPayment(true)}
-        className="bg-[#202020] rounded-full h-10 px-4 text-[#59FFA7] text-sm font-medium flex items-center gap-2
-          border border-[#59FFA7]/30 hover:border-[#59FFA7]/50 transition-colors
-          group relative overflow-hidden"
-      >
-        <span className="relative z-10 flex items-center gap-1">
-          <span className="text-white font-bold">{user?.linkCoins}</span>
-          <span className="hidden sm:inline">LinkCoins</span>
-        </span>
-        <span className="absolute inset-0 bg-[#59FFA7]/5 group-hover:bg-[#59FFA7]/10 transition-colors"></span>
-      </button>
-    )}
+   {/* LinkCoins Button */}
+   {user && (
+  <button
+    onClick={() => setShowPayment(true)}
+    className="bg-[#202020] rounded-full h-10 px-1 pr-1 text-[#59FFA7] text-sm font-medium flex items-center gap-2
+      border border-[#59FFA7]/30 hover:border-[#59FFA7]/50 transition-colors
+      group relative overflow-hidden hover:shadow-[0_0_8px_rgba(89,255,167,0.3)]"
+  >
+    <span className="relative z-10 flex items-center gap-0">
+      <img 
+        src="coin.png"  // Ensure this path is correct for your project structure
+        alt="LinkCoins" 
+        className="w-8 h-8 object-contain" 
+        
+      />
+      <span className="text-white font-bold">{user?.linkCoins}</span>
+      <span className="hidden sm:inline">LinkCoins</span>
+    </span>
+    <span className="absolute inset-0 bg-[#59FFA7]/5 group-hover:bg-[#59FFA7]/10 transition-colors duration-200"></span>
+  </button>
+)}
 
     {/* Profile Button */}
     <div className="relative" ref={dropdownRef}>

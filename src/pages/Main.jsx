@@ -6,6 +6,7 @@ import Profile from "./Profile";
 import Navbar from "./Navbar";
 import Banner from "./Banner";
 import Alert from './Alert';
+import Content from './Content';
 
 const Main = () => {
   const { user } = useSelector((state) => state.auth);
@@ -696,6 +697,8 @@ const Main = () => {
           <Profile User={selectedUser} onClose={() => setSelectedUser(null)} />
         )}
       </div>
+
+      <Content />
     </div>
   );
 };

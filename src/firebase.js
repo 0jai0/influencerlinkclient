@@ -31,8 +31,8 @@ export const requestNotificationPermission = async (userId) => {
 
     if (Notification.permission === "denied") {
       console.warn("Notification permission was denied.");
-      alert("You have blocked notifications. Please enable them in browser settings .");
-      
+      alert("You have blocked notifications. Please enable them in browser settings.");
+      return;
     }
 
     // Request permission

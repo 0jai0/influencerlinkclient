@@ -413,7 +413,7 @@ console.log(profile.averageLocationOfAudience);
                   type="number"
                   value={pricingStructure.storyPost}
                   onChange={(e) => handlePricingChange("storyPost", e.target.value)}
-                  className="flex-1 p-2 bg-[#1E1E1E] text-white rounded-r"
+                  className="flex-1 w-40 p-2 bg-[#1E1E1E] text-white rounded-r"
                   placeholder="Amount"
                 />
               </div>
@@ -426,7 +426,7 @@ console.log(profile.averageLocationOfAudience);
                   type="number"
                   value={pricingStructure.feedPost}
                   onChange={(e) => handlePricingChange("feedPost", e.target.value)}
-                  className="flex-1 p-2 bg-[#1E1E1E] text-white rounded-r"
+                  className="flex-1 w-40 p-2 bg-[#1E1E1E] text-white rounded-r"
                   placeholder="Amount"
                 />
               </div>
@@ -439,7 +439,7 @@ console.log(profile.averageLocationOfAudience);
                   type="number"
                   value={pricingStructure.reel}
                   onChange={(e) => handlePricingChange("reel", e.target.value)}
-                  className="flex-1 p-2 bg-[#1E1E1E] text-white rounded-r"
+                  className="flex-1 w-40 p-2 bg-[#1E1E1E] text-white rounded-r"
                   placeholder="Amount"
                 />
               </div>
