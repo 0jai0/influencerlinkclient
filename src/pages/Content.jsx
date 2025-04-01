@@ -117,6 +117,7 @@ const Content = () => {
                   "Connect with 11 influencers",
                   "77 total days of chat access",
                   "48-hour reply guarantee",
+                  "Unlock 1 extra page for every 5 additional coins",
                   "Save ₹5 (9% discount)"
                 ],
                 cta: "Start Small",
@@ -132,6 +133,7 @@ const Content = () => {
                   "Connect with 30 influencers",
                   "210 total days of chat access",
                   "48-hour reply guarantee",
+                  "Unlock 1 extra page for every 5 additional coins",
                   "Save ₹25 (17% discount)"
                 ],
                 cta: "Most Popular",
@@ -147,6 +149,7 @@ const Content = () => {
                   "Connect with 62 influencers",
                   "434 total days of chat access",
                   "48-hour reply guarantee",
+                  "Unlock 1 extra page for every 5 additional coins",
                   "Save ₹60 (19% discount)"
                 ],
                 cta: "Best Value",
