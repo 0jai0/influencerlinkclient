@@ -75,37 +75,56 @@ const UpdateProfile = () => {
     if (!token) navigate("/login");
   }, [navigate, isAuthenticated]);
 
-  const steps = [
-    {
-      label: "Personal Details",
-      component: (
-        <PersonalDetails
-          profile={profile}
-          setProfile={setProfile}
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-        />
-      ),
-    },
-    {
-      label: "Add Social Media Accounts",
-      component: <AccountDetails profile={profile} setProfile={setProfile} />,
-    },
-    {
-      label: "Verification",
-      component: (
-        <Verification
-          profileDetails={profile.profileDetails}
-          setProfile={setProfile}
-          userId={user?._id}
-        />
-      ),
-    },
-    {
-      label: "Upload Posts",
-      component: <PastPosts profile={profile} setProfile={setProfile} />,
-    },
-  ];
+  const getSteps = () => {
+    if (user?.role === "user") {
+      return [
+        {
+          label: "Personal Details",
+          component: (
+            <PersonalDetails
+              profile={profile}
+              setProfile={setProfile}
+              currentStep={currentStep}
+              setCurrentStep={setCurrentStep}
+            />
+          ),
+        }
+      ];
+    }
+    
+    return [
+      {
+        label: "Personal Details",
+        component: (
+          <PersonalDetails
+            profile={profile}
+            setProfile={setProfile}
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+          />
+        ),
+      },
+      {
+        label: "Add Social Media Accounts",
+        component: <AccountDetails profile={profile} setProfile={setProfile} />,
+      },
+      {
+        label: "Verification",
+        component: (
+          <Verification
+            profileDetails={profile.profileDetails}
+            setProfile={setProfile}
+            userId={user?._id}
+          />
+        ),
+      },
+      {
+        label: "Upload Posts",
+        component: <PastPosts profile={profile} setProfile={setProfile} />,
+      },
+    ];
+  };
+  const steps = getSteps();
 
   const handleSaveProfile = async () => {
     setSaving(true);

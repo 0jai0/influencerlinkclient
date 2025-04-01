@@ -1,14 +1,13 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 
 const platformOptions = [
-  { value: 'instagram', label: 'Instagram', dimensions: { width: 1080, height: 1080 }, aspectRatio: 1, icon: '📷' },
-  { value: 'instagram-story', label: 'Instagram Story', dimensions: { width: 1080, height: 1920 }, aspectRatio: 9/16, icon: '🎬' },
-  { value: 'facebook', label: 'Facebook', dimensions: { width: 1200, height: 630 }, aspectRatio: 1200/630, icon: '👍' },
-  { value: 'twitter', label: 'Twitter', dimensions: { width: 1200, height: 675 }, aspectRatio: 1200/675, icon: '🐦' },
-  { value: 'linkedin', label: 'LinkedIn', dimensions: { width: 1200, height: 627 }, aspectRatio: 1200/627, icon: '💼' },
-  { value: 'tiktok', label: 'TikTok', dimensions: { width: 1080, height: 1920 }, aspectRatio: 9/16, icon: '🎵' },
+  { value: 'Instagram', label: 'Instagram', dimensions: { width: 1080, height: 1080 }, aspectRatio: 9/12, icon: '📷' },
+  { value: 'Facebook', label: 'Facebook', dimensions: { width: 1200, height: 630 }, aspectRatio: 1200/630, icon: '👍' },
+  { value: 'Twitter', label: 'Twitter', dimensions: { width: 1200, height: 675 }, aspectRatio: 16/9, icon: '🐦' },
+  { value: 'YouTube', label: 'YouTube', dimensions: { width: 1280, height: 720 }, aspectRatio: 16/9, icon: '▶️' },
+  { value: 'WhatsApp', label: 'WhatsApp', dimensions: { width: 1280, height: 720 }, aspectRatio: 16/9, icon: '💬' },
 ];
 
 const PastPosts = ({ profile, setProfile }) => {
@@ -20,6 +19,7 @@ const PastPosts = ({ profile, setProfile }) => {
   const fileInputRef = useRef(null);
   const cropperRef = useRef(null);
 
+  // Add a new empty post
   const addPastPost = () => {
     setProfile({
       ...profile,
@@ -27,10 +27,11 @@ const PastPosts = ({ profile, setProfile }) => {
         { 
           category: "", 
           postLink: "", 
-          platform: "instagram",
-          imageFile: null,
-          imageUrl: "",
-          originalImage: null
+          platform: "Instagram",
+          // Temporary client-side only fields (not saved to DB)
+          _imageFile: null,
+          _originalImage: null,
+          _dimensions: platformOptions.find(p => p.value === "Instagram")?.dimensions
         },
         ...profile.pastPosts,
       ],
@@ -38,86 +39,148 @@ const PastPosts = ({ profile, setProfile }) => {
     setExpandedPost(0);
   };
 
+  // Handle changes to post fields
   const handlePastPostChange = (index, field, value) => {
     const updatedPosts = [...profile.pastPosts];
-    updatedPosts[index] = { ...updatedPosts[index], [field]: value };
+    updatedPosts[index] = { 
+      ...updatedPosts[index], 
+      [field]: value,
+      // Update dimensions when platform changes
+      ...(field === 'platform' ? { 
+        _dimensions: platformOptions.find(p => p.value === value)?.dimensions 
+      } : {})
+    };
     setProfile({ ...profile, pastPosts: updatedPosts });
   };
 
+  // Upload image to Cloudinary
+  const uploadImageToCloudinary = async (file) => {
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "influencerlink");
+    
+    try {
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/djazdvcrn/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      //console.log(data);
+      return data.secure_url;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+    } finally {
+      setUploading(false);
+    }
+  };
+  
+  // Handle image selection (shows cropper but doesn't upload yet)
   const handleImageUpload = (index, e) => {
     const file = e.target.files[0];
     if (!file) return;
-
+  
+    // Show the original image for cropping
     const reader = new FileReader();
     reader.onload = () => {
       const updatedPosts = [...profile.pastPosts];
       updatedPosts[index] = { 
         ...updatedPosts[index], 
-        imageFile: file,
-        originalImage: reader.result
+        _imageFile: file,
+        _originalImage: reader.result
       };
       setProfile({ ...profile, pastPosts: updatedPosts });
       setCropping(index);
     };
     reader.readAsDataURL(file);
   };
-
-  const cropImage = (index) => {
-    if (cropperRef.current) {
-      const cropper = cropperRef.current.cropper;
-      const canvas = cropper.getCroppedCanvas({
-        width: profile.pastPosts[index].dimensions?.width,
-        height: profile.pastPosts[index].dimensions?.height
-      });
-      
-      if (canvas) {
-        setUploading(true);
-        canvas.toBlob((blob) => {
-          const url = URL.createObjectURL(blob);
+  
+  // Crop image and upload to Cloudinary
+  const cropImage = async (index) => {
+    if (!cropperRef.current) return;
+  
+    const cropper = cropperRef.current.cropper;
+    const canvas = cropper.getCroppedCanvas({
+      width: profile.pastPosts[index]._dimensions?.width,
+      height: profile.pastPosts[index]._dimensions?.height
+    });
+    
+    if (!canvas) return;
+  
+    setUploading(true);
+    
+    try {
+      // Convert canvas to blob
+      canvas.toBlob(async (blob) => {
+        try {
+          // Upload the cropped image
+          const imageUrl = await uploadImageToCloudinary(blob);
           
+          // Update the post with the new image URL
           const updatedPosts = [...profile.pastPosts];
           updatedPosts[index] = { 
             ...updatedPosts[index], 
-            imageUrl: url,
-            postLink: url,
-            imageFile: blob
+            postLink: imageUrl,
+            _originalImage: null // Clear the temporary original image
           };
           
           setProfile({ ...profile, pastPosts: updatedPosts });
           setCropping(null);
+        } catch (error) {
+          console.error("Error uploading cropped image:", error);
+        } finally {
           setUploading(false);
-        }, 'image/jpeg', 0.9);
-      }
+        }
+      }, 'image/jpeg', 0.9);
+    } catch (error) {
+      console.error("Error cropping image:", error);
+      setUploading(false);
     }
   };
-
+  
+  // Cancel cropping
   const cancelCrop = () => {
     const index = cropping;
     const updatedPosts = [...profile.pastPosts];
     updatedPosts[index] = { 
       ...updatedPosts[index], 
-      imageFile: null,
-      originalImage: null
+      _imageFile: null,
+      _originalImage: null
     };
     setProfile({ ...profile, pastPosts: updatedPosts });
     setCropping(null);
   };
 
+  
+
+  // Remove post
   const removePost = (index) => {
     const updatedPosts = profile.pastPosts.filter((_, i) => i !== index);
     setProfile({ ...profile, pastPosts: updatedPosts });
     if (expandedPost === index) setExpandedPost(null);
   };
 
+  // Toggle post expansion
   const toggleExpandPost = (index) => {
     setExpandedPost(expandedPost === index ? null : index);
   };
 
+  // Get platform icon
   const getPlatformIcon = (platform) => {
-    const foundPlatform = platformOptions.find(p => p.value === platform.toLowerCase());
+    const foundPlatform = platformOptions.find(p => p.value === platform);
     return foundPlatform ? foundPlatform.icon : '🌐';
   };
 
+  // Trigger file input
   const triggerFileInput = (index) => {
     if (fileInputRef.current) {
       fileInputRef.current.dataset.index = index;
@@ -125,13 +188,9 @@ const PastPosts = ({ profile, setProfile }) => {
     }
   };
 
-  const getPlatformDimensions = (platform) => {
-    const foundPlatform = platformOptions.find(p => p.value === platform.toLowerCase());
-    return foundPlatform ? foundPlatform.dimensions : { width: 1080, height: 1080 };
-  };
-
+  // Get platform aspect ratio
   const getPlatformAspectRatio = (platform) => {
-    const foundPlatform = platformOptions.find(p => p.value === platform.toLowerCase());
+    const foundPlatform = platformOptions.find(p => p.value === platform);
     return foundPlatform ? foundPlatform.aspectRatio : 1;
   };
 
@@ -140,28 +199,14 @@ const PastPosts = ({ profile, setProfile }) => {
 
   // Filter posts based on selected filters
   const filteredPosts = profile.pastPosts.filter(post => {
-    const platformMatch = filterPlatform === 'all' || post.platform.toLowerCase() === filterPlatform;
+    const platformMatch = filterPlatform === 'all' || post.platform === filterPlatform;
     const categoryMatch = !filterCategory || post.category.toLowerCase().includes(filterCategory.toLowerCase());
     return platformMatch && categoryMatch;
   });
-
-  useEffect(() => {
-    // Update dimensions when platform changes
-    const updatedPosts = profile.pastPosts.map((post, index) => {
-      if (expandedPost === index) {
-        return {
-          ...post,
-          dimensions: getPlatformDimensions(post.platform)
-        };
-      }
-      return post;
-    });
-    setProfile({ ...profile, pastPosts: updatedPosts });
-  }, [profile.pastPosts.map(post => post.platform).toString()]);
-
+ 
   return (
-    <div className="w-full bg-[#151515] p-4 md:p-6 rounded-lg shadow-lg">
-      <div className="flex  md:flex-row md:justify-between md:items-center mb-6 gap-4">
+    <div className="w-[100%] bg-[#151515] p-4 md:p-6 rounded-lg shadow-lg">
+      <div className="flex  mb-6 gap-4">
         <h2 className="text-2xl font-bold text-white">Past Posts</h2>
         
         <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
@@ -241,14 +286,14 @@ const PastPosts = ({ profile, setProfile }) => {
               <h3 className="text-lg font-bold text-white mb-4">Crop Image for {profile.pastPosts[cropping].platform}</h3>
               <div className="mb-4">
                 <p className="text-gray-300">
-                  Recommended size: {getPlatformDimensions(profile.pastPosts[cropping].platform).width}×
-                  {getPlatformDimensions(profile.pastPosts[cropping].platform).height}px
+                  Recommended size: {profile.pastPosts[cropping]._dimensions?.width}×
+                  {profile.pastPosts[cropping]._dimensions?.height}px
                 </p>
               </div>
               <div className="relative w-full h-64 md:h-96">
                 <Cropper
                   ref={cropperRef}
-                  src={profile.pastPosts[cropping].originalImage}
+                  src={profile.pastPosts[cropping]._originalImage}
                   aspectRatio={getPlatformAspectRatio(profile.pastPosts[cropping].platform)}
                   viewMode={1}
                   guides={true}
@@ -304,7 +349,7 @@ const PastPosts = ({ profile, setProfile }) => {
                       {post.category || "Untitled Post"}
                     </h3>
                     <p className="text-xs md:text-sm text-gray-400 truncate">
-                      {platformOptions.find(p => p.value === post.platform.toLowerCase())?.label}
+                      {post.platform}
                     </p>
                   </div>
                 </div>
@@ -359,7 +404,7 @@ const PastPosts = ({ profile, setProfile }) => {
                       </div>
                       
                       <div className="text-xs text-gray-400 mb-2">
-                        {getPlatformDimensions(post.platform).width}×{getPlatformDimensions(post.platform).height}px
+                        {post._dimensions?.width}×{post._dimensions?.height}px
                       </div>
                       
                       <div className="flex flex-wrap gap-2 justify-center">
@@ -403,7 +448,7 @@ const PastPosts = ({ profile, setProfile }) => {
                           Platform
                         </label>
                         <select
-                          value={post.platform.toLowerCase()}
+                          value={post.platform}
                           onChange={(e) => handlePastPostChange(index, "platform", e.target.value)}
                           className="w-full bg-[#333] border border-[#444] text-white rounded-md px-2 py-1 md:px-3 md:py-2 text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
