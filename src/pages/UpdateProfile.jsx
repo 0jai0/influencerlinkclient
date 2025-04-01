@@ -21,6 +21,8 @@ const UpdateProfile = () => {
     profileDetails: [],
     adCategories: [],
     pageContentCategory: [],
+    averageAudienceType: [],
+    averageLocationOfAudience: [],
     pricing: { storyPost: "", feedPost: "", reel: "" },
     pastPosts: [],
     profilePicUrl: "",
@@ -59,6 +61,8 @@ const UpdateProfile = () => {
         profileDetails: user1.profileDetails || [],
         adCategories: user1.adCategories || [],
         pageContentCategory: user1.pageContentCategory || [],
+        averageLocationOfAudience: user1.averageLocationOfAudience || [],
+        averageAudienceType: user1.averageAudienceType || [],
         pricing: user1.pricing || { storyPost: "", feedPost: "", reel: "" },
         pastPosts: user1.pastPosts || [],
         profilePicUrl: user1.profilePicUrl || "",
@@ -155,6 +159,10 @@ const UpdateProfile = () => {
 
                     {/* Step Label */}
                     <span
+                    onClick={() => {
+                      setCurrentStep(index);
+                      handleSaveProfile();
+                    }}
                       className={`text-sm transition-all ${
                         currentStep >= index
                           ? "text-transparent bg-clip-text bg-[linear-gradient(180deg,#2BFFF8_50%,#1A9995_100%)] font-bold"
@@ -170,7 +178,7 @@ const UpdateProfile = () => {
                   <div className="md:hidden border-l-[20px] border-black w-full mt-4">
                     {steps[currentStep].component}
                     {/* Navigation Buttons (Visible for Both Mobile and Desktop Views) */}
-        <div className="p-5 w-full md:w-[80%] mx-auto flex bg-[#151515] justify-between">
+        <div className="p-5 w-full md:w-[80%]  flex bg-[#151515] justify-between">
           <button
             onClick={() => {
               setCurrentStep((prev) => Math.max(prev - 1, 0));
@@ -228,7 +236,7 @@ const UpdateProfile = () => {
         </div>
 
         {/* Render Active Step Component for Desktop View */}
-        <div className="hidden md:block  w-full md:w-[80%] mx-auto  flex-col justify-between h-full">
+        <div className="hidden md:block  w-full    flex-col justify-between h-full">
           <div className="flex-grow p-4">
             {steps[currentStep].component}
           </div>

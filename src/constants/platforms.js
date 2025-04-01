@@ -1,0 +1,1 @@
+export const platforms = ["Instagram", "Facebook", "Twitter", "YouTube", "WhatsApp"];
