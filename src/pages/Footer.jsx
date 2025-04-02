@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
+
 
 const Footer = () => {
+  const navigate = useNavigate();
   
 
   return (
@@ -44,6 +47,14 @@ const Footer = () => {
         <ul className="space-y-2">
           <li><p  className="text-gray-400 hover:text-[#59FFA7] transition-colors text-sm">Home</p></li>
           <li><p  className="text-gray-400 hover:text-[#59FFA7] transition-colors text-sm">Influencers</p></li>
+          <li >
+  <p 
+    onClick={() => navigate("/adminLogin")}
+    className="text-gray-400 hover:text-[#59FFA7] transition-colors text-sm  cursor-pointer"
+  >
+    Admin
+  </p>
+</li>
           <li><p  className="text-gray-400 hover:text-[#59FFA7] transition-colors text-sm">Pricing</p></li>
           <li><p  className="text-gray-400 hover:text-[#59FFA7] transition-colors text-sm">Success Stories</p></li>
         </ul>

@@ -15,6 +15,8 @@ import AboutUs from "./pages/AboutUs";
 import RegisterUser from "./pages/RegisterUser";
 import PrivateRoute from "./PrivateRoute";
 import { requestNotificationPermission } from "./firebase"; // Import Firebase function
+import AdminLogin from "./pages/AdminLogin";
+import InstagramOTPDashboard from "./pages/InstagramOTPDashboard";
 
 function App() {
   const dispatch = useDispatch();
@@ -35,9 +37,11 @@ function App() {
           <Route path="/Register" element={<Register />} />
           <Route path="/RegisterUser" element={<RegisterUser />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/adminLogin" element={<AdminLogin />} />
 
           {/* Protected Routes */}
           <Route path="/UpdateProfile" element={<PrivateRoute element={<UpdateProfile />} />} />
+          <Route path="/dashboard" element={<PrivateRoute element={<InstagramOTPDashboard />} />} />
           <Route path="/" element={<Main />} />
           <Route path="/AboutUs" element={<AboutUs />} />
           <Route path="/Profile/:userId" element={<Profile />} />

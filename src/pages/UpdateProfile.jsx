@@ -115,6 +115,7 @@ const UpdateProfile = () => {
             profileDetails={profile.profileDetails}
             setProfile={setProfile}
             userId={user?._id}
+            
           />
         ),
       },

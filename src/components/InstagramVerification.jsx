@@ -7,48 +7,100 @@ const InstagramVerification = ({ profile, setProfile, userId }) => {
   const [verified, setVerified] = useState(false);
   const [message, setMessage] = useState("");
   const [userExists, setUserExists] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Memoize checkUserExists to prevent unnecessary re-renders
+
   const checkUserExists = useCallback(async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_SERVER_API}/api/otp/userId?userId=${userId}`);
-      const userFound = response.data.success && response.data.otpDetails;
+      const response = await axios.get(
+        `${process.env.REACT_APP_SERVER_API}/api/pageowners/get-by-userid?userId=${userId}`
+      );
+      const userFound = response.data.success;
       setUserExists(userFound);
-      setMessage(userFound ? "User found. You can request an OTP." : "User not found. Please check your details.");
+      setMessage(
+        userFound 
+          ? "✅ User verified! Check your Instagram DMs - you'll receive an OTP shortly." 
+          : "❌ User not found. Please double-check your profile name and try again."
+      );
     } catch (error) {
       setMessage(error.response?.data?.message || "Error checking user");
     }
-  }, [userId]); // Dependency on userId only
+  }, [userId]);
 
   useEffect(() => {
     checkUserExists();
-  }, [checkUserExists]); // No warning now
+  }, [checkUserExists]);
 
   const sendOtp = async () => {
+    setIsLoading(true);
     try {
-      const response = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/otp/send-otp`, { userId });
-      setMessage(response.data.message);
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVER_API}/api/pageowners/store`, 
+        { 
+          userId, 
+          profileName: profile.profileName 
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      console.log(response);
+      setMessage("✅ OTP sent successfully. Check your Instagram DMs - you'll receive an OTP shortly");
       setOtpSent(true);
     } catch (error) {
       setMessage(error.response?.data?.message || "Error sending OTP");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const verifyOtp = async () => {
+    if (!otp) {
+      setMessage("Please enter the OTP");
+      return;
+    }
+
+    setIsLoading(true);
     try {
-      const response = await axios.post(`${process.env.REACT_APP_SERVER_API}/api/otp/verify-otp`, { userId, otp });
-      setMessage(response.data.message);
-      setVerified(true);
-      setProfile((prevProfile) => ({
-        ...prevProfile,
-        profileDetails: prevProfile.profileDetails.map((p) =>
-          p.platform === "Instagram" && p.profileName === profile.profileName
-            ? { ...p, verified: true }
-            : p
-        ),
-      }));
+      // Get the stored OTP from the server
+      const response = await axios.get(
+        `${process.env.REACT_APP_SERVER_API}/api/pageowners/get-by-userid?userId=${userId}`
+      );
+
+      if (!response.data.success || !response.data.otp) {
+        setMessage("No OTP found for this user");
+        return;
+      }
+
+      // Compare the stored OTP with user input
+      if (response.data.otp === otp) {
+        // Update status to 'verified' in backend
+        await axios.put(
+          `${process.env.REACT_APP_SERVER_API}/api/pageowners/send-status`,
+          { userId, status:"verified" }
+        );
+
+        setVerified(true);
+        setMessage("✅ Verification successful! Save and Submit for Updated your profile");
+        
+        // Update parent component state
+        setProfile((prevProfile) => ({
+          ...prevProfile,
+          profileDetails: prevProfile.profileDetails.map((p) =>
+            p.platform === "Instagram" && p.profileName === profile.profileName
+              ? { ...p, verified: true }
+              : p
+          ),
+        }));
+      } else {
+        setMessage("Invalid OTP. Please try again.");
+      }
     } catch (error) {
-      setMessage(error.response?.data?.message || "Invalid OTP");
+      setMessage(error.response?.data?.message || "Verification failed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -56,7 +108,7 @@ const InstagramVerification = ({ profile, setProfile, userId }) => {
     <div className="w-full md:w-[80%] shadow-[0px_10px_20px_rgba(0,0,0,0.2),0px_-10px_20px_rgba(0,0,0,0.2),10px_0px_20px_rgba(0,0,0,0.2),-10px_0px_20px_rgba(0,0,0,0.2)] rounded-xl p-4 bg-[#151515]">
       <h3 className="text-lg font-bold mb-2">Instagram Verification</h3>
 
-      {profile.verified ? (
+      {verified || profile.verified ? (
         <p className="text-green-400 font-semibold">✅ Your Instagram is verified!</p>
       ) : (
         <>
@@ -72,12 +124,13 @@ const InstagramVerification = ({ profile, setProfile, userId }) => {
           </p>
 
           <p className="text-gray-400">Verify Instagram for your @{profile.profileName}</p>
-          {message && <p className="mt-2 text-sm text-gray-300">{message}</p>}
+          {message && <p className={`mt-2 text-sm ${message.includes("✅") ? "text-green-400" : "text-red-400"}`}>{message}</p>}
+          
           <div className="w-full mt-3 border border-[#4D4D4D] p-3 rounded-xl mx-auto">
             {/* First Row: Redirect & Send OTP Buttons */}
             <div className="flex flex-col md:flex-row w-full pr-[30%] gap-3">
               <button
-                className="flex-1 bg-black text-[#2BFFF8] py-2 rounded"
+                className="flex-1 bg-black text-[#2BFFF8] py-2 rounded hover:bg-[#2BFFF8] hover:text-black transition-colors"
                 onClick={() => window.open("https://instagram.com", "_blank")}
               >
                 Click to Redirect ➜
@@ -85,14 +138,14 @@ const InstagramVerification = ({ profile, setProfile, userId }) => {
 
               <button
                 onClick={sendOtp}
-                disabled={otpSent}
+                disabled={otpSent || isLoading}
                 className={`flex-1 h-10 border text-zinc-500 border-[#4D4D4D] rounded ${
-                  otpSent
+                  otpSent || isLoading
                     ? "bg-gray-600"
-                    : "bg-black hover:bg-[linear-gradient(180deg,#2BFFF8_0%,#1A9995_100%)]"
+                    : "bg-black hover:bg-[linear-gradient(180deg,#2BFFF8_0%,#1A9995_100%)] hover:text-black"
                 }`}
               >
-                {userExists || otpSent ? "Resend OTP" : "Send OTP"}
+                {isLoading ? "Sending..." : (userExists || otpSent ? "Resend OTP" : "Send OTP")}
               </button>
             </div>
 
@@ -103,20 +156,20 @@ const InstagramVerification = ({ profile, setProfile, userId }) => {
                 placeholder="Enter OTP"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                className="flex-1 p-2 bg-black rounded"
+                className="flex-1 p-2 bg-black rounded text-white"
                 disabled={!userExists}
               />
 
               <button
                 onClick={verifyOtp}
-                disabled={!userExists}
+                disabled={!userExists|| isLoading}
                 className={`flex-1 p-2 text-black rounded ${
                   verified
                     ? "bg-green-500"
-                    : "bg-[linear-gradient(180deg,#2BFFF8_0%,#1A9995_100%)] hover:bg-[linear-gradient(180deg,#2BFFF8_50%,#1A9995_100%)]"
+                    : "bg-[linear-gradient(180deg,#2BFFF8_0%,#1A9995_100%)] hover:opacity-90"
                 }`}
               >
-                {verified ? "Verified" : "Verify OTP"}
+                {isLoading ? "Verifying..." : (verified ? "Verified" : "Verify OTP")}
               </button>
             </div>
           </div>
