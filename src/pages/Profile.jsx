@@ -50,7 +50,7 @@ const Profile = ({ User, onClose }) => {
         return;
       }
   
-      const isAlreadyInContacts = contacts.some(contact => contact._id === User?._id);
+      const isAlreadyInContacts = contacts.some(contact => contact.user._id === User?._id);
       if (isAlreadyInContacts) {
         setAlert(null); // Reset alert first
         setTimeout(() => {
@@ -150,19 +150,7 @@ const handleChatNow = async (User) => {
 };
   
 
-  // Function to remove userId from collection
-  const handleRemoveFromList = async () => {
-    try {
-      await axios.post(`${process.env.REACT_APP_SERVER_API}/api/collection/users/remove`, {
-        userId: user?._id,
-        targetUserId: User?._id,
-      });
-      console.log("Successfully removed target user to collection");
-       // Update UI state
-    } catch (error) {
-      console.error("Error removing from collection:", error);
-    }
-  };
+ 
   
   const scroll = (ref, direction) => {
     if (ref.current) {
@@ -299,12 +287,7 @@ style={{marginTop: "0px"}}>
             >
               {isLoadingRef.current ? "Loading..." : "Chat Now"}
             </button>
-        <button
-          onClick={handleRemoveFromList}
-          className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-        >
-          R
-        </button>
+        
       </div>
           </div>
         </div>

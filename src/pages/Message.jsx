@@ -1,12 +1,16 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import socketIOClient from "socket.io-client";
+import axios from "axios";
 import ContactList from "../components/ContactList";
 import ChatWindow from "../components/ChatWindow";
 import MessageInput from "../components/MessageInput";
 import Navbar from "./Navbar";
 import { ArrowRight, X } from "lucide-react";
 import { FiMessageSquare } from 'react-icons/fi'; 
+import Alert from './Alert';
+import { useNavigate } from "react-router-dom";
+
 
 const Chat = () => {
   const { user } = useSelector((state) => state.auth);
@@ -16,10 +20,12 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const userId = user?._id;
   const socketRef = useRef(null);
+  const [alert, setAlert] = useState(null);
+  const isLoadingRef = useRef(false);
+  const navigate = useNavigate();
   //console.log(userId, "khg");
 
   const menuRef = useRef(null);
-  
   
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -35,10 +41,6 @@ const Chat = () => {
     };
   }, []);
   
-
-
-
-
   if (!socketRef.current) {
     socketRef.current = socketIOClient(process.env.REACT_APP_SERVER_API);
   }
@@ -51,9 +53,19 @@ const Chat = () => {
       const response = await fetch(`${process.env.REACT_APP_SERVER_API}/api/collection/users/${userId}`);
       const data = await response.json();
 
-      if (data.collections && data.collections.length > 0) {
-        //console.log(data.collections);
-        setContacts(data.collections);
+      if (data.collections) {
+        // Filter out any null user references and format data
+        const validContacts = data.collections.filter(
+          item => item.user && typeof item.user === 'object'
+        ).map(item => ({
+          ...item,
+          id: item.user._id,
+          ownerName: item.user?.ownerName,
+          profilePicUrl: item.user?.profilePicUrl,
+          isOnline: item.user?.isOnline
+        }));
+        //console.log(validContacts);
+        setContacts(validContacts);
       } else {
         setContacts([]);
       }
@@ -84,15 +96,28 @@ const Chat = () => {
     };
   }, [userId, fetchContacts, activeContact, socket]);
 
-  console.log(contacts,"ok");
+  //console.log(contacts,"ok");
+  const isOlderThan7Days = (addedAt) => {
+    if (!addedAt) return false;
+    const addedDate = new Date(addedAt);
+    const now = new Date();
+    const diffTime = addedDate - now;
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+    //console.log(diffDays);
+    return diffDays > 7;
 
+  };
   const loadConversation = async (contact) => {
-    setActiveContact(contact);
+    const isExpired = isOlderThan7Days(contact.addedAt);
+    setActiveContact({ ...contact, isExpired });
+    //console.log(contact,"fine");
+    //setActiveContact(contact);
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_SERVER_API}/api/messages/conversation/${userId}/${contact._id}`
+        `${process.env.REACT_APP_SERVER_API}/api/messages/conversation/${userId}/${contact.user._id}`
       );
       const data = await response.json();
+      //console.log(data);
       setMessages(data.conversation || []);
       // Mark messages as read
     await fetch(`${process.env.REACT_APP_SERVER_API}/api/messages/mark-read`, {
@@ -115,6 +140,7 @@ const Chat = () => {
       console.error("Error loading conversation:", error);
     }
   };
+  
 
   const handleSendMessage = async (messageContent) => {
     if (!userId || !activeContact) return;
@@ -156,13 +182,108 @@ const Chat = () => {
         console.error("Failed to send message:", ack.error);
       }
     });
-};
+  };
 
+  const handleRemoveFromList = async (contactId) => {
+    console.log(contactId,"ll");
+    try {
+      await axios.post(`${process.env.REACT_APP_SERVER_API}/api/collection/users/remove`, {
+        userId: user?._id,
+        targetUserId: contactId,
+      });
+      console.log("Successfully removed target user from collection");
+      // Refresh contacts list
+      fetchContacts();
+      // If the removed contact is the active one, clear the chat
+      if (activeContact?._id === contactId) {
+        setActiveContact(null);
+        setMessages([]);
+      }
+    } catch (error) {
+      console.error("Error removing from collection:", error);
+    }
+  };
+
+  const handleUpgrade = async () => {
+    if (isLoadingRef.current) return;
+    isLoadingRef.current = true;
+  
+    if (!activeContact || !user?._id) {
+      console.error("Active contact and User ID are required");
+      isLoadingRef.current = false;
+      return;
+    }
+  
+    if (user.linkCoins < 1) {
+      setAlert({
+        type: 'error',
+        message: 'Insufficient LinkCoins. Please purchase more.'
+      });
+      isLoadingRef.current = false;
+      return;
+    }
+  
+    setAlert({
+      type: 'info',
+      message: 'Spend 1 LinkCoin to renew this conversation for 7 more days. Are you sure?',
+      onConfirm: async () => {
+        try {
+          const response = await axios.post(
+            `${process.env.REACT_APP_SERVER_API}/api/collection/users/update`,
+            {
+              userId: user._id,
+              targetUserId: activeContact.user._id
+            }
+          );
+          //console.log(response.data);
+          if (response.data.message === "Connection dates updated successfully") {
+            setAlert({
+              type: 'success',
+              message: 'Conversation renewed successfully!'
+            });
+            // Refresh the conversation with the updated date
+            const updatedContact = {
+              ...activeContact,
+              addedAt: response.data.newDate,
+              isExpired: false
+            };
+            await loadConversation(updatedContact);
+          } else {
+            setAlert({
+              type: 'error',
+              message: response.data.message || 'Failed to renew conversation.'
+            });
+          }
+        } catch (error) {
+          console.error("Upgrade failed:", error);
+          setAlert({
+            type: 'error',
+            message: error.response?.data?.message || 'Failed to renew conversation. Please try again.'
+          });
+        } finally {
+          isLoadingRef.current = false;
+        }
+      },
+      onCancel: () => {
+        setAlert(null);
+        isLoadingRef.current = false;
+      },
+    });
+  };
 
   return (
     <div className="flex flex-col h-screen w-full bg-[#121212]">
-      <Navbar />
 
+      <Navbar />
+      {alert && (
+              <Alert
+                type={alert.type}
+                message={alert.message}
+                onClose={alert.onClose}
+                onConfirm={alert.onConfirm}
+                onCancel={alert.onCancel}
+              />
+            )}
       {/* Main Container */}
       <div className="flex flex-1 border-t-[5px] border-t-black overflow-hidden relative">
         {/* Mobile Sidebar Toggle Button */}
@@ -200,6 +321,7 @@ const Chat = () => {
                 loadConversation(contact);
                 setIsSidebarOpen(false); // Close sidebar on mobile when a contact is selected
               }}
+              onRemoveContact={handleRemoveFromList}
               activeContactId={activeContact?._id}
             />
           </div>
@@ -225,12 +347,12 @@ const Chat = () => {
 
             {/* Chat Messages */}
             <div className="flex-1 h-screen flex flex-col">
-              <ChatWindow messages={messages} currentUser={user} />
+              <ChatWindow messages={messages} currentUser={user} isExpired={activeContact?.isExpired} onUpgrade={handleUpgrade} />
             </div>
 
             {/* Message Input */}
             <div className="sticky bottom-0 p-2 bg-[#151515] border-t border-gray-800">
-              <MessageInput onSend={handleSendMessage} />
+              <MessageInput onSend={handleSendMessage} isExpired={activeContact?.isExpired} />
             </div>
           </div>
         ) : (
@@ -242,7 +364,9 @@ const Chat = () => {
         <p className="text-gray-400 max-w-md">
           Choose a contact from the sidebar to start chatting or create a new conversation
         </p>
-        <button className="mt-6 px-6 py-2 rounded-full bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black font-medium hover:shadow-lg hover:shadow-[#59FFA7]/30 transition-all">
+        <button
+          onClick={()=>navigate("/")}
+         className="mt-6 px-6 py-2 rounded-full bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black font-medium hover:shadow-lg hover:shadow-[#59FFA7]/30 transition-all">
           New Message
         </button>
       </div>

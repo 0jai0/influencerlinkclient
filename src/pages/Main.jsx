@@ -133,6 +133,7 @@ const Main = () => {
       const data = await response.json();
 
       if (data.collections && data.collections.length > 0) {
+        console.log(data.collections);
         setContacts(data.collections);
       } else {
         setContacts([]);
@@ -161,7 +162,7 @@ const Main = () => {
         return;
       }
   
-      const isAlreadyInContacts = contacts.some(contact => contact._id === targetUser._id);
+      const isAlreadyInContacts = contacts.some(contact => contact.user._id === targetUser._id);
       if (isAlreadyInContacts) {
         setAlert(null);
         setTimeout(() => {
@@ -218,7 +219,7 @@ const Main = () => {
             reject(error);
           } finally {
             isLoadingRef.current = false;
-            //setIsLoading(false);
+            //setIsLoading(false); 
           }
         },
         onCancel: () => {

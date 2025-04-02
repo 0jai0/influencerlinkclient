@@ -102,7 +102,7 @@ const Navbar = () => {
   >
     <span className="relative z-10 flex items-center gap-0">
       <img 
-        src="coin.png"  // Ensure this path is correct for your project structure
+        src="/coin.png"  // Ensure this path is correct for your project structure
         alt="LinkCoins" 
         className="w-8 h-8 object-contain" 
         

@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
 
-const ContactList = ({ contacts, onSelectContact, activeContactId }) => {
+const ContactList = ({ 
+  contacts, 
+  onSelectContact, 
+  onRemoveContact, 
+  activeContactId 
+}) => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  //console.log(contacts);
+  const [showRemoveConfirm, setShowRemoveConfirm] = useState(null);
+
   // Generate consistent color based on contact ID
   const getContactColor = (id) => {
     const colors = [
@@ -47,6 +53,22 @@ const ContactList = ({ contacts, onSelectContact, activeContactId }) => {
     } else {
       return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(date);
     }
+  };
+
+  const handleRemoveClick = (e, contactId) => {
+    e.stopPropagation();
+    setShowRemoveConfirm(contactId);
+  };
+
+  const confirmRemove = (e, contactId) => {
+    e.stopPropagation();
+    onRemoveContact(contactId);
+    setShowRemoveConfirm(null);
+  };
+
+  const cancelRemove = (e) => {
+    e.stopPropagation();
+    setShowRemoveConfirm(null);
   };
 
   return (
@@ -116,7 +138,9 @@ const ContactList = ({ contacts, onSelectContact, activeContactId }) => {
                       </div>
                     )}
                     {/* Online status indicator */}
-                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[#121212]"></div>
+                    {contact.isOnline && (
+                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[#121212]"></div>
+                    )}
                   </div>
                   
                   <div className="flex-1 min-w-0">
@@ -136,13 +160,60 @@ const ContactList = ({ contacts, onSelectContact, activeContactId }) => {
                   </div>
                 </div>
 
-                {/* Unread message indicator */}
-                {contact.unreadCount > 0 && (
-                  <div className="ml-2 w-5 h-5 flex items-center justify-center bg-[#59FFA7] text-black text-xs font-bold rounded-full">
-                    {contact.unreadCount}
-                  </div>
-                )}
+                <div className="flex items-center">
+                  {/* Unread message indicator */}
+                  {contact.unreadCount > 0 && (
+                    <div className="ml-2 w-5 h-5 flex items-center justify-center bg-[#59FFA7] text-black text-xs font-bold rounded-full">
+                      {contact.unreadCount}
+                    </div>
+                  )}
+                  
+                  {/* Remove button */}
+                  <button 
+                    onClick={(e) => handleRemoveClick(e, contact.user._id)}
+                    className="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      width="16" 
+                      height="16" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    >
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
               </div>
+
+              {/* Remove confirmation */}
+              {showRemoveConfirm === contact.user._id && (
+                <div 
+                  className="absolute right-4 mt-2 bg-[#1a1a1a] p-3 rounded-lg shadow-lg border border-gray-700 z-10"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <p className="text-sm text-white mb-2">Remove this contact?</p>
+                  <div className="flex justify-end space-x-2">
+                    <button 
+                      onClick={(e) => cancelRemove(e)}
+                      className="px-3 py-1 text-sm text-gray-300 hover:text-white"
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      onClick={(e) => confirmRemove(e, contact.user._id)}
+                      className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           );
         })

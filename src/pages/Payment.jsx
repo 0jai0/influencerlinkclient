@@ -40,7 +40,7 @@ const Payment = ({ onClose, initialCoins = 10 }) => {
   return (
     <div className="bg-[#1E1E1E] border border-[#59FFA7]/30 rounded-xl p-6 mx-auto max-w-md w-full relative">
       {/* Close Button */}
-      <button 
+      <button  
         onClick={onClose}
         disabled={loading}
         className="absolute top-3 right-3 text-gray-400 hover:text-[#59FFA7] transition-colors disabled:opacity-50"

@@ -1,11 +1,30 @@
 import React, { useEffect, useRef } from "react";
 
-const ChatWindow = ({ messages }) => {
+const ChatWindow = ({ messages, isExpired, onUpgrade  }) => {
   const chatEndRef = useRef(null);
+  const chatWindowRef = useRef(null);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (!isExpired) {
+      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, isExpired]);
+
+  // Block scrolling when chat is expired
+  useEffect(() => {
+    const chatWindow = chatWindowRef.current;
+    if (!chatWindow) return;
+
+    if (isExpired) {
+      chatWindow.style.overflow = 'hidden';
+    } else {
+      chatWindow.style.overflow = 'auto';
+    }
+
+    return () => {
+      chatWindow.style.overflow = 'auto';
+    };
+  }, [isExpired]);
 
   // Function to format the date in a WhatsApp-like style
   const formatDate = (timestamp) => {
@@ -49,7 +68,30 @@ const ChatWindow = ({ messages }) => {
   };
 
   return (
-    <div className="flex-1 p-5 min-h-full custom-scrollbar border-b-[5px] border-[#151515] bg-[#121212] overflow-y-auto">
+    <div 
+      ref={chatWindowRef}
+      className={`flex-1 p-5 min-h-full custom-scrollbar border-b-[5px] border-[#151515] bg-[#121212] overflow-y-auto relative ${
+        isExpired ? "" : ""
+      }`}
+    >
+      {isExpired && (
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="bg-black bg-opacity-70 p-6 rounded-lg text-center max-w-md">
+            <h3 className="text-xl font-bold text-white mb-2">
+              Conversation Expired
+            </h3>
+            <p className="text-gray-300 mb-4">
+              This chat is now read-only as it's older than 7 days.
+            </p>
+            <button 
+            onClick={onUpgrade}
+            className="bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black font-bold py-2 px-6 rounded-full hover:opacity-90 transition-opacity">
+              Upgrade to Continue
+            </button>
+          </div>
+        </div>
+      )}
+      
       {messages.length === 0 ? (
         <p className="text-center text-gray-500">No messages yet.</p>
       ) : (
