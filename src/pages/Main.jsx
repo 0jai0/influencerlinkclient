@@ -8,6 +8,11 @@ import Banner from "./Banner";
 import Alert from './Alert';
 import Content from './Content';
 import Footer from "./Footer";
+import { 
+  platforms as platformOptions,
+  audienceTypeOptions,
+  adCategoryOptions
+} from '../constants';
 
 const Main = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -30,8 +35,8 @@ const Main = () => {
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [minFollowers, setMinFollowers] = useState("");
   const [maxFollowers, setMaxFollowers] = useState("");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+
+ 
 
   // UI states
   const [showAdDropdown, setShowAdDropdown] = useState(false);
@@ -40,9 +45,9 @@ const Main = () => {
   const [showMoreFilters, setShowMoreFilters] = useState(false);
 
   // Available options
-  const [adCategories, setAdCategories] = useState([]);
-  const [platforms, setPlatforms] = useState([]);
-  const [audienceTypes, setAudienceTypes] = useState([]);
+  const adCategories = adCategoryOptions;
+  const platforms = platformOptions;
+  const audienceTypes = audienceTypeOptions;
   const [locations, setLocations] = useState([]);
   const [showPlatformsDropdown, setShowPlatformsDropdown] = useState(false);
   const [showAudienceTypesDropdown, setShowAudienceTypesDropdown] = useState(false);
@@ -90,13 +95,7 @@ const Main = () => {
         url += `&maxFollowers=${maxFollowers}`;
       }
       
-      if (minPrice) {
-        url += `&minPrice=${minPrice}`;
-      }
       
-      if (maxPrice) {
-        url += `&maxPrice=${maxPrice}`;
-      }
 
       const response = await fetch(url);
       const data = await response.json();
@@ -107,9 +106,7 @@ const Main = () => {
         
         // Extract unique values for filter options from first page
         if (page === 1) {
-          setAdCategories([...new Set(data.data.flatMap(user => user.adCategories || []))]);
-          setPlatforms([...new Set(data.data.flatMap(user => user.socialMediaPlatforms || []))]);
-          setAudienceTypes([...new Set(data.data.flatMap(user => user.averageAudienceType || []))]);
+          
           setLocations([...new Set(data.data.flatMap(user => user.averageLocationOfAudience || []))]);
         }
       }
@@ -122,7 +119,7 @@ const Main = () => {
   }, [
     page, searchTerm, selectedAdCategories, selectedContentCategories,
     selectedPlatforms, selectedAudienceTypes, selectedLocations,
-    minFollowers, maxFollowers, minPrice, maxPrice
+    minFollowers, maxFollowers
   ]);
 
   useEffect(() => {
@@ -299,14 +296,7 @@ const Main = () => {
     setPage(1);
   };
 
-  const handlePriceChange = (type, value) => {
-    if (type === 'min') {
-      setMinPrice(value);
-    } else {
-      setMaxPrice(value);
-    }
-    setPage(1);
-  };
+
 
   const isFormatted = (followers) => {
     return typeof followers === "string" && (followers.includes("k") || followers.includes("M"));
@@ -375,14 +365,14 @@ const Main = () => {
       {showAdDropdown && (
         <div className="absolute mt-2 bg-[#202020] border border-gray-700 rounded-lg shadow-lg p-3 max-h-60 overflow-y-auto z-20 w-48">
           {adCategories.map((category) => (
-            <label key={category} className="flex items-center space-x-3 p-2 hover:bg-[#2a2a2a] rounded cursor-pointer">
+            <label key={category.value} className="flex items-center space-x-3 p-2 hover:bg-[#2a2a2a] rounded cursor-pointer">
               <input
                 type="checkbox"
-                checked={selectedAdCategories.includes(category)}
-                onChange={() => handleCheckboxChange(category, "adCategory")}
+                checked={selectedAdCategories.includes(category.value)}
+                onChange={() => handleCheckboxChange(category.value, "adCategory")}
                 className="accent-[#59FFA7] transform scale-110"
               />
-              <span className="text-white text-sm">{category}</span>
+              <span className="text-white text-sm">{category.label}</span>
             </label>
           ))}
         </div>
@@ -472,14 +462,14 @@ const Main = () => {
         {showAudienceTypesDropdown && (
           <div className="absolute z-10 mt-1 w-full bg-[#151515] border border-gray-700 rounded-lg shadow-lg p-3 max-h-60 overflow-y-auto">
             {audienceTypes.map(type => (
-              <label key={type} className="flex items-center space-x-3 p-2 hover:bg-[#2a2a2a] rounded cursor-pointer">
+              <label key={type.value} className="flex items-center space-x-3 p-2 hover:bg-[#2a2a2a] rounded cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={selectedAudienceTypes.includes(type)}
-                  onChange={() => handleCheckboxChange(type, 'audienceType')}
+                  checked={selectedAudienceTypes.includes(type.value)}
+                  onChange={() => handleCheckboxChange(type.value, 'audienceType')}
                   className="accent-[#59FFA7] transform scale-110"
                 />
-                <span className="text-white text-sm">{type}</span>
+                <span className="text-white text-sm">{type.label}</span>
               </label>
             ))}
           </div>
@@ -538,29 +528,7 @@ const Main = () => {
     </div>
   </div>
 
-  {/* Price Range */}
-  <div>
-    <label className="block text-gray-300 text-xs sm:text-sm mb-1 md:mb-2">
-      Price Range ($)
-    </label>
-    <div className="flex items-center gap-2 sm:gap-3">
-      <input
-        type="number"
-        placeholder="Min"
-        value={minPrice}
-        onChange={(e) => handlePriceChange('min', e.target.value)}
-        className="flex-1 bg-[#151515] w-28 border border-gray-700 text-white px-3 py-1.5 sm:py-2 rounded-lg focus:border-[#59FFA7] focus:outline-none text-sm"
-      />
-      <span className="text-gray-400 text-xs sm:text-sm">to</span>
-      <input
-        type="number"
-        placeholder="Max"
-        value={maxPrice}
-        onChange={(e) => handlePriceChange('max', e.target.value)}
-        className="flex-1 bg-[#151515] w-28 border border-gray-700 text-white px-3 py-1.5 sm:py-2 rounded-lg focus:border-[#59FFA7] focus:outline-none text-sm"
-      />
-    </div>
-  </div>
+ 
 </div>
     </div>
 

@@ -4,7 +4,7 @@ const ContactList = ({ contacts, onSelectContact, activeContactId }) => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-
+  //console.log(contacts);
   // Generate consistent color based on contact ID
   const getContactColor = (id) => {
     const colors = [

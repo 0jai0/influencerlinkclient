@@ -22,7 +22,7 @@ const Login = () => {
     try {
       const resultAction = await dispatch(loginUser(formData));
       if (loginUser.fulfilled.match(resultAction)) {
-        navigate("/Main");
+        navigate("/");
       }
     } catch (err) {
       console.error("Login failed:", err);
@@ -44,7 +44,7 @@ const Login = () => {
       isGoogleAuth: true 
     }))
     .unwrap()
-    .then(() => navigate("/Main"))
+    .then(() => navigate("/"))
     .catch(error => {
       console.error('Google login dispatch error:', error);
     });
@@ -56,7 +56,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/Main");
+      navigate("/");
     }
   }, [isAuthenticated, navigate]);
 
@@ -169,7 +169,7 @@ const Login = () => {
           {/* Don't have account link */}
           <p className="text-center mt-6 text-gray-400">
             Don't have an account?{' '}
-            <a href="/" className="text-blue-500 hover:underline">Sign up</a>
+            <a href="/Register" className="text-blue-500 hover:underline">Sign up</a>
           </p>
         </div>
       </div>

@@ -27,7 +27,7 @@ console.log(profile.averageLocationOfAudience);
 
   // Handle select changes with limit of 3 selections
   const handleSelectChange = (selectedOptions, field) => {
-    const limitedSelection = selectedOptions.slice(0, 3);
+    const limitedSelection = selectedOptions.slice(0, 20);
     setProfile({
       ...profile,
       [field]: limitedSelection.map((option) => option.value),
@@ -36,7 +36,7 @@ console.log(profile.averageLocationOfAudience);
 
   // Handle quick category selection
   const handleButtonClick = (category, field) => {
-    if (!profile[field]?.includes(category) && (profile[field]?.length || 0) < 3) {
+    if (!profile[field]?.includes(category) && (profile[field]?.length || 0) < 20) {
       setProfile({
         ...profile,
         [field]: [...(profile[field] || []), category],
@@ -148,7 +148,7 @@ console.log(profile.averageLocationOfAudience);
 </div>
 
 <div className="w-full">
-  <h3 className="text-white font-medium mb-2">Ad Categories (Max 3)</h3>
+  <h3 className="text-white font-medium mb-2">Ad Categories (Max 20)</h3>
   <Select
     isMulti
     options={adCategoryOptions}
@@ -198,9 +198,9 @@ console.log(profile.averageLocationOfAudience);
         <button
           key={option.value}
           onClick={() => handleButtonClick(option.value, "adCategories")}
-          disabled={profile.adCategories?.length >= 3}
+          disabled={profile.adCategories?.length >= 20}
           className={`px-3 py-1 text-xs rounded-full ${
-            profile.adCategories?.length >= 3 
+            profile.adCategories?.length >= 20 
               ? "bg-[#222] text-gray-500 cursor-not-allowed" 
               : "bg-[#333] text-gray-300 hover:bg-[#444]"
           } transition-colors`}
@@ -212,7 +212,7 @@ console.log(profile.averageLocationOfAudience);
 </div>
 
 <div className="w-full">
-  <h3 className="text-white font-medium mb-2">Page Content Category (Max 3)</h3>
+  <h3 className="text-white font-medium mb-2">Page Content Category (Max 20)</h3>
   <Select
     isMulti
     options={pageContentCategoryOptions}
@@ -262,9 +262,9 @@ console.log(profile.averageLocationOfAudience);
         <button
           key={option.value}
           onClick={() => handleButtonClick(option.value, "pageContentCategory")}
-          disabled={profile.pageContentCategory?.length >= 3}
+          disabled={profile.pageContentCategory?.length >= 20}
           className={`px-3 py-1 text-xs rounded-full ${
-            profile.pageContentCategory?.length >= 3 
+            profile.pageContentCategory?.length >= 20 
               ? "bg-[#222] text-gray-500 cursor-not-allowed" 
               : "bg-[#333] text-gray-300 hover:bg-[#444]"
           } transition-colors`}

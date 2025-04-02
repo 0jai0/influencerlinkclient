@@ -15,7 +15,7 @@ const Navbar = () => {
   const dropdownRef = useRef(null);
 
   const routes = {
-    "HOME": "/Main",
+    "HOME": "/",
     "ABOUT US": "/aboutus",
     "INFLUENCER": "/login",
     "PUBLISH AD": "/login"
@@ -59,7 +59,7 @@ const Navbar = () => {
 
   {/* Logo Section */}
   <div 
-    onClick={() => navigate("/main")}
+    onClick={() => navigate("/")}
     className="text-xl font-bold flex items-center cursor-pointer group"
   >
     <span className="text-[#59FFA7] group-hover:text-[#2BFFF8] transition-colors">PROMOTER</span>
@@ -116,20 +116,29 @@ const Navbar = () => {
 
     {/* Profile Button */}
     <div className="relative" ref={dropdownRef}>
-      <button
-        onClick={() => setShowUserDropdown(!showUserDropdown)}
-        className="p-2 rounded-full hover:bg-[#2a2a2a] transition-colors relative group"
-        aria-label="User menu"
-      >
-        <div className="relative">
-          <User className="text-[#59FFA7] group-hover:text-[#2BFFF8] transition-colors" size={24} />
-          <span className="absolute -bottom-1 -right-1 w-2 h-2 bg-[#2BFFF8] rounded-full animate-pulse"></span>
-        </div>
-        {showUserDropdown && (
-          <UserDropdown onClose={() => setShowUserDropdown(false)} />
-        )}
-      </button>
-    </div>
+  {user ? (
+    <button
+      onClick={() => setShowUserDropdown(!showUserDropdown)}
+      className="p-2 rounded-full hover:bg-[#2a2a2a] transition-colors relative group"
+      aria-label="User menu"
+    >
+      <div className="relative">
+        <User className="text-[#59FFA7] group-hover:text-[#2BFFF8] transition-colors" size={24} />
+        <span className="absolute -bottom-1 -right-1 w-2 h-2 bg-[#2BFFF8] rounded-full animate-pulse"></span>
+      </div>
+      {showUserDropdown && (
+        <UserDropdown onClose={() => setShowUserDropdown(false)} />
+      )}
+    </button>
+  ) : (
+    <button
+    onClick={() => navigate("/login")} // Your login handler function
+      className="px-4 py-2 bg-[#59FFA7] hover:bg-[#2BFFF8] text-black font-medium rounded-md transition-colors"
+    >
+      Login
+    </button>
+  )}
+</div>
   </div>
 
   {/* Payment Modal Backdrop */}

@@ -32,13 +32,13 @@ function App() {
     <Router>
       <div className="min-h-screen flex justify-center items-center custom-scrollbar bg-black">
         <Routes>
-          <Route path="/" element={<Register />} />
+          <Route path="/Register" element={<Register />} />
           <Route path="/RegisterUser" element={<RegisterUser />} />
           <Route path="/login" element={<Login />} />
 
           {/* Protected Routes */}
           <Route path="/UpdateProfile" element={<PrivateRoute element={<UpdateProfile />} />} />
-          <Route path="/Main" element={<Main />} />
+          <Route path="/" element={<Main />} />
           <Route path="/AboutUs" element={<AboutUs />} />
           <Route path="/Profile/:userId" element={<Profile />} />
           <Route path="/payment" element={<PrivateRoute element={<Payment />} />} />

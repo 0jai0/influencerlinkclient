@@ -39,7 +39,7 @@ const RegisterUser = () => {
     try {
       const resultAction = await dispatch(registerUser(formData));
       if (registerUser.fulfilled.match(resultAction)) {
-        navigate("/Main");
+        navigate("/login");
       }
     } catch (err) {
       console.error("Registration failed:", err);
@@ -60,7 +60,7 @@ const RegisterUser = () => {
     };
 
     dispatch(registerUser(googleFormData));
-    navigate("/Main");
+    navigate("/login");
   };
 
   // Handle Google login failure
@@ -71,7 +71,7 @@ const RegisterUser = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/Main");
+      navigate("/login");
     }
   }, [isAuthenticated, navigate]);
 

@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://influencerlink-418814689343.asia-south1.run.app",
+  "proxy": "https://influencerlink-598325568359.us-central1.run.app",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",

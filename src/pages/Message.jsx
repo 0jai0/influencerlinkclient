@@ -16,7 +16,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const userId = user?._id;
   const socketRef = useRef(null);
-  console.log(userId, "khg");
+  //console.log(userId, "khg");
 
   const menuRef = useRef(null);
   
@@ -52,7 +52,7 @@ const Chat = () => {
       const data = await response.json();
 
       if (data.collections && data.collections.length > 0) {
-        console.log(data.collections);
+        //console.log(data.collections);
         setContacts(data.collections);
       } else {
         setContacts([]);
@@ -83,6 +83,8 @@ const Chat = () => {
       socket.off("receive_message", handleMessage);
     };
   }, [userId, fetchContacts, activeContact, socket]);
+
+  console.log(contacts,"ok");
 
   const loadConversation = async (contact) => {
     setActiveContact(contact);
