@@ -38,7 +38,8 @@ const InstagramVerification = ({ profile, setProfile, userId }) => {
         `${process.env.REACT_APP_SERVER_API}/api/pageowners/store`, 
         { 
           userId, 
-          profileName: profile.profileName 
+          profileName: profile.profileName,
+          profileUrl: profile.profilePicUrl
         },
         {
           headers: {
@@ -157,7 +158,7 @@ const InstagramVerification = ({ profile, setProfile, userId }) => {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 className="flex-1 p-2 bg-black rounded text-white"
-                disabled={!userExists}
+                disabled={!userExists || !otpSent}
               />
 
               <button
