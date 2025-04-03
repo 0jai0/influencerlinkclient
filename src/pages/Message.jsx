@@ -82,8 +82,8 @@ const Chat = () => {
 
     const handleMessage = (message) => {
       if (
-        (message.sender === activeContact?._id && message.receiver === userId) ||
-        (message.sender === userId && message.receiver === activeContact?._id)
+        (message.sender === activeContact?.user._id && message.receiver === userId) ||
+        (message.sender === userId && message.receiver === activeContact?.user._id)
       ) {
         setMessages((prevMessages) => [...prevMessages, message]);
       }
@@ -126,14 +126,14 @@ const Chat = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        sender: contact._id,  // Ensure this matches backend
+        sender: contact.user._id,  // Ensure this matches backend
         receiver: userId,
       }),
     });
 
     // Notify sender that messages have been read
     socket.emit("mark_as_read", {
-      sender: contact._id,
+      sender: contact.user._id,
       receiver: userId,
     });
     } catch (error) {
@@ -147,7 +147,7 @@ const Chat = () => {
 
     const newMessage = {
       sender: userId,
-      receiver: activeContact._id,
+      receiver: activeContact.user._id,
       content: messageContent,
       timestamp: new Date().toISOString(),
     };
@@ -164,8 +164,8 @@ const Chat = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              sender: userId,
-              receiver: activeContact._id,
+              sender: activeContact.ownerName,
+              receiver: activeContact.user._id,
               message: messageContent,
             }),
           });
@@ -195,7 +195,7 @@ const Chat = () => {
       // Refresh contacts list
       fetchContacts();
       // If the removed contact is the active one, clear the chat
-      if (activeContact?._id === contactId) {
+      if (activeContact?.user._id === contactId) {
         setActiveContact(null);
         setMessages([]);
       }
