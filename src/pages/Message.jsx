@@ -304,12 +304,12 @@ const Chat = () => {
             ${isSidebarOpen ? "w-[80%] sm:w-[300px]" : "hidden sm:block sm:w-[300px]"} border-r-[5px] border-r-black
             transition-all duration-300 ease-in-out`}
         >
-          <div className="bg-[#151515] h-full p-4 relative">
+          <div className="bg-[#151515] h-full top-12 sm:top-0  p-4 relative">
             {/* Close Button (Mobile) */}
             {isSidebarOpen && (
               <button
                 onClick={() => setIsSidebarOpen(false)}
-                className="sm:hidden absolute top-3 right-3 text-white"
+                className="sm:hidden absolute top-10 right-3 text-white"
               >
                 <X size={24} />
               </button>
