@@ -117,7 +117,7 @@ const ContactList = ({
           return (
             <div
               key={contact._id}
-              className={`px-4 py-3 cursor-pointer transition-colors duration-200 hover:bg-[#1a1a1a] ${
+              className={`px-4 py-3  cursor-pointer custom-scrollbar transition-colors duration-200 hover:bg-[#1a1a1a] ${
                 activeContactId === contact._id ? "bg-[#1a1a1a] border-l-4 border-[#59FFA7]" : ""
               }`}
               onClick={() => onSelectContact(contact)}
@@ -190,6 +190,9 @@ const ContactList = ({
                   </button>
                 </div>
               </div>
+             
+              
+
 
               {/* Remove confirmation */}
               {showRemoveConfirm === contact.user._id && (
@@ -215,6 +218,7 @@ const ContactList = ({
                 </div>
               )}
             </div>
+            
           );
         })
       ) : (

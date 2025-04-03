@@ -134,7 +134,7 @@ const Main = () => {
 
       if (data.collections && data.collections.length > 0) {
         console.log(data.collections);
-        setContacts(data.collections);
+        setContacts(data.collections );
       } else {
         setContacts([]);
       }
@@ -162,7 +162,7 @@ const Main = () => {
         return;
       }
   
-      const isAlreadyInContacts = contacts.some(contact => contact.user._id === targetUser._id);
+      const isAlreadyInContacts = contacts.some(contact => contact.user?._id === targetUser._id);
       if (isAlreadyInContacts) {
         setAlert(null);
         setTimeout(() => {
@@ -207,6 +207,7 @@ const Main = () => {
             
             resolve(response.data);
           } catch (error) {
+            isLoadingRef.current = false;
             console.error("Error adding to collection:", error.response?.status);
             setAlert(null);
             setTimeout(() => {
@@ -216,7 +217,7 @@ const Main = () => {
                 setAlert({ type: 'error', message: 'Failed to add user. Please try again.' });
               }
             }, 100);
-            reject(error);
+            //reject(error);
           } finally {
             isLoadingRef.current = false;
             //setIsLoading(false); 
@@ -233,7 +234,7 @@ const Main = () => {
   
   const handleChatNow = async (targetUser) => {
     try {
-      const isAlreadyInContacts = contacts.some(contact => contact._id === targetUser._id);
+      const isAlreadyInContacts = contacts.some(contact => contact.user?._id === targetUser._id);
       if (isAlreadyInContacts) {
         navigate(`/MessagingApp/${user?._id}`);
         return;
