@@ -31,6 +31,16 @@ function App() {
     }
   }, [dispatch, user?._id]); // Re-run when user.id changes
 
+  useEffect(() => {
+    if (window.location.pathname === '/sitemap-dynamic.xml') {
+      window.location.href = 'https://influencerlink-598325568359.us-central1.run.app/sitemap-dynamic.xml';
+      return;
+    }
+    if (window.location.pathname === '/sitemap.xml') {
+      // Let it load from public folder
+      return;
+    }
+  }, []);
   return (
     <Router>
       <div className="min-h-screen flex justify-center items-center custom-scrollbar bg-black">
