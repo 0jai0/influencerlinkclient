@@ -72,25 +72,27 @@ const Login = () => {
           {/* Logo/Title */}
           <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3">
-    <img 
-      src={logoImage} 
-      alt="PromoterLink Logo" 
-      className="h-10 w-10 object-contain" // Larger size with contained aspect ratio
-    />
-    <h2 className="text-3xl font-bold text-white bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] bg-clip-text text-transparent">
-      PromoterLink
-    </h2>
+    
+    <span className="relative z-10 flex items-center gap-0">
+      <img 
+        src="/text_logo.png"  // Ensure this path is correct for your project structure
+        alt="Logo" 
+        className="h-8 object-contain" 
+        
+      />
+    </span>
   </div>
           </div>
-          <p className="text-transparent bg-clip-text bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-xl mt-2 text-start">Welcome Back</p>
+          <p className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 from-1% via-blue-400 via-20% to-blue-500 to-90% text-3xl">
+  Welcome Back
+</p>
 
           {/* Error Message */}
-          {error && (
-            <div className="mb-0 p-1 text-red-400 text-start">
-              {error} - Please try again
-            </div>
-          )}
-
+          {error && error !== "No token found" && (
+  <div className="mb-0 p-1 text-red-400 text-start">
+    {error} - Please try again
+  </div>
+)}
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}

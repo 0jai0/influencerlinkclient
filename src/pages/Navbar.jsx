@@ -62,8 +62,14 @@ const Navbar = () => {
     onClick={() => navigate("/")}
     className="text-xl font-bold flex items-center cursor-pointer group"
   >
-    <span className="text-[#59FFA7] group-hover:text-[#2BFFF8] transition-colors">PROMOTER</span>
-    <span className="group-hover:text-gray-300 transition-colors">LINK</span>
+    <span className="relative z-10 flex items-center gap-0">
+      <img 
+        src="/text_logo.png"  // Ensure this path is correct for your project structure
+        alt="Logo" 
+        className="h-8 object-contain" 
+        
+      />
+    </span>
   </div>
 
   {/* Navigation Buttons */}

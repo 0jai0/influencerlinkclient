@@ -86,14 +86,14 @@ const Register = () => {
           {/* Logo/Title */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3">
-              <img 
-                src={logoImage} 
-                alt="PromoterLink Logo" 
-                className="h-10 w-10 object-contain"
-              />
-              <h2 className="text-3xl font-bold text-white bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] bg-clip-text text-transparent">
-                PromoterLink
-              </h2>
+            <span className="relative z-10 flex items-center gap-0">
+      <img 
+        src="/text_logo.png"  // Ensure this path is correct for your project structure
+        alt="Logo" 
+        className="h-8 object-contain" 
+        
+      />
+    </span>
             </div>
           </div>
           
@@ -126,11 +126,11 @@ const Register = () => {
           </p>
 
           {/* Error Message */}
-          {error && (
-            <div className="mb-0 p-1 text-red-400 text-start">
-              {error} - Please try again
-            </div>
-          )}
+          {error && error !== "No token found" && (
+  <div className="mb-0 p-1 text-red-400 text-start">
+    {error} - Please try again
+  </div>
+)}
 
           {/* Registration Form */}
           <form onSubmit={handleSubmit} className="space-y-2">

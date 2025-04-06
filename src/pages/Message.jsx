@@ -23,7 +23,7 @@ const Chat = () => {
   const [alert, setAlert] = useState(null);
   const isLoadingRef = useRef(false);
   const navigate = useNavigate();
-  //console.log(userId, "khg");
+  //console.log(user.ownerName, "khg");
 
   const menuRef = useRef(null);
   
@@ -164,7 +164,7 @@ const Chat = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              sender: activeContact.ownerName,
+              sender: user.ownerName,
               receiver: activeContact.user._id,
               message: messageContent,
             }),
@@ -204,9 +204,11 @@ const Chat = () => {
     }
   };
 
-  const handleUpgrade = async () => {
+  const handleUpgrade = async (e) => {
+    e.stopPropagation();
     if (isLoadingRef.current) return;
     isLoadingRef.current = true;
+
   
     if (!activeContact || !user?._id) {
       console.error("Active contact and User ID are required");
