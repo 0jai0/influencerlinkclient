@@ -4,6 +4,7 @@ import Payment from "./Payment";
 const Content = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedCoins, setSelectedCoins] = useState(0);
+  const [activeTab, setActiveTab] = useState('influencer');
 
   const handlePackageSelect = (packageItem) => {
     // Convert coins string to number (e.g., "10" → 10)
@@ -16,13 +17,114 @@ const Content = () => {
     <div className="bg-black text-white py-16 px-4 sm:px-6 lg:px-8">
       {/* How It Works Section */}
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-4xl font-extrabold text-center mb-4 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
-          How Our Platform Works
-        </h2>
-        <p className="text-center text-gray-400 max-w-2xl mx-auto mb-12">
-          Connecting brands with the perfect influencers in just a few simple steps
-        </p>
-        
+      <h2 className="text-4xl font-extrabold text-center mb-4 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
+        How Our Platform Works
+      </h2>
+      <p className="text-center text-gray-400 max-w-2xl mx-auto mb-12">
+        Connecting brands with the perfect influencers in just a few simple steps
+      </p>
+
+      {/* Toggle Buttons */}
+      <div className="flex justify-center mb-12">
+        <div className="inline-flex rounded-md shadow-sm" role="group">
+          <button
+            onClick={() => setActiveTab('influencer')}
+            className={`px-6 py-3 text-sm font-medium rounded-l-lg ${
+              activeTab === 'influencer'
+                ? 'bg-[#1FFFE0] text-gray-900'
+                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+            }`}
+          >
+            Influencer
+          </button>
+          <button
+            onClick={() => setActiveTab('brand')}
+            className={`px-6 py-3 text-sm font-medium rounded-r-lg ${
+              activeTab === 'brand'
+                ? 'bg-[#1FFFE0] text-gray-900'
+                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+            }`}
+          >
+            Brand
+          </button>
+        </div>
+      </div>
+
+      {/* Influencer Content (shown by default) */}
+      {activeTab === 'influencer' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[
+            { 
+              title: "Create Your Profile", 
+              description: "Set up your influencer profile in minutes and showcase your content style, audience demographics, and rates.",
+              icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              )
+            },
+            { 
+              title: "Verified & Secure", 
+              description: "Get verified while keeping your personal details safe with our secure platform.",
+              icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              )
+            },
+            { 
+              title: "Get Brand Offers", 
+              description: "Receive partnership opportunities directly from brands that match your niche.",
+              icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              )
+            },
+            { 
+              title: "Direct Messaging", 
+              description: "Communicate directly with brands through our secure messaging system.",
+              icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              )
+            },
+            { 
+              title: "Secure Payments", 
+              description: "Receive payments securely with full control over your preferred payment methods and clear contract terms.",
+              icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              )
+            },
+            { 
+              title: "Content & Analytics", 
+              description: "Create authentic content and track performance with detailed analytics.",
+              icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              )
+            },
+          ].map((item, index) => (
+            <div 
+              key={index} 
+              className="bg-[#151515] p-8 rounded-xl hover:bg-gray-800 transition-all duration-300 hover:-translate-y-2 border border-gray-800 group"
+            >
+              <div className="text-[#1FFFE0] mb-4 group-hover:text-white transition-colors duration-300">
+                {item.icon}
+              </div>
+              <h3 className="text-xl font-bold mb-3 group-hover:text-[#1FFFE0] transition-colors duration-300">{item.title}</h3>
+              <p className="text-gray-300 group-hover:text-gray-100 transition-colors duration-300">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Brand Content */}
+      {activeTab === 'brand' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
             { 
@@ -54,7 +156,7 @@ const Content = () => {
             },
             { 
               title: "Secure Payment", 
-              description: "Agree on terms and make payments safely through our escrow system.",
+              description: "Agree on terms and make payments safely.",
               icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -92,6 +194,7 @@ const Content = () => {
             </div>
           ))}
         </div>
+      )}
 
         {/* Pricing Section */}
         <div className="mt-20">
