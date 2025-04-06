@@ -5,7 +5,7 @@ import { registerUser } from "../store/auth-slice";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import objectsImage from "../assets/OBJECTS.png";
-import logoImage from "../assets/logo.png";
+
 
 const Register = () => {
   const [formData, setFormData] = useState({
