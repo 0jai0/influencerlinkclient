@@ -209,7 +209,7 @@ const RegisterUser = () => {
 
           {/* Google OAuth */}
           <div className="text-center">
-            <GoogleOAuthProvider clientId="264166008170-nnjc496qlj2bvlhkgqg5v5qbd1fmdc33.apps.googleusercontent.com">
+            <GoogleOAuthProvider clientId="598325568359-cg0o29ageoaiosft1b95uk0pet9m0ve8.apps.googleusercontent.com">
               <GoogleLogin 
                 onSuccess={handleGoogleSuccess} 
                 onError={handleGoogleFailure} 

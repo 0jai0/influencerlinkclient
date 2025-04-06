@@ -85,7 +85,7 @@ const ChatWindow = ({ messages, isExpired, onUpgrade  }) => {
             </p>
             <button 
             onClick={onUpgrade}
-            className="bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black font-bold py-2 px-6 rounded-full hover:opacity-90 transition-opacity">
+            className="bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] text-black font-bold py-2 px-6 rounded-full hover:opacity-90 transition-opacity">
               Upgrade to Continue
             </button>
           </div>
@@ -120,7 +120,7 @@ const ChatWindow = ({ messages, isExpired, onUpgrade  }) => {
                 >
                   <div
                     className={`pt-2 pb-1 px-2 w-fit max-w-[80%] md:max-w-[70%] lg:max-w-[60%] break-words rounded-lg text-sm shadow-md flex flex-col
-                      ${isSender ? "bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black" : "bg-gray-800 text-white"}`}
+                      ${isSender ? "bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] text-black" : "bg-gray-800 text-white"}`}
                   >
                     {/* Message Content */}
                     <div className="pb-1 whitespace-pre-wrap break-all word-break">

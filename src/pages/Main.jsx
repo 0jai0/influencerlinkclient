@@ -333,7 +333,7 @@ const Main = () => {
         {/* Header Section */}
         <div className="flex flex-col items-start bg-[#151515] p-4 border border-gray-800 rounded-t-md relative w-full">
           <div className="absolute -top-5 -left-6 bg-[#151515] px-4">
-            <span className="bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-transparent bg-clip-text font-sans text-2xl">
+            <span className="bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] text-transparent bg-clip-text font-sans text-2xl">
               Influencers
             </span>
           </div>
@@ -372,7 +372,7 @@ const Main = () => {
                 type="checkbox"
                 checked={selectedAdCategories.includes(category.value)}
                 onChange={() => handleCheckboxChange(category.value, "adCategory")}
-                className="accent-[#59FFA7] transform scale-110"
+                className="accent-[#1FFFE0] transform scale-110"
               />
               <span className="text-white text-sm">{category.label}</span>
             </label>
@@ -390,28 +390,28 @@ const Main = () => {
       <i className={`fas fa-${showMoreFilters ? "times" : "sliders-h"} text-xs`}></i>
     </button>
 
-    {/* Chat Button */}
+    {/* Chat Button */} 
     <button
-  className="relative p-3 rounded-full bg-[#59FFA7] text-black hover:bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] transition-all duration-300 shadow-lg hover:shadow-[#59FFA7]/30 active:scale-95 group"
+  className="relative p-3 rounded-full  text-black hover:bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] transition-all duration-300 shadow-lg hover:shadow-[#59FFA7]/30 active:scale-95 group"
   onClick={() => navigate(`/MessagingApp/${user?._id}`)}
 >
   {/* Unread message indicator (optional) */}
-  <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-red-500 text-white text-xs rounded-full animate-pulse">
+  <span className="absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center bg-red-500 text-white text-xs rounded-full animate-pulse">
     1
   </span>
   
   {/* Animated message symbol */}
   <div className="relative w-6 h-6">
     {/* Main bubble */}
-    <svg viewBox="0 0 24 24" className="w-full h-full fill-current">
-      <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10h8v-2h-8c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8v1.5c0 1.93-1.57 3.5-3.5 3.5S13 15.43 13 13.5V12h-2v1.5c0 .827.673 1.5 1.5 1.5s1.5-.673 1.5-1.5V12c0-3.866-3.134-7-7-7S5 8.134 5 12s3.134 7 7 7h1v2h-1C5.486 21 1 16.514 1 11S5.486 1 11 1h1V2h-1z"/>
-    </svg>
+    <img 
+        src="/chat_icon.png"  // Ensure this path is correct for your project structure
+        alt="Logo" 
+        className="h-8 object-contain" 
+        
+      />
     
-    {/* Animated dot indicator */}
-    <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-[#2BFFF8] rounded-full group-hover:animate-ping opacity-80"></span>
+   
     
-    {/* Subtle inner glow */}
-    <span className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
   </div>
 </button>
   </div>
@@ -420,7 +420,7 @@ const Main = () => {
 {/* Advanced Filters Section */}
 {showMoreFilters && (
   <div className="bg-[#202020] border border-gray-800 rounded-xl p-5 mb-6 shadow-lg">
-    <h3 className="text-lg font-medium text-[#59FFA7] mb-4 flex items-center gap-2">
+    <h3 className="text-lg font-medium text-[#1FFFE0] mb-4 flex items-center gap-2">
       <i className="fas fa-filter"></i>
       Advanced Filters
     </h3>
@@ -443,7 +443,7 @@ const Main = () => {
                   type="checkbox"
                   checked={selectedPlatforms.includes(platform)}
                   onChange={() => handleCheckboxChange(platform, 'platform')}
-                  className="accent-[#59FFA7] transform scale-110"
+                  className="accent-[#1FFFE0] transform scale-110"
                 />
                 <span className="text-white text-sm">{platform}</span>
               </label>
@@ -469,7 +469,7 @@ const Main = () => {
                   type="checkbox"
                   checked={selectedAudienceTypes.includes(type.value)}
                   onChange={() => handleCheckboxChange(type.value, 'audienceType')}
-                  className="accent-[#59FFA7] transform scale-110"
+                  className="accent-[#1FFFE0] transform scale-110"
                 />
                 <span className="text-white text-sm">{type.label}</span>
               </label>
@@ -495,7 +495,7 @@ const Main = () => {
                   type="checkbox"
                   checked={selectedLocations.includes(location)}
                   onChange={() => handleCheckboxChange(location, 'location')}
-                  className="accent-[#59FFA7] transform scale-110"
+                  className="accent-[#1FFFE0] transform scale-110"
                 />
                 <span className="text-white text-sm">{location}</span>
               </label>
@@ -517,7 +517,7 @@ const Main = () => {
         placeholder="Min"
         value={minFollowers}
         onChange={(e) => handleFollowersChange('min', e.target.value)}
-        className="flex-1 bg-[#151515] w-28 border border-gray-700 text-white px-3 py-1.5 sm:py-2 rounded-lg focus:border-[#59FFA7] focus:outline-none text-sm"
+        className="flex-1 bg-[#151515] w-28 border border-gray-700 text-white px-3 py-1.5 sm:py-2 rounded-lg focus:border-[#1FFFE0] focus:outline-none text-sm"
       />
       <span className="text-gray-400 text-xs sm:text-sm">to</span>
       <input
@@ -525,7 +525,7 @@ const Main = () => {
         placeholder="Max"
         value={maxFollowers}
         onChange={(e) => handleFollowersChange('max', e.target.value)}
-        className="flex-1 bg-[#151515] w-28 border border-gray-700 text-white px-3 py-1.5 sm:py-2 rounded-lg focus:border-[#59FFA7] focus:outline-none text-sm"
+        className="flex-1 bg-[#151515] w-28 border border-gray-700 text-white px-3 py-1.5 sm:py-2 rounded-lg focus:border-[#1FFFE0] focus:outline-none text-sm"
       />
     </div>
   </div>
@@ -537,7 +537,7 @@ const Main = () => {
     {/* Apply Filters Button - Centered on mobile, right-aligned on desktop */}
     <div className="mt-3 md:mt-4 flex justify-center md:justify-end">
       <button
-        className="px-5 py-1.5 md:px-6 md:py-2 rounded-full bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black font-medium hover:opacity-90 transition-opacity text-sm md:text-base"
+        className="px-5 py-1.5 md:px-6 md:py-2 rounded-full bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] text-black font-medium hover:opacity-90 transition-opacity text-sm md:text-base"
         onClick={() => setShowMoreFilters(false)}
       >
         Apply Filters
@@ -551,7 +551,7 @@ const Main = () => {
 }`}>
   {isLoading ? (
     <div className="flex justify-center items-center h-full">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#59FFA7]"></div>
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1FFFE0]"></div>
     </div>
   ) : users.length === 0 ? (
     <div className="text-center text-gray-400 h-full flex items-center justify-center">
@@ -567,7 +567,7 @@ const Main = () => {
             onClick={() => setSelectedUser(user)}
           >
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#59FFA7]">
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#1FFFE0]">
                 <img
                   src={user.profilePicUrl || "https://via.placeholder.com/100"}
                   alt={`${user.ownerName}'s profile`}
@@ -582,7 +582,7 @@ const Main = () => {
                   user.profileDetails.map((profile, index) => (
                     <div key={index} className="text-sm md:text-lg">
                       {profile.platform.toLowerCase() === "instagram" && profile.followers && (
-                        <p className="bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-transparent bg-clip-text font-sans">
+                        <p className="bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] text-transparent bg-clip-text font-sans">
                           {isFormatted(profile.followers) ? profile.followers : formatFollowers(profile.followers)} Followers
                         </p>
                       )}
@@ -600,7 +600,7 @@ const Main = () => {
                   handleAddToList(user);
                 }}
                 disabled={isLoadingRef.current}
-                className="px-4 py-2 rounded-md transition-all duration-300 border border-[#59FFA7] bg-transparent text-white hover:bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] hover:text-black"
+                className="px-4 py-2 rounded-md transition-all duration-300 border border-[#1FFFE0] bg-transparent text-white hover:bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] hover:text-black"
               >
                 {isLoadingRef.current ? "Adding..." : "Add to List"}
               </button>
@@ -610,7 +610,7 @@ const Main = () => {
                   handleChatNow(user);
                 }}
                 disabled={isLoadingRef.current}
-                className="px-4 py-2 rounded-md transition-all duration-300 border border-[#59FFA7] bg-transparent text-white hover:bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] hover:text-black"
+                className="px-4 py-2 rounded-md transition-all duration-300 border border-[#1FFFE0] bg-transparent text-white hover:bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] hover:text-black"
               >
                 {isLoadingRef.current ? "Loading..." : "Chat Now"}
               </button>
@@ -672,9 +672,9 @@ const Main = () => {
             }
           }}
           className={`w-full max-w-[150px] border ${
-            isAuthenticated && user?.linkCoins >= 5 ? 'border-[#59FFA7]' : 'border-gray-600'
+            isAuthenticated && user?.linkCoins >= 5 ? 'border-[#1FFFE0]' : 'border-gray-600'
           } py-2 bg-black text-white font-bold rounded 
-                     hover:bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] hover:text-black hover:border-transparent transition 
+                     hover:bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] hover:text-black hover:border-transparent transition 
                      flex items-center justify-center gap-2 ${
                        !isAuthenticated || !user || user.linkCoins < 5 ? 'opacity-70 cursor-not-allowed' : ''
                      }`}
@@ -682,7 +682,7 @@ const Main = () => {
         >
           <span className={`${
             isAuthenticated && user?.linkCoins >= 5 
-              ? 'bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8]' 
+              ? 'bg-gradient-to-r from-[#1FFFE0] to-[#249BCA]' 
               : 'text-gray-400'
           } text-transparent bg-clip-text transition-all duration-300 hover:text-black`}>
             🔒

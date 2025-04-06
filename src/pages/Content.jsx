@@ -84,10 +84,10 @@ const Content = () => {
               key={index} 
               className="bg-[#151515] p-8 rounded-xl hover:bg-gray-800 transition-all duration-300 hover:-translate-y-2 border border-gray-800 group"
             >
-              <div className="text-green-400 mb-4 group-hover:text-white transition-colors duration-300">
+              <div className="text-[#1FFFE0] mb-4 group-hover:text-white transition-colors duration-300">
                 {item.icon}
               </div>
-              <h3 className="text-xl font-bold mb-3 group-hover:text-green-400 transition-colors duration-300">{item.title}</h3>
+              <h3 className="text-xl font-bold mb-3 group-hover:text-[#1FFFE0] transition-colors duration-300">{item.title}</h3>
               <p className="text-gray-300 group-hover:text-gray-100 transition-colors duration-300">{item.description}</p>
             </div>
           ))}
@@ -160,22 +160,22 @@ const Content = () => {
                 key={index} 
                 className={`bg-gradient-to-r from-green-900/30 to-blue-900/30 p-6 rounded-xl flex flex-col relative transition-all hover:shadow-lg hover:shadow-green-400/10 ${
                   item.popular 
-                    ? "border-2 border-green-400 md:transform md:scale-105 z-10" 
+                    ? "border-2 border-[#1FFFE0] md:transform md:scale-105 z-10" 
                     : "border border-gray-700"
                 }`}
               >
                 {item.popular && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-500 text-black px-4 py-1 rounded-full text-xs font-bold">
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#1FFFE0] text-black px-4 py-1 rounded-full text-xs font-bold">
                     MOST POPULAR
                   </div>
                 )}
                 
                 <div className="text-center mb-4">
                   <div className="flex justify-center items-baseline">
-                    <span className="text-4xl font-bold text-green-400">{item.coins}</span>
+                    <span className="text-4xl font-bold text-[#1FFFE0]">{item.coins}</span>
                     <span className="text-xl ml-2">LinkCoins</span>
                   </div>
-                  <div className="text-green-300 font-medium mt-1 bg-gray-800 rounded-full py-1 px-3 inline-block">
+                  <div className="text-[#1FFFE0] font-medium mt-1 bg-gray-800 rounded-full py-1 px-3 inline-block">
                     {item.free}
                   </div>
                 </div>
@@ -190,7 +190,7 @@ const Content = () => {
                 <ul className="flex-grow space-y-2.5 mb-6 text-sm">
                   {item.features.map((feature, i) => (
                     <li key={i} className="flex items-start">
-                      <svg className="h-4 w-4 text-green-400 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="h-4 w-4 text-[#1FFFE0] mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                       {feature}
@@ -202,7 +202,7 @@ const Content = () => {
                 onClick={() => handlePackageSelect(item)}
                 className={`mt-auto w-full py-3 px-4 rounded-lg font-bold text-sm transition-all ${
                   item.popular 
-                    ? "bg-green-400 text-black hover:bg-green-300 shadow-md shadow-green-400/30" 
+                    ? "bg-[#1FFFE0] text-black hover:bg-green-300 shadow-md shadow-green-400/30" 
                     : "bg-gray-700 hover:bg-gray-600"
                 }`}
               >
@@ -213,10 +213,10 @@ const Content = () => {
           </div>
           
           <div className="mt-12 bg-[#151515] rounded-xl p-6 max-w-4xl mx-auto border border-gray-700">
-            <h3 className="text-xl font-bold text-green-400 mb-4">How LinkCoins Work</h3>
+            <h3 className="text-xl font-bold text-[#1FFFE0] mb-4">How LinkCoins Work</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div className="flex items-start">
-                <div className="bg-green-400 text-black rounded-full p-1 mr-3 flex-shrink-0">
+                <div className="bg-[#1FFFE0] text-black rounded-full p-1 mr-3 flex-shrink-0">
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -224,7 +224,7 @@ const Content = () => {
                 <span><strong>1 LinkCoin = ₹5</strong> = 7 days chat with 1 influencer</span>
               </div>
               <div className="flex items-start">
-                <div className="bg-green-400 text-black rounded-full p-1 mr-3 flex-shrink-0">
+                <div className="bg-[#1FFFE0] text-black rounded-full p-1 mr-3 flex-shrink-0">
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -232,7 +232,7 @@ const Content = () => {
                 <span><strong>Free coins</strong> are instantly added to your wallet</span>
               </div>
               <div className="flex items-start">
-                <div className="bg-green-400 text-black rounded-full p-1 mr-3 flex-shrink-0">
+                <div className="bg-[#1FFFE0] text-black rounded-full p-1 mr-3 flex-shrink-0">
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -240,7 +240,7 @@ const Content = () => {
                 <span><strong>48-hour guarantee</strong>: Full refund if no reply</span>
               </div>
               <div className="flex items-start">
-                <div className="bg-green-400 text-black rounded-full p-1 mr-3 flex-shrink-0">
+                <div className="bg-[#1FFFE0] text-black rounded-full p-1 mr-3 flex-shrink-0">
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -251,13 +251,13 @@ const Content = () => {
           </div>
           
           <div className="text-center mt-8 text-gray-400 text-sm">
-            <p>Need custom packages for your team? <a href="#contact" className="text-green-400 hover:underline font-medium cursor-pointer">Contact our sales team</a></p>
+            <p>Need custom packages for your team? <a href="#contact" className="text-[#1FFFE0] hover:underline font-medium cursor-pointer">Contact our sales team</a></p>
           </div>
         </div>
 
         {/* Testimonials Section */}
         <div className="mt-20">
-          <h2 className="text-4xl font-extrabold text-center mb-12 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
+          <h2 className="text-4xl font-extrabold text-center mb-12 bg-gradient-to-r from-[#1FFFE0] to-blue-500 bg-clip-text text-transparent">
             What Our Clients Say
           </h2>
           

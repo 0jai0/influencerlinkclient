@@ -11,7 +11,7 @@ const API_BASE_URL = `${process.env.REACT_APP_SERVER_API}/api/pageowners`;
 export const updateUser = createAsyncThunk(
   "/auth/updateUser", // You can modify this path to suit your endpoint
   async ({ userId, updateData }, { rejectWithValue }) => {
-    console.log(userId, "hhj");
+    //console.log(userId, "hhj");
     try {
       const response = await axios.put(
         `${API_BASE_URL}/updateUser/${userId}`, // Update URL to match your API endpoint
@@ -109,7 +109,7 @@ export const checkAuth = createAsyncThunk(
     const expiration = localStorage.getItem("tokenExpiration");
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user;
-    console.log(userId,"dgf");
+    //console.log(userId,"dgf");
 
     if (!token) return rejectWithValue("No token found");
     

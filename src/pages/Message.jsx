@@ -341,7 +341,7 @@ const Chat = () => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <span className="bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] bg-clip-text text-transparent">
                 {activeContact.ownerName}
               </span>
               
@@ -360,7 +360,7 @@ const Chat = () => {
         ) : (
           <div className="flex-1 flex flex-col justify-center items-center text-center px-4 bg-[#121212]">
         <div className="w-24 h-24 mb-6 rounded-full bg-gradient-to-r from-[#59FFA7]/10 to-[#2BFFF8]/10 flex items-center justify-center">
-          <FiMessageSquare className="text-[#59FFA7]" size={40} />
+          <FiMessageSquare className="text-[#1FFFE0]" size={40} />
         </div>
         <h3 className="text-xl font-medium text-white mb-2">No conversation selected</h3>
         <p className="text-gray-400 max-w-md">
@@ -368,7 +368,7 @@ const Chat = () => {
         </p>
         <button
           onClick={()=>navigate("/")}
-         className="mt-6 px-6 py-2 rounded-full bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black font-medium hover:shadow-lg hover:shadow-[#59FFA7]/30 transition-all">
+         className="mt-6 px-6 py-2 rounded-full bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] text-black font-medium hover:shadow-lg hover:shadow-[#59FFA7]/30 transition-all">
           New Message
         </button>
       </div>

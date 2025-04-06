@@ -50,9 +50,9 @@ const Navbar = () => {
       className="p-2 rounded-full hover:bg-[#2a2a2a] transition-colors"
     >
       {isOpen ? (
-        <X size={24} className="text-[#59FFA7]" />
+        <X size={24} className="text-[#1FFFE0]" />
       ) : (
-        <Menu size={24} className="text-[#59FFA7]" />
+        <Menu size={24} className="text-[#1FFFE0]" />
       )}
     </button>
   </div>
@@ -85,13 +85,13 @@ const Navbar = () => {
       <button
         key={item}
         className={`px-4 py-2 rounded-full font-medium transition-all duration-300
-          bg-transparent text-white hover:bg-gradient-to-r hover:from-[#59FFA7]/20 hover:to-[#2BFFF8]/20
-          border border-transparent hover:border-[#59FFA7]/30
+          bg-transparent text-white hover:bg-gradient-to-r hover:from-[#1FFFE0]/20 hover:to-[#249BCA]/20
+          border border-transparent hover:border-[#1FFFE0]/30
           relative overflow-hidden group w-full md:w-auto text-center`}
         onClick={() => navigate(routes[item])}
       >
         <span className="relative z-10">{item}</span>
-        <span className="absolute inset-0 bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] opacity-0 group-hover:opacity-10 transition-opacity"></span>
+        <span className="absolute inset-0 bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] opacity-0 group-hover:opacity-10 transition-opacity"></span>
       </button>
     ))}
   </div>
@@ -102,8 +102,8 @@ const Navbar = () => {
    {user && (
   <button
     onClick={() => setShowPayment(true)}
-    className="bg-[#202020] rounded-full h-10 px-1 pr-1 text-[#59FFA7] text-sm font-medium flex items-center gap-2
-      border border-[#59FFA7]/30 hover:border-[#59FFA7]/50 transition-colors
+    className="bg-[#202020] rounded-full h-10 px-1 pr-1 text-[#1FFFE0] text-sm font-medium flex items-center gap-2
+      border border-[#1FFFE0]/30 hover:border-[#249BCA]/50 transition-colors
       group relative overflow-hidden hover:shadow-[0_0_8px_rgba(89,255,167,0.3)]"
   >
     <span className="relative z-10 flex items-center gap-0">
@@ -129,8 +129,8 @@ const Navbar = () => {
       aria-label="User menu"
     >
       <div className="relative">
-        <User className="text-[#59FFA7] group-hover:text-[#2BFFF8] transition-colors" size={24} />
-        <span className="absolute -bottom-1 -right-1 w-2 h-2 bg-[#2BFFF8] rounded-full animate-pulse"></span>
+        <User className="text-[#1FFFE0] group-hover:text-[#249BCA] transition-colors" size={24} />
+        <span className="absolute -bottom-1 -right-1 w-2 h-2 bg-[#249BCA] rounded-full animate-pulse"></span>
       </div>
       {showUserDropdown && (
         <UserDropdown onClose={() => setShowUserDropdown(false)} />
@@ -139,7 +139,7 @@ const Navbar = () => {
   ) : (
     <button
     onClick={() => navigate("/login")} // Your login handler function
-      className="px-4 py-2 bg-[#59FFA7] hover:bg-[#2BFFF8] text-black font-medium rounded-md transition-colors"
+      className="px-4 py-2 bg-[#1FFFE0] hover:bg-[#249BCA] text-black font-medium rounded-md transition-colors"
     >
       Login
     </button>

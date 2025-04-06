@@ -23,32 +23,44 @@ const Login = () => {
       const resultAction = await dispatch(loginUser(formData));
       if (loginUser.fulfilled.match(resultAction)) {
         dispatch(checkAuth());
-        navigate("/");
+        //console.log(resultAction.payload.user.role);
+        if (resultAction.payload.user.role === "influencer") {
+          navigate("/UpdateProfile");
+        } else {
+          navigate("/");
+        }
+        //navigate("/");
       }
     } catch (err) {
       console.error("Login failed:", err);
     }
   };
 
-  const handleGoogleSuccess = (credentialResponse) => {
-    console.log('Google credential response:', credentialResponse);
+  const handleGoogleSuccess = async (credentialResponse) => {
+    //console.log('Google credential response:', credentialResponse);
     
     try {
-      const decoded = jwtDecode(credentialResponse.credential);
-      console.log('Decoded JWT:', decoded);
-    } catch (decodeError) {
-      console.error('JWT decode error:', decodeError);
-    }
+      //const decoded = jwtDecode(credentialResponse.credential);
+      //console.log('Decoded JWT:', decoded);
   
-    dispatch(loginUser({ 
-      credential: credentialResponse.credential, 
-      isGoogleAuth: true 
-    }))
-    .unwrap()
-    .then(() => navigate("/"))
-    .catch(error => {
-      console.error('Google login dispatch error:', error);
-    });
+      const resultAction = await dispatch(loginUser({ 
+        credential: credentialResponse.credential, 
+        isGoogleAuth: true 
+      }));
+  
+      if (loginUser.fulfilled.match(resultAction)) {
+        await dispatch(checkAuth());
+        
+        // Check the user role from the action payload
+        if (resultAction.payload.user?.role === "influencer") {
+          navigate("/UpdateProfile");
+        } else {
+          navigate("/");
+        }
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+    }
   };
   
   const handleGoogleFailure = () => {
@@ -155,7 +167,7 @@ const Login = () => {
 
           {/* Google OAuth */}
           <div className="text-center">
-            <GoogleOAuthProvider clientId="264166008170-nnjc496qlj2bvlhkgqg5v5qbd1fmdc33.apps.googleusercontent.com">
+            <GoogleOAuthProvider clientId="598325568359-cg0o29ageoaiosft1b95uk0pet9m0ve8.apps.googleusercontent.com">
               <GoogleLogin 
                 onSuccess={handleGoogleSuccess} 
                 onError={handleGoogleFailure} 
@@ -163,7 +175,7 @@ const Login = () => {
                 theme="filled_blue"
                 shape="pill"
                 size="large"
-                text="signup_with"
+                text="Login_with"
                 width="100%"
               />
             </GoogleOAuthProvider>

@@ -75,7 +75,7 @@ const ContactList = ({
     <div className="w-full border-r border-gray-800 bg-[#121212] h-full overflow-y-auto">
       {/* Title */}
       <div className="px-5 pt-5 pb-2">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] bg-clip-text text-transparent">
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-[#1FFFE0] to-[#249BCA]  bg-clip-text text-transparent">
           Messages
         </h2>
       </div>
@@ -118,7 +118,7 @@ const ContactList = ({
             <div
               key={contact._id}
               className={`px-4 py-3  cursor-pointer custom-scrollbar transition-colors duration-200 hover:bg-[#1a1a1a] ${
-                activeContactId === contact._id ? "bg-[#1a1a1a] border-l-4 border-[#59FFA7]" : ""
+                activeContactId === contact._id ? "bg-[#1a1a1a] border-l-4 border-[#1FFFE0]" : ""
               }`}
               onClick={() => onSelectContact(contact)}
             >
@@ -139,7 +139,7 @@ const ContactList = ({
                     )}
                     {/* Online status indicator */}
                     {contact.isOnline && (
-                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[#121212]"></div>
+                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-[#1FFFE0] rounded-full border-2 border-[#121212]"></div>
                     )}
                   </div>
                   
@@ -163,7 +163,7 @@ const ContactList = ({
                 <div className="flex items-center">
                   {/* Unread message indicator */}
                   {contact.unreadCount > 0 && (
-                    <div className="ml-2 w-5 h-5 flex items-center justify-center bg-[#59FFA7] text-black text-xs font-bold rounded-full">
+                    <div className="ml-2 w-5 h-5 flex items-center justify-center bg-[#1FFFE0] text-black text-xs font-bold rounded-full">
                       {contact.unreadCount}
                     </div>
                   )}

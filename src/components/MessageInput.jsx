@@ -20,7 +20,7 @@ const MessageInput = ({ onSend, isExpired }) => {
         value={message}
         onChange={(e) => !isExpired && setMessage(e.target.value)}  // Only allow changes when not expired
         className={`flex-1 px-4 py-2 text-white bg-[#121212] rounded-full outline-none border ${
-          isExpired ? "border-gray-600 cursor-not-allowed" : "border-gray-700 focus:border-[#59FFA7]"
+          isExpired ? "border-gray-600 cursor-not-allowed" : "border-gray-700 focus:border-[#1FFFE0]"
         }`}
         disabled={isExpired}  // Disable input when expired
       />
@@ -32,13 +32,13 @@ const MessageInput = ({ onSend, isExpired }) => {
         className={`px-4 py-2 font-semibold rounded-full transition duration-300 ${
           isExpired 
             ? "bg-gray-600 text-gray-400 cursor-not-allowed" 
-            : "bg-[#59FFA7] text-black hover:bg-[#2BFFF8]"
+            : "bg-[#1FFFE0] text-black hover:bg-[#249BCA]"
         }`}
       >
         {isExpired ? "Expired" : "Send"}
       </button>
     </form>
   );
-};
+};  
 
 export default MessageInput;
