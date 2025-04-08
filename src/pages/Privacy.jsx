@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 
 const PrivacyPolicy = () => {
   return (
-    <div className="privacy-policy container mx-auto px-4 py-8">
+    <div className="privacy-policy text-white container mt-[1200px] mx-auto px-4 ">
       <Helmet>
         <title>Privacy Policy - PromoterLink</title>
         <meta name="description" content="Read our Privacy Policy to understand how PromoterLink collects, uses, and protects your data." />
