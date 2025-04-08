@@ -270,7 +270,7 @@ style={{marginTop: "0px"}}>
     </div>
     <h3 className="text-white font-semibold mb-1">Story Post</h3>
     <p className="text-sm text-[#ADADAD]">
-      {User.pricing?.storyPost ? `$${User.pricing.storyPost}` : "$100 - $500"}
+      {User.pricing?.storyPost ? `₹${User.pricing.storyPost}` : "Negotiable"}
     </p>
   </div>
 
@@ -285,7 +285,7 @@ style={{marginTop: "0px"}}>
     </div>
     <h3 className="text-white font-semibold mb-1">Feed Post</h3>
     <p className="text-sm text-[#ADADAD]">
-      {User.pricing?.feedPost ? `$${User.pricing.feedPost}` : "$200 - $600"}
+      {User.pricing?.feedPost ? `₹${User.pricing.feedPost}` : "Negotiable"}
     </p>
   </div>
 
@@ -300,7 +300,7 @@ style={{marginTop: "0px"}}>
     </div>
     <h3 className="text-white font-semibold mb-1">Reel</h3>
     <p className="text-sm text-[#ADADAD]">
-      {User.pricing?.reel ? `$${User.pricing.reel}` : "$300 - $700"}
+      {User.pricing?.reel ? `₹${User.pricing.reel}` : "Negotiable"}
     </p>
   </div>
 </div>
@@ -522,49 +522,73 @@ style={{marginTop: "0px"}}>
   </div>
 )}
 
-            {/* Facebook Posts */}
+            {/* YouTube Posts */}
             {filteredPosts.some((post) => post.platform === "YouTube") && (
-              <div>
-                <h2 className="text-sm md:text-xl font-bold mb-2">YouTube Posts</h2>
-                <div className="relative">
-                <button 
-                  className="absolute left-0 top-1/2 -translate-y-1/2 h-14 bg-[#151515] shadow-md shadow-black p-1 md:p-2 rounded-2xl z-10 hover:shadow-2xl hover:shadow-black transition-shadow duration-300"
-                  onClick={() => scroll(fbRef, -1)}
-                >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                      <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#59FFA7" />
-                        <stop offset="100%" stopColor="#2BFFF8" />
-                      </linearGradient>
-                    </defs>
-                    <ChevronLeft size={20} stroke="url(#grad)" strokeWidth="2" />
-                  </svg>
-                </button>
+  <div>
+    <h2 className="text-sm md:text-xl font-bold mb-2">YouTube Posts</h2>
+    <div className="relative">
+      <button 
+        className="absolute left-0 top-1/2 -translate-y-1/2 h-14 bg-[#151515] shadow-md shadow-black p-1 md:p-2 rounded-2xl z-10 hover:shadow-2xl hover:shadow-black transition-shadow duration-300"
+        onClick={() => scroll(fbRef, -1)}
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#59FFA7" />
+              <stop offset="100%" stopColor="#2BFFF8" />
+            </linearGradient>
+          </defs>
+          <ChevronLeft size={20} stroke="url(#grad)" strokeWidth="2" />
+        </svg>
+      </button>
 
-                  <div ref={fbRef} className="flex space-x-4 ml-5 mr-5 overflow-x-auto hide-scrollbar">
-                    {filteredPosts
-                      .filter((post) => post.platform === "YouTube")
-                      .map((post, index) => (
-                        <div key={index} className="relative w-[180px] md:w-[200px] shrink-0">
-                          <img src={post.postLink} alt="Uploaded preview" className="w-50 h-64  object-cover mt-2" />
-                        </div>
-                      ))}
+      <div ref={fbRef} className="flex space-x-4 ml-5 mr-5 overflow-x-auto hide-scrollbar">
+        {filteredPosts
+          .filter((post) => post.platform === "YouTube")
+          .map((post, index) => {
+            // Extract video ID from YouTube URL
+            const getVideoId = (url) => {
+              const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+              const match = url.match(regExp);
+              return (match && match[2].length === 11) ? match[2] : null;
+            };
+            
+            const videoId = getVideoId(post.postLink);
+            
+            return (
+              <div key={index} className="relative w-[350px] md:w-[250px] shrink-0">
+                {videoId && (
+                  <div className="relative w-full h-64 mt-2">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&mute=1`}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                      title={`YouTube video ${index}`}
+                      id={`youtube-iframe-${index}`}
+                    />
+                   
                   </div>
-                  <button className="absolute right-0 top-1/2 -translate-y-1/2 h-14 bg-[#151515] shadow-md shadow-black p-1 md:p-2 rounded-2xl z-10 hover:shadow-2xl hover:shadow-black transition-shadow duration-300" onClick={() => scroll(fbRef, 1)}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                      <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#59FFA7" />
-                        <stop offset="100%" stopColor="#2BFFF8" />
-                      </linearGradient>
-                    </defs>
-                    <ChevronRight size={20} stroke="url(#grad)" strokeWidth="2" />
-                  </svg>
-                  </button>
-                </div>
+                )}
               </div>
-            )}
+            );
+          })}
+      </div>
+      <button className="absolute right-0 top-1/2 -translate-y-1/2 h-14 bg-[#151515] shadow-md shadow-black p-1 md:p-2 rounded-2xl z-10 hover:shadow-2xl hover:shadow-black transition-shadow duration-300" onClick={() => scroll(fbRef, 1)}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#59FFA7" />
+              <stop offset="100%" stopColor="#2BFFF8" />
+            </linearGradient>
+          </defs>
+          <ChevronRight size={20} stroke="url(#grad)" strokeWidth="2" />
+        </svg>
+      </button>
+    </div>
+  </div>
+)}
           </div>
         ) : (
           <p className="text-sm">No posts available.</p>

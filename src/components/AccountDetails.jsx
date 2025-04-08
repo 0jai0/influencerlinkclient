@@ -11,7 +11,7 @@ import {
 const AccountDetails = ({ profile, setProfile }) => {
   // Platform options
   
-console.log(profile.averageLocationOfAudience);
+//console.log(profile.averageLocationOfAudience);
   // Pricing structure
   const pricingStructure = {
     storyPost: profile.pricing?.storyPost || "",
@@ -81,7 +81,7 @@ console.log(profile.averageLocationOfAudience);
   };
   
   return (
-    <div className="w-full h-full bg-[#151515] p-5 shadow-md flex flex-col items-center">
+    <div className="w-full h-full bg-[#151515] p-5 shadow-md  flex flex-col items-center">
       <h2 className="text-xl font-bold mb-6 text-white self-start">Account Details</h2>
 
       <div className="gap-6 w-[90%] flex flex-col items-center">
@@ -96,7 +96,7 @@ console.log(profile.averageLocationOfAudience);
       ...profile,
       socialMediaPlatforms: selectedOptions.map(option => option.value)
     })}
-    className="w-full"
+    className="w-full "
     styles={{
       control: (provided) => ({
         ...provided,
@@ -104,6 +104,10 @@ console.log(profile.averageLocationOfAudience);
         borderColor: "#272727",
         color: "white",
         minHeight: "40px",
+      }),
+      input: (provided) => ({
+        ...provided,
+        color: "white",
       }),
       menu: (provided) => ({
         ...provided,
@@ -132,6 +136,7 @@ console.log(profile.averageLocationOfAudience);
   <div className="flex flex-wrap gap-2 mt-2">
     {platforms
       .filter(platform => !profile.socialMediaPlatforms?.includes(platform))
+      .sort(() => Math.random() - 0.5)
       .map(platform => (
         <button
           key={platform}
@@ -163,6 +168,10 @@ console.log(profile.averageLocationOfAudience);
         color: "white",
         minHeight: "40px",
       }),
+      input: (provided) => ({
+        ...provided,
+        color: "white",
+      }),
       menu: (provided) => ({
         ...provided,
         backgroundColor: "#272727",
@@ -193,6 +202,7 @@ console.log(profile.averageLocationOfAudience);
   <div className="flex flex-wrap gap-2 mt-2">
     {adCategoryOptions
       .filter(option => !profile.adCategories?.includes(option.value))
+      .sort(() => Math.random() - 0.5)
       .slice(0, 5)
       .map(option => (
         <button
@@ -227,6 +237,10 @@ console.log(profile.averageLocationOfAudience);
         color: "white",
         minHeight: "40px",
       }),
+      input: (provided) => ({
+        ...provided,
+        color: "white",
+      }),
       menu: (provided) => ({
         ...provided,
         backgroundColor: "#272727",
@@ -257,6 +271,7 @@ console.log(profile.averageLocationOfAudience);
   <div className="flex flex-wrap gap-2 mt-2">
     {pageContentCategoryOptions
       .filter(option => !profile.pageContentCategory?.includes(option.value))
+      .sort(() => Math.random() - 0.5)
       .slice(0, 5)
       .map(option => (
         <button
@@ -294,6 +309,10 @@ console.log(profile.averageLocationOfAudience);
         color: "white",
         minHeight: "40px",
       }),
+      input: (provided) => ({
+        ...provided,
+        color: "white",
+      }),
       menu: (provided) => ({
         ...provided,
         backgroundColor: "#272727",
@@ -321,6 +340,7 @@ console.log(profile.averageLocationOfAudience);
   <div className="flex flex-wrap gap-2 mt-2">
     {audienceTypeOptions
       .filter(option => !profile.averageAudienceType?.includes(option.value))
+      .sort(() => Math.random() - 0.5)
       .slice(0, 5)
       .map(option => (
         <button
@@ -528,6 +548,7 @@ console.log(profile.averageLocationOfAudience);
                     type="number"
                     placeholder="Number of followers"
                     value={detail.followers || ""}
+                    disabled={detail.verified}
                     onChange={(e) => handleProfileDetailChange(index, "followers", e.target.value)}
                     className="w-full p-2 mt-1 bg-[#1E1E1E] text-white rounded"
                   />

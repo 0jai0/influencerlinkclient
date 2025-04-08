@@ -9,20 +9,65 @@ import 'cropperjs/dist/cropper.css';
 const platformOptions = platforms.map(platform => {
   // Define platform-specific configurations
   const configs = {
-    'Instagram': { dimensions: { width: 1080, height: 1080 }, aspectRatio: 1, icon: '📷' },
-    'Facebook': { dimensions: { width: 1200, height: 630 }, aspectRatio: 1200/630, icon: '👍' },
-    'Twitter': { dimensions: { width: 1200, height: 675 }, aspectRatio: 16/9, icon: '🐦' },
-    'YouTube': { dimensions: { width: 1280, height: 720 }, aspectRatio: 16/9, icon: '▶️' },
-    'WhatsApp': { dimensions: { width: 1280, height: 720 }, aspectRatio: 16/9, icon: '💬' },
-    'TikTok': { dimensions: { width: 1080, height: 1920 }, aspectRatio: 9/16, icon: '🎵' },
-    'LinkedIn': { dimensions: { width: 1200, height: 627 }, aspectRatio: 1200/627, icon: '💼' },
-    'Pinterest': { dimensions: { width: 1000, height: 1500 }, aspectRatio: 2/3, icon: '📌' }
+    'Instagram': { 
+      dimensions: { width: 1080, height: 1080 }, 
+      aspectRatio: 1, 
+      icon: '📷',
+      type: 'image' 
+    },
+    'Facebook': { 
+      dimensions: { width: 1200, height: 630 }, 
+      aspectRatio: 1200/630, 
+      icon: '👍',
+      type: 'image' 
+    },
+    'Twitter': { 
+      dimensions: { width: 1200, height: 675 }, 
+      aspectRatio: 16/9, 
+      icon: '🐦',
+      type: 'image' 
+    },
+    'YouTube': { 
+      dimensions: { width: 1280, height: 720 }, 
+      aspectRatio: 16/9, 
+      icon: '▶️',
+      type: 'video' 
+    },
+    'WhatsApp': { 
+      dimensions: { width: 1280, height: 720 }, 
+      aspectRatio: 16/9, 
+      icon: '💬',
+      type: 'image' 
+    },
+    'TikTok': { 
+      dimensions: { width: 1080, height: 1920 }, 
+      aspectRatio: 9/16, 
+      icon: '🎵',
+      type: 'video' 
+    },
+    'LinkedIn': { 
+      dimensions: { width: 1200, height: 627 }, 
+      aspectRatio: 1200/627, 
+      icon: '💼',
+      type: 'image' 
+    },
+    'Pinterest': { 
+      dimensions: { width: 1000, height: 1500 }, 
+      aspectRatio: 2/3, 
+      icon: '📌',
+      type: 'image' 
+    }
   };
   
   return {
     value: platform,
     label: platform,
-    ...configs[platform] || { dimensions: { width: 1080, height: 1080 }, aspectRatio: 1, icon: '🌐' }
+    ...configs[platform] || { 
+      dimensions: { width: 1080, height: 1080 }, 
+      aspectRatio: 1, 
+      icon: '🌐',
+      type: 'image' 
+    }
   };
 });
 
@@ -32,27 +77,45 @@ const PastPosts = ({ profile, setProfile }) => {
   const [cropping, setCropping] = useState(null);
   const [filterPlatform, setFilterPlatform] = useState('all');
   const [filterCategory, setFilterCategory] = useState('');
+  const [addingNewPost, setAddingNewPost] = useState(false);
+  const [newPostPlatform, setNewPostPlatform] = useState('');
   const fileInputRef = useRef(null);
   const cropperRef = useRef(null);
 
-  // Add a new empty post
+  // Start adding a new post (first step - select platform)
+  const startAddingPost = () => {
+    setAddingNewPost(true);
+    setNewPostPlatform('');
+  };
+
+  // Cancel adding new post
+  const cancelAddPost = () => {
+    setAddingNewPost(false);
+    setNewPostPlatform('');
+  };
+
+  // Add a new empty post after platform is selected
   const addPastPost = () => {
+    if (!newPostPlatform) return;
+    
     setProfile({
       ...profile,
       pastPosts: [
         { 
           category: "", 
           postLink: "", 
-          platform: platforms[0] || "Instagram",
+          platform: newPostPlatform,
           // Temporary client-side only fields (not saved to DB)
           _imageFile: null,
           _originalImage: null,
-          _dimensions: platformOptions.find(p => p.value === (platforms[0] || "Instagram"))?.dimensions
+          _dimensions: platformOptions.find(p => p.value === newPostPlatform)?.dimensions
         },
         ...profile.pastPosts,
       ],
     });
     setExpandedPost(0);
+    setAddingNewPost(false);
+    setNewPostPlatform('');
   };
 
   // Handle changes to post fields
@@ -203,6 +266,12 @@ const PastPosts = ({ profile, setProfile }) => {
     return foundPlatform ? foundPlatform.aspectRatio : 1;
   };
 
+  // Get platform type (image or video)
+  const getPlatformType = (platform) => {
+    const foundPlatform = platformOptions.find(p => p.value === platform);
+    return foundPlatform ? foundPlatform.type : 'image';
+  };
+
   // Get unique categories for filter dropdown
   const uniqueCategories = [...new Set([
     ...adCategoryOptions.map(opt => opt.value),
@@ -265,7 +334,7 @@ const PastPosts = ({ profile, setProfile }) => {
           {/* Add Post Button */}
           <div className="self-end">
             <button 
-              onClick={addPastPost}
+              onClick={startAddingPost}
               className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition flex items-center text-sm md:text-base"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2" viewBox="0 0 20 20" fill="currentColor">
@@ -276,6 +345,51 @@ const PastPosts = ({ profile, setProfile }) => {
           </div>
         </div>
       </div>
+      
+      {/* Add New Post Modal */}
+      {addingNewPost && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+          <div className="bg-[#252525] rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-bold text-white mb-4">Add New Post</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">
+                  Select Platform
+                </label>
+                <select
+                  value={newPostPlatform}
+                  onChange={(e) => setNewPostPlatform(e.target.value)}
+                  className="w-full bg-[#333] border border-[#444] text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                >
+                  <option value="">Select a platform</option>
+                  {platformOptions.map(platform => (
+                    <option key={platform.value} value={platform.value}>
+                      {platform.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={cancelAddPost}
+                  className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={addPastPost}
+                  disabled={!newPostPlatform}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition disabled:opacity-50"
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Hidden file input */}
       <input 
@@ -393,51 +507,88 @@ const PastPosts = ({ profile, setProfile }) => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Post Preview */}
                     <div className="flex flex-col items-center">
-                      <div className="w-full bg-[#333] rounded-md overflow-hidden mb-2 relative"
-                        style={{
-                          aspectRatio: `${getPlatformAspectRatio(post.platform)}`
-                        }}>
-                        {post.postLink ? (
-                          <img 
-                            src={post.postLink} 
-                            alt="Post preview" 
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-500">
-                            No image uploaded
+                      {getPlatformType(post.platform) === 'image' ? (
+                        <>
+                          <div className="w-full bg-[#333] rounded-md overflow-hidden mb-2 relative"
+                            style={{
+                              aspectRatio: `${getPlatformAspectRatio(post.platform)}`
+                            }}>
+                            {post.postLink ? (
+                              <img 
+                                src={post.postLink} 
+                                alt="Post preview" 
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-gray-500">
+                                No image uploaded
+                              </div>
+                            )}
+                            {uploading && cropping === index && (
+                              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                                <div className="animate-spin rounded-full h-6 w-6 md:h-8 md:w-8 border-t-2 border-b-2 border-white"></div>
+                              </div>
+                            )}
                           </div>
-                        )}
-                        {uploading && cropping === index && (
-                          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                            <div className="animate-spin rounded-full h-6 w-6 md:h-8 md:w-8 border-t-2 border-b-2 border-white"></div>
+                          
+                          <div className="text-xs text-gray-400 mb-2">
+                            {post._dimensions?.width}×{post._dimensions?.height}px
                           </div>
-                        )}
-                      </div>
-                      
-                      <div className="text-xs text-gray-400 mb-2">
-                        {post._dimensions?.width}×{post._dimensions?.height}px
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-2 justify-center">
-                        <button
-                          onClick={() => triggerFileInput(index)}
-                          disabled={uploading}
-                          className="px-2 py-1 md:px-3 md:py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs md:text-sm transition"
-                        >
-                          {post.postLink ? 'Change' : 'Upload'}
-                        </button>
-                        {post.postLink && (
-                          <a 
-                            href={post.postLink} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="px-2 py-1 md:px-3 md:py-1 bg-gray-600 hover:bg-gray-700 text-white rounded-md text-xs md:text-sm transition"
-                          >
-                            Open
-                          </a>
-                        )}
-                      </div>
+                          
+                          <div className="flex flex-wrap gap-2 justify-center">
+                            <button
+                              onClick={() => triggerFileInput(index)}
+                              disabled={uploading}
+                              className="px-2 py-1 md:px-3 md:py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs md:text-sm transition"
+                            >
+                              {post.postLink ? 'Change' : 'Upload'}
+                            </button>
+                            {post.postLink && (
+                              <a 
+                                href={post.postLink} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="px-2 py-1 md:px-3 md:py-1 bg-gray-600 hover:bg-gray-700 text-white rounded-md text-xs md:text-sm transition"
+                              >
+                                Open
+                              </a>
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="w-full bg-[#333] rounded-md overflow-hidden mb-2 relative"
+                            style={{
+                              aspectRatio: `${getPlatformAspectRatio(post.platform)}`
+                            }}>
+                            {post.postLink ? (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <div className="text-center p-4">
+                                  <div className="text-4xl mb-2">▶️</div>
+                                  <p className="text-gray-300 text-sm break-all">{post.postLink}</p>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-gray-500">
+                                No video link added
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="w-full space-y-2">
+                            <label className="block text-xs font-medium text-gray-400">
+                              Video URL
+                            </label>
+                            <input
+                              type="text"
+                              value={post.postLink}
+                              onChange={(e) => handlePastPostChange(index, "postLink", e.target.value)}
+                              placeholder="Enter video URL (e.g., https://youtube.com/watch?v=...)"
+                              className="w-full bg-[#333] border border-[#444] text-white rounded-md px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                          </div>
+                        </>
+                      )}
                     </div>
                     
                     {/* Post Details */}
