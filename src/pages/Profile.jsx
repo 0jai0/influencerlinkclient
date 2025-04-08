@@ -7,7 +7,7 @@ import Alert from './Alert';
 const Profile = ({ User, onClose }) => {
   const {  user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  const userId = user?._id;
+  //const userId = user?._id;
   const [isLoading, setIsLoading] = useState(false);
   const isLoadingRef = useRef(false);
   const [contacts, setContacts] = useState([]);
@@ -258,9 +258,51 @@ style={{marginTop: "0px"}}>
 
 
           <div>
-          <div className="w-[250px] h-[150px] border border-gray-500 p-2 rounded-md flex items-center justify-center">
-  <p className="text-xs md:text-sm text-[#ADADAD]">{userId}  $100 - $500</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+  {/* Story Post Pricing */}
+  <div className="w-full h-[150px] border border-gray-700 bg-[#1E1E1E] rounded-lg p-4 flex flex-col items-center justify-center">
+    <div className="bg-gradient-to-r from-[#7928CA] to-[#FF0080] p-1 rounded-full mb-3">
+      <div className="bg-[#1E1E1E] rounded-full p-2">
+        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+        </svg>
+      </div>
+    </div>
+    <h3 className="text-white font-semibold mb-1">Story Post</h3>
+    <p className="text-sm text-[#ADADAD]">
+      {User.pricing?.storyPost ? `$${User.pricing.storyPost}` : "$100 - $500"}
+    </p>
+  </div>
 
+  {/* Feed Post Pricing */}
+  <div className="w-full h-[150px] border border-gray-700 bg-[#1E1E1E] rounded-lg p-4 flex flex-col items-center justify-center">
+    <div className="bg-gradient-to-r from-[#4FACFE] to-[#00F2FE] p-1 rounded-full mb-3">
+      <div className="bg-[#1E1E1E] rounded-full p-2">
+        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </div>
+    </div>
+    <h3 className="text-white font-semibold mb-1">Feed Post</h3>
+    <p className="text-sm text-[#ADADAD]">
+      {User.pricing?.feedPost ? `$${User.pricing.feedPost}` : "$200 - $600"}
+    </p>
+  </div>
+
+  {/* Reel Pricing */}
+  <div className="w-full h-[150px] border border-gray-700 bg-[#1E1E1E] rounded-lg p-4 flex flex-col items-center justify-center">
+    <div className="bg-gradient-to-r from-[#F5515F] to-[#A1051D] p-1 rounded-full mb-3">
+      <div className="bg-[#1E1E1E] rounded-full p-2">
+        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+        </svg>
+      </div>
+    </div>
+    <h3 className="text-white font-semibold mb-1">Reel</h3>
+    <p className="text-sm text-[#ADADAD]">
+      {User.pricing?.reel ? `$${User.pricing.reel}` : "$300 - $700"}
+    </p>
+  </div>
 </div>
 
 {/* Buttons */}
@@ -401,52 +443,89 @@ style={{marginTop: "0px"}}>
           <div className="space-y-6">
             {/* Instagram Posts */}
             {filteredPosts.some((post) => post.platform === "Instagram") && (
-              <div>
-                <h2 className="text-sm md:text-xl font-bold mb-2">Instagram Posts</h2>
-                <div className="relative">
-                <button 
-                  className="absolute left-0 top-1/2 -translate-y-1/2 h-14 bg-[#151515] shadow-md shadow-black p-1 md:p-2 rounded-2xl z-10 hover:shadow-2xl hover:shadow-black transition-shadow duration-300"
-                  onClick={() => scroll(instaRef, -1)}
-                >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                      <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#59FFA7" />
-                        <stop offset="100%" stopColor="#2BFFF8" />
-                      </linearGradient>
-                    </defs>
-                    <ChevronLeft size={20} stroke="url(#grad)" strokeWidth="2" />
-                  </svg>
-                </button>
+  <div className="mb-8">
+    <h2 className="text-sm md:text-xl font-bold mb-4 ml-2">Instagram Posts</h2>
+    <div className="relative">
+      <button 
+        className="absolute left-0 top-1/2 -translate-y-1/2 h-14 bg-[#151515] shadow-md shadow-black p-1 md:p-2 rounded-2xl z-10 hover:shadow-2xl hover:shadow-black transition-shadow duration-300"
+        onClick={() => scroll(instaRef, -1)}
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#59FFA7" />
+              <stop offset="100%" stopColor="#2BFFF8" />
+            </linearGradient>
+          </defs>
+          <ChevronLeft size={20} stroke="url(#grad)" strokeWidth="2" />
+        </svg>
+      </button>
 
-                  <div ref={instaRef} className="flex space-x-4 ml-5 mr-5 overflow-x-auto hide-scrollbar">
-                    {filteredPosts
-                      .filter((post) => post.platform === "Instagram")
-                      .map((post, index) => (
-                        <div key={index} className="relative w-[180px] md:w-[200px] shrink-0">
-                          <img src={post.postLink} alt="Uploaded preview" className="w-50 h-64  object-cover mt-2" />
-                        </div>
-                      ))}
+      <div ref={instaRef} className="flex space-x-6 ml-5 mr-5 overflow-x-auto hide-scrollbar">
+        {filteredPosts
+          .filter((post) => post.platform === "Instagram")
+          .map((post, index) => (
+            <div key={index} className="relative shrink-0 bg-black rounded-lg shadow-lg overflow-hidden  w-[250px]">
+              {/* Instagram header */}
+              <div className="flex items-center p-3 border-b border-gray-200">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 to-pink-500 p-0.5">
+                  <div className=" rounded-full p-0.5">
+                    <div className="w-6 h-6 rounded-full bg-gray-200 overflow-hidden">
+                      {/* You could add a profile image here if available */}
+                    </div>
                   </div>
-                  <button className="absolute right-0 top-1/2 -translate-y-1/2 h-14 bg-[#151515] shadow-md shadow-black p-1 md:p-2 rounded-2xl z-10 hover:shadow-2xl hover:shadow-black transition-shadow duration-300" onClick={() => scroll(instaRef, 1)}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                      <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#59FFA7" />
-                        <stop offset="100%" stopColor="#2BFFF8" />
-                      </linearGradient>
-                    </defs>
-                    <ChevronRight size={20} stroke="url(#grad)" strokeWidth="2" />
+                </div>
+                <span className="font-semibold text-sm ml-3">{User.ownerName}</span>
+                <div className="ml-auto">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                   </svg>
-                  </button>
                 </div>
               </div>
-            )}
+              
+              {/* Instagram image */}
+              <div className="w-[250px] h-[300px] bg-gray-100 overflow-hidden flex items-center justify-center">
+                <img 
+                  src={post.postLink} 
+                  alt="Instagram post" 
+                  className="w-full h-full object-cover" 
+                />
+              </div>
+              
+              {/* Instagram action buttons */}
+              <div className="p-3">
+                
+                
+                
+                
+                {/* Comments */}
+                <div className="text-sm text-gray-500 mt-1">Visit profile from above Accounts</div>
+                
+            
+              </div>
+            </div>
+          ))}
+      </div>
+      
+      <button className="absolute right-0 top-1/2 -translate-y-1/2 h-14 bg-[#151515] shadow-md shadow-black p-1 md:p-2 rounded-2xl z-10 hover:shadow-2xl hover:shadow-black transition-shadow duration-300" onClick={() => scroll(instaRef, 1)}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#59FFA7" />
+              <stop offset="100%" stopColor="#2BFFF8" />
+            </linearGradient>
+          </defs>
+          <ChevronRight size={20} stroke="url(#grad)" strokeWidth="2" />
+        </svg>
+      </button>
+    </div>
+  </div>
+)}
 
             {/* Facebook Posts */}
-            {filteredPosts.some((post) => post.platform === "Facebook") && (
+            {filteredPosts.some((post) => post.platform === "YouTube") && (
               <div>
-                <h2 className="text-sm md:text-xl font-bold mb-2">Facebook Posts</h2>
+                <h2 className="text-sm md:text-xl font-bold mb-2">YouTube Posts</h2>
                 <div className="relative">
                 <button 
                   className="absolute left-0 top-1/2 -translate-y-1/2 h-14 bg-[#151515] shadow-md shadow-black p-1 md:p-2 rounded-2xl z-10 hover:shadow-2xl hover:shadow-black transition-shadow duration-300"
@@ -465,7 +544,7 @@ style={{marginTop: "0px"}}>
 
                   <div ref={fbRef} className="flex space-x-4 ml-5 mr-5 overflow-x-auto hide-scrollbar">
                     {filteredPosts
-                      .filter((post) => post.platform === "Facebook")
+                      .filter((post) => post.platform === "YouTube")
                       .map((post, index) => (
                         <div key={index} className="relative w-[180px] md:w-[200px] shrink-0">
                           <img src={post.postLink} alt="Uploaded preview" className="w-50 h-64  object-cover mt-2" />
