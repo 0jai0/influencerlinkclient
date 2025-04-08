@@ -204,7 +204,7 @@ const Main = () => {
             // Refresh contacts and users
             fetchContacts();
             fetchUsers();
-            
+            isLoadingRef.current = false;
             resolve(response.data);
           } catch (error) {
             isLoadingRef.current = false;
@@ -224,10 +224,17 @@ const Main = () => {
           }
         },
         onCancel: () => {
-          setAlert(null);
           isLoadingRef.current = false;
+          setAlert(null);
+          console.log("oiuhjk");
+          //isLoadingRef.current = false;
           //setIsLoading(false);
         },
+        onClose: () => {  // Add this handler for when alert is closed by clicking outside
+          isLoadingRef.current = false;
+          setAlert(null);
+          //reject(new Error("Alert closed"));
+        }
       });
     });
   };
@@ -559,65 +566,69 @@ const Main = () => {
     </div>
   ) : (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-        {users.map((user) => (
-          <div
-            key={user._id}
-            className="relative p-4 border border-gray-800 rounded-3xl shadow-md bg-[#202020] hover:shadow-lg transition-all duration-300 cursor-pointer group h-[100px] hover:h-[160px] overflow-hidden"
-            onClick={() => setSelectedUser(user)}
-          >
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#1FFFE0]">
-                <img
-                  src={user.profilePicUrl || "https://via.placeholder.com/100"}
-                  alt={`${user.ownerName}'s profile`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div>
-                <h3 className="font-bold text-lg text-white truncate">
-                  {user.ownerName}
-                </h3>
-                {user.profileDetails.length > 0 ? (
-                  user.profileDetails.map((profile, index) => (
-                    <div key={index} className="text-sm md:text-lg">
-                      {profile.platform.toLowerCase() === "instagram" && profile.followers && (
-                        <p className="bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] text-transparent bg-clip-text font-sans">
-                          {isFormatted(profile.followers) ? profile.followers : formatFollowers(profile.followers)} Followers
-                        </p>
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-sm">No profile details available.</p>
-                )}
-              </div>
-            </div>
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-full flex justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleAddToList(user);
-                }}
-                disabled={isLoadingRef.current}
-                className="px-4 py-2 rounded-md transition-all duration-300 border border-[#1FFFE0] bg-transparent text-white hover:bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] hover:text-black"
-              >
-                {isLoadingRef.current ? "Adding..." : "Add to List"}
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleChatNow(user);
-                }}
-                disabled={isLoadingRef.current}
-                className="px-4 py-2 rounded-md transition-all duration-300 border border-[#1FFFE0] bg-transparent text-white hover:bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] hover:text-black"
-              >
-                {isLoadingRef.current ? "Loading..." : "Chat Now"}
-              </button>
-            </div>
-          </div>
-        ))}
+   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+  {users.map((user) => (
+    <div
+      key={user._id}
+      className="group relative p-4 border border-gray-800 rounded-3xl shadow-md bg-[#202020] transition-all duration-300 cursor-pointer
+                h-[160px] sm:h-[100px] sm:hover:h-[160px] overflow-hidden"
+      onClick={() => setSelectedUser(user)}
+    >
+      {/* Card Content */}
+      <div className="flex items-center space-x-4">
+        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#1FFFE0]">
+          <img
+            src={user.profilePicUrl || 
+                 `https://api.dicebear.com/7.x/lorelei/svg?seed=${encodeURIComponent(user.ownerName)}&radius=50&backgroundColor=1a1a1a`}
+            alt={`${user.ownerName}'s profile`}
+            className="w-16 h-16 rounded-full object-cover border-2 border-gray-700"
+            onError={(e) => {
+              e.target.src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.ownerName)}&radius=50`;
+            }}
+          />
+        </div>
+        <div>
+          <h3 className="font-bold text-lg text-white truncate">
+            {user.ownerName}
+          </h3>
+          {user.profileDetails.map((profile, index) => (
+            profile.platform.toLowerCase() === "instagram" && profile.followers && (
+              <p key={index} className="bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] text-transparent bg-clip-text font-sans">
+                {isFormatted(profile.followers) ? profile.followers : formatFollowers(profile.followers)} Followers
+              </p>
+            )
+          ))}
+        </div>
       </div>
+
+      {/* Buttons - Always visible on mobile, hover-reveal on desktop */}
+      <div className="mt-4 sm:absolute sm:bottom-4 sm:left-0 sm:right-0 sm:px-4
+                    flex sm:opacity-0 sm:group-hover:opacity-100 sm:translate-y-2 sm:group-hover:translate-y-0
+                    transition-all duration-300 justify-center space-x-2">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleAddToList(user);
+          }}
+          disabled={isLoadingRef.current}
+          className="px-4 py-2 rounded-md transition-all duration-300 border border-[#1FFFE0] bg-transparent text-white hover:bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] hover:text-black"
+        >
+           {isLoadingRef.current ? "Adding..." : "Add to List"}
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleChatNow(user);
+          }}
+          disabled={isLoadingRef.current}
+          className="px-4 py-2 rounded-md transition-all duration-300 border border-[#1FFFE0] bg-transparent text-white hover:bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] hover:text-black"
+        >
+           {isLoadingRef.current ? "Loading..." : "Chat Now"}
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
      
      
       {/* Pagination */}

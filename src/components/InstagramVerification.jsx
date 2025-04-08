@@ -117,6 +117,12 @@ const InstagramVerification = ({ profile, setProfile, userId }) => {
             <span className="text-[#2BFFF8] font-bold">STEP 1</span>: Click the below link to follow our Instagram profile with the same account 
             (you can unfollow after verification).
           </p>
+          <button 
+  onClick={() => window.open('https://www.instagram.com/promoterlink_official/?igsh=ejJpbHc0NTJ2endm', '_blank')}
+  className="bg-gradient-to-r from-[#405DE6] via-[#833AB4] to-[#FD1D1D] text-white px-6 py-3 rounded-lg font-bold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:translate-y-0"
+>
+  Follow @promoterlink_official
+</button>
           <p className="text-gray-400">
             <span className="text-[#2BFFF8] font-bold">STEP 2</span>: Click "Send OTP" to receive the verification code in your Instagram DM.
           </p>
@@ -158,7 +164,7 @@ const InstagramVerification = ({ profile, setProfile, userId }) => {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 className="flex-1 p-2 bg-black rounded text-white"
-                disabled={!userExists || !otpSent}
+                disabled={!userExists || otpSent}
               />
 
               <button

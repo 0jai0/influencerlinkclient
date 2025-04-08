@@ -12,15 +12,7 @@ const ContactList = ({
   const [showRemoveConfirm, setShowRemoveConfirm] = useState(null);
 
   // Generate consistent color based on contact ID
-  const getContactColor = (id) => {
-    const colors = [
-      'bg-blue-500', 'bg-green-500', 'bg-purple-500', 
-      'bg-pink-500', 'bg-orange-500', 'bg-teal-500',
-      'bg-indigo-500', 'bg-red-500', 'bg-yellow-500'
-    ];
-    const hash = id ? id.toString().split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) : 0;
-    return colors[hash % colors.length];
-  };
+  
 
   useEffect(() => {
     setUsers(contacts);
@@ -109,115 +101,106 @@ const ContactList = ({
       {/* Contact List */}
       {Array.isArray(filteredUsers) && filteredUsers.length > 0 ? (
         filteredUsers.map((contact) => {
-          const colorClass = getContactColor(contact._id);
-          const initials = contact.ownerName 
-            ? contact.ownerName.split(' ').map(n => n[0]).join('').toUpperCase()
-            : '?';
-            
+          
           return (
             <div
-              key={contact._id}
-              className={`px-4 py-3  cursor-pointer custom-scrollbar transition-colors duration-200 hover:bg-[#1a1a1a] ${
-                activeContactId === contact._id ? "bg-[#1a1a1a] border-l-4 border-[#1FFFE0]" : ""
-              }`}
-              onClick={() => onSelectContact(contact)}
-            >
-              <div className="flex items-center justify-between w-full">
-                <div className="flex items-center space-x-3">
-                  {/* Profile Picture with Fallback */}
-                  <div className="relative">
-                    {contact.profilePicUrl ? (
-                      <img
-                        src={contact.profilePicUrl}
-                        alt={`${contact.ownerName}'s profile`}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-gray-700"
-                      />
-                    ) : (
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold ${colorClass}`}>
-                        {initials}
-                      </div>
-                    )}
-                    {/* Online status indicator */}
-                    {contact.isOnline && (
-                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-[#1FFFE0] rounded-full border-2 border-[#121212]"></div>
-                    )}
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-baseline">
-                      <strong className="text-white font-medium truncate max-w-[150px]">
-                        {contact.ownerName}
-                      </strong>
-                      {contact.lastMessageTimestamp && (
-                        <span className="text-xs text-gray-500 ml-2 whitespace-nowrap">
-                          {formatDate(contact.lastMessageTimestamp)}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm text-gray-400 truncate">
-                      {contact.lastMessage || ""}
-                    </p>
-                  </div>
-                </div>
+  key={contact._id}
+  className={`px-4 py-3 cursor-pointer custom-scrollbar transition-colors duration-200 hover:bg-[#1a1a1a] ${
+    activeContactId === contact._id ? "bg-[#1a1a1a] border-l-4 border-[#1FFFE0]" : ""
+  }`}
+  onClick={() => onSelectContact(contact)}
+>
+  <div className="flex items-center justify-between w-full">
+    <div className="flex items-center space-x-3">
+      {/* Profile Picture with Artistic Fallback */}
+      <div className="relative">
+        <img
+          src={contact.profilePicUrl || 
+               `https://api.dicebear.com/7.x/lorelei/svg?seed=${encodeURIComponent(contact.ownerName)}&radius=50&backgroundColor=1a1a1a`}
+          alt={`${contact.ownerName}'s profile`}
+          className="w-12 h-12 rounded-full object-cover border-2 border-gray-700"
+          onError={(e) => {
+            e.target.src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(contact.ownerName)}&radius=50`;
+          }}
+        />
+        {/* Online status indicator */}
+        {contact.isOnline && (
+          <div className="absolute bottom-0 right-0 w-3 h-3 bg-[#1FFFE0] rounded-full border-2 border-[#121212]"></div>
+        )}
+      </div>
+      
+      <div className="flex-1 min-w-0">
+        <div className="flex justify-between items-baseline">
+          <strong className="text-white font-medium truncate max-w-[150px]">
+            {contact.ownerName}
+          </strong>
+          {contact.lastMessageTimestamp && (
+            <span className="text-xs text-gray-500 ml-2 whitespace-nowrap">
+              {formatDate(contact.lastMessageTimestamp)}
+            </span>
+          )}
+        </div>
+        <p className="text-sm text-gray-400 truncate">
+          {contact.lastMessage || ""}
+        </p>
+      </div>
+    </div>
 
-                <div className="flex items-center">
-                  {/* Unread message indicator */}
-                  {contact.unreadCount > 0 && (
-                    <div className="ml-2 w-5 h-5 flex items-center justify-center bg-[#1FFFE0] text-black text-xs font-bold rounded-full">
-                      {contact.unreadCount}
-                    </div>
-                  )}
-                  
-                  {/* Remove button */}
-                  <button 
-                    onClick={(e) => handleRemoveClick(e, contact.user._id)}
-                    className="ml-2 text-gray-400 hover:text-red-500 transition-colors"
-                  >
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      width="16" 
-                      height="16" 
-                      viewBox="0 0 24 24" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      strokeWidth="2" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-             
-              
+    <div className="flex items-center">
+      {/* Unread message indicator */}
+      {contact.unreadCount > 0 && (
+        <div className="ml-2 w-5 h-5 flex items-center justify-center bg-[#1FFFE0] text-black text-xs font-bold rounded-full">
+          {contact.unreadCount}
+        </div>
+      )}
+      
+      {/* Remove button */}
+      <button 
+        onClick={(e) => handleRemoveClick(e, contact.user._id)}
+        className="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+      >
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          width="16" 
+          height="16" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="2" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
 
-
-              {/* Remove confirmation */}
-              {showRemoveConfirm === contact.user._id && (
-                <div 
-                  className="absolute right-4 mt-2 bg-[#1a1a1a] p-3 rounded-lg shadow-lg border border-gray-700 z-10"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <p className="text-sm text-white mb-2">Remove this contact?</p>
-                  <div className="flex justify-end space-x-2">
-                    <button 
-                      onClick={(e) => cancelRemove(e)}
-                      className="px-3 py-1 text-sm text-gray-300 hover:text-white"
-                    >
-                      Cancel
-                    </button>
-                    <button 
-                      onClick={(e) => confirmRemove(e, contact.user._id)}
-                      className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+  {/* Remove confirmation */}
+  {showRemoveConfirm === contact.user._id && (
+    <div 
+      className="absolute right-4 mt-2 bg-[#1a1a1a] p-3 rounded-lg shadow-lg border border-gray-700 z-10"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <p className="text-sm text-white mb-2">Remove this contact?</p>
+      <div className="flex justify-end space-x-2">
+        <button 
+          onClick={(e) => cancelRemove(e)}
+          className="px-3 py-1 text-sm text-gray-300 hover:text-white"
+        >
+          Cancel
+        </button>
+        <button 
+          onClick={(e) => confirmRemove(e, contact.user._id)}
+          className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+        >
+          Remove
+        </button>
+      </div>
+    </div>
+  )}
+</div>
             
           );
         })

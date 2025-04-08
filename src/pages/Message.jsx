@@ -335,11 +335,15 @@ const Chat = () => {
             {/* Chat Header */}
             <div className="flex items-center text-left bg-[#121212] py-3 px-4 font-bold shadow-lg shadow-black">
               <div className="w-[40px] h-[40px] mr-4 relative overflow-hidden rounded-full">
-                <img
-                  src={activeContact.profilePicUrl || "https://via.placeholder.com/100"}
-                  alt={`${activeContact.ownerName}'s profile`}
-                  className="w-full h-full object-cover"
-                />
+              <img
+          src={activeContact.profilePicUrl || 
+               `https://api.dicebear.com/7.x/lorelei/svg?seed=${encodeURIComponent(activeContact.ownerName)}&radius=50&backgroundColor=1a1a1a`}
+          alt={`${activeContact.ownerName}'s profile`}
+          className="w-12 h-12 rounded-full object-cover border-2 border-gray-700"
+          onError={(e) => {
+            e.target.src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(activeContact.ownerName)}&radius=50`;
+          }}
+        />
               </div>
               <span className="bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] bg-clip-text text-transparent">
                 {activeContact.ownerName}

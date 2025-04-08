@@ -1,14 +1,30 @@
+import { 
+  platforms,
+  adCategoryOptions
+} from '../constants';
 import { useState, useRef } from 'react';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 
-const platformOptions = [
-  { value: 'Instagram', label: 'Instagram', dimensions: { width: 1080, height: 1080 }, aspectRatio: 9/12, icon: '📷' },
-  { value: 'Facebook', label: 'Facebook', dimensions: { width: 1200, height: 630 }, aspectRatio: 1200/630, icon: '👍' },
-  { value: 'Twitter', label: 'Twitter', dimensions: { width: 1200, height: 675 }, aspectRatio: 16/9, icon: '🐦' },
-  { value: 'YouTube', label: 'YouTube', dimensions: { width: 1280, height: 720 }, aspectRatio: 16/9, icon: '▶️' },
-  { value: 'WhatsApp', label: 'WhatsApp', dimensions: { width: 1280, height: 720 }, aspectRatio: 16/9, icon: '💬' },
-];
+const platformOptions = platforms.map(platform => {
+  // Define platform-specific configurations
+  const configs = {
+    'Instagram': { dimensions: { width: 1080, height: 1080 }, aspectRatio: 1, icon: '📷' },
+    'Facebook': { dimensions: { width: 1200, height: 630 }, aspectRatio: 1200/630, icon: '👍' },
+    'Twitter': { dimensions: { width: 1200, height: 675 }, aspectRatio: 16/9, icon: '🐦' },
+    'YouTube': { dimensions: { width: 1280, height: 720 }, aspectRatio: 16/9, icon: '▶️' },
+    'WhatsApp': { dimensions: { width: 1280, height: 720 }, aspectRatio: 16/9, icon: '💬' },
+    'TikTok': { dimensions: { width: 1080, height: 1920 }, aspectRatio: 9/16, icon: '🎵' },
+    'LinkedIn': { dimensions: { width: 1200, height: 627 }, aspectRatio: 1200/627, icon: '💼' },
+    'Pinterest': { dimensions: { width: 1000, height: 1500 }, aspectRatio: 2/3, icon: '📌' }
+  };
+  
+  return {
+    value: platform,
+    label: platform,
+    ...configs[platform] || { dimensions: { width: 1080, height: 1080 }, aspectRatio: 1, icon: '🌐' }
+  };
+});
 
 const PastPosts = ({ profile, setProfile }) => {
   const [expandedPost, setExpandedPost] = useState(null);
@@ -27,11 +43,11 @@ const PastPosts = ({ profile, setProfile }) => {
         { 
           category: "", 
           postLink: "", 
-          platform: "Instagram",
+          platform: platforms[0] || "Instagram",
           // Temporary client-side only fields (not saved to DB)
           _imageFile: null,
           _originalImage: null,
-          _dimensions: platformOptions.find(p => p.value === "Instagram")?.dimensions
+          _dimensions: platformOptions.find(p => p.value === (platforms[0] || "Instagram"))?.dimensions
         },
         ...profile.pastPosts,
       ],
@@ -74,7 +90,6 @@ const PastPosts = ({ profile, setProfile }) => {
       }
   
       const data = await response.json();
-      //console.log(data);
       return data.secure_url;
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -89,7 +104,6 @@ const PastPosts = ({ profile, setProfile }) => {
     const file = e.target.files[0];
     if (!file) return;
   
-    // Show the original image for cropping
     const reader = new FileReader();
     reader.onload = () => {
       const updatedPosts = [...profile.pastPosts];
@@ -119,18 +133,15 @@ const PastPosts = ({ profile, setProfile }) => {
     setUploading(true);
     
     try {
-      // Convert canvas to blob
       canvas.toBlob(async (blob) => {
         try {
-          // Upload the cropped image
           const imageUrl = await uploadImageToCloudinary(blob);
           
-          // Update the post with the new image URL
           const updatedPosts = [...profile.pastPosts];
           updatedPosts[index] = { 
             ...updatedPosts[index], 
             postLink: imageUrl,
-            _originalImage: null // Clear the temporary original image
+            _originalImage: null
           };
           
           setProfile({ ...profile, pastPosts: updatedPosts });
@@ -159,8 +170,6 @@ const PastPosts = ({ profile, setProfile }) => {
     setProfile({ ...profile, pastPosts: updatedPosts });
     setCropping(null);
   };
-
-  
 
   // Remove post
   const removePost = (index) => {
@@ -195,7 +204,10 @@ const PastPosts = ({ profile, setProfile }) => {
   };
 
   // Get unique categories for filter dropdown
-  const uniqueCategories = [...new Set(profile.pastPosts.map(post => post.category).filter(Boolean))];
+  const uniqueCategories = [...new Set([
+    ...adCategoryOptions.map(opt => opt.value),
+    ...profile.pastPosts.map(post => post.category).filter(Boolean)
+  ])];
 
   // Filter posts based on selected filters
   const filteredPosts = profile.pastPosts.filter(post => {
@@ -206,10 +218,10 @@ const PastPosts = ({ profile, setProfile }) => {
  
   return (
     <div className="w-[100%] bg-[#151515] p-4 md:p-6 rounded-lg shadow-lg">
-      <div className="flex  mb-6 gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h2 className="text-2xl font-bold text-white">Past Posts</h2>
         
-        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           {/* Platform Filter */}
           <div className="flex-1 min-w-[150px]">
             <label htmlFor="platform-filter" className="block text-sm font-medium text-gray-400 mb-1">
@@ -259,7 +271,7 @@ const PastPosts = ({ profile, setProfile }) => {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
               </svg>
-              <span className="">Add Post</span>
+              <span>Add Post</span>
             </button>
           </div>
         </div>
@@ -434,13 +446,18 @@ const PastPosts = ({ profile, setProfile }) => {
                         <label className="block text-xs md:text-sm font-medium text-gray-400">
                           Category
                         </label>
-                        <input
-                          type="text"
-                          placeholder="e.g. Fashion, Food, Travel"
+                        <select
                           value={post.category}
                           onChange={(e) => handlePastPostChange(index, "category", e.target.value)}
                           className="w-full bg-[#333] border border-[#444] text-white rounded-md px-2 py-1 md:px-3 md:py-2 text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
+                        >
+                          <option value="">Select a category</option>
+                          {adCategoryOptions.map(option => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                       
                       <div className="space-y-1 md:space-y-2">

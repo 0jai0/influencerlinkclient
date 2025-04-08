@@ -7,7 +7,7 @@ const Alert = ({
   onClose, 
   onConfirm, 
   onCancel, 
-  duration = 30000,
+  duration = 3000,
   title,
   confirmText = 'OK',
   cancelText = 'Cancel'
