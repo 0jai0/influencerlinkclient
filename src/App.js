@@ -17,6 +17,7 @@ import PrivateRoute from "./PrivateRoute";
 import { requestNotificationPermission } from "./firebase"; // Import Firebase function
 import AdminLogin from "./pages/AdminLogin";
 import InstagramOTPDashboard from "./pages/InstagramOTPDashboard";
+import PrivacyPolicy from "./pages/Privacy";
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
           <Route path="/RegisterUser" element={<RegisterUser />} />
           <Route path="/login" element={<Login />} />
           <Route path="/adminLogin" element={<AdminLogin />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
           {/* Protected Routes */}
           <Route path="/UpdateProfile" element={<PrivateRoute element={<UpdateProfile />} />} />
