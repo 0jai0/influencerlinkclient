@@ -399,7 +399,7 @@ const Main = () => {
 
     {/* Chat Button */} 
     <button
-  className="relative p-3 rounded-full  text-black hover:bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] transition-all duration-300 shadow-lg hover:shadow-[#59FFA7]/30 active:scale-95 group"
+  className="relative p-3 rounded-full  text-black hover:bg-gradient-to-r from-[#324442] to-[#249BCA] transition-all duration-300 shadow-lg hover:shadow-[#59FFA7]/90 active:scale-95 group"
   onClick={() => navigate(`/MessagingApp/${user?._id}`)}
 >
   {/* Unread message indicator (optional) */}
@@ -694,8 +694,8 @@ const Main = () => {
           <span className={`${
             isAuthenticated && user?.linkCoins >= 5 
               ? 'bg-gradient-to-r from-[#1FFFE0] to-[#249BCA]' 
-              : 'text-gray-400'
-          } text-transparent bg-clip-text transition-all duration-300 hover:text-black`}>
+              : 'text-gray-400 bg-black'
+          }  bg-clip-text transition-all duration-300 hover:text-black hover:bg-black`}>
             🔒
           </span>
           {!isAuthenticated || !user ? "Unlock Now" : (user.linkCoins >= 5 ? "Unlock Now" : "Need 5 Coins")}

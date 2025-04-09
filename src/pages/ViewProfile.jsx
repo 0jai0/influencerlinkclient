@@ -254,7 +254,12 @@ const Profile = () => {
             className="w-60 h-50 md:w-50 md:h-50 rounded-xl object-cover border border-gray-500 shadow-md"
           />
           <h2 className="text-lg md:text-2xl font-sans text-[#ADADAD]">{user.ownerName}</h2>
-
+          <div className="reletive  left-1/2 transform  bg-[#3a3a3a] px-3 py-1 rounded-full flex items-center">
+      <span className="text-xs md:text-sm text-white mr-1">Promotions:</span>
+      <span className="text-xs md:text-sm bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-transparent bg-clip-text font-bold">
+        {allPastPosts.length}
+      </span>
+    </div>
           {/* Followers */}
           {user.profileDetails.length > 0 ? (
             user.profileDetails.map((profile, index) => (

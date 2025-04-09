@@ -2,7 +2,7 @@ import React from "react";
 
 const Banner = () => {
   return (
-    <div className="h-64 md:h-80 bg-[#131313] my-4 mx-2 md:mx-4 p-1 md:p-1 rounded-lg flex flex-col items-start justify-center">
+    <div className="h-64 md:h-80 bg-[#131313] my-1 mx-1 md:mx-4 p-1 md:p-1 rounded-lg flex flex-col items-start justify-center">
       <div className="relative h-full w-full rounded-xl overflow-hidden group transition-all duration-300">
       <img 
         src="/web_baner_1.jpg"  // Ensure this path is correct for your project structure
