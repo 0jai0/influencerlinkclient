@@ -59,7 +59,7 @@ const UserDropdown = ({ onClose }) => {
 
     <button
       onClick={() => {
-        navigate("/change-password");
+        navigate("/forgot-password");
         onClose();
       }}
       className="flex items-center px-3 py-2 text-white hover:bg-[#1FFFE0]/10 hover:text-[#1FFFE0] transition-colors text-sm"

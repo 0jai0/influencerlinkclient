@@ -181,11 +181,17 @@ const Login = () => {
             </GoogleOAuthProvider>
           </div>
 
-          {/* Don't have account link */}
-          <p className="text-center mt-6 text-gray-400">
-            Don't have an account?{' '}
-            <a href="/Register" className="text-blue-500 hover:underline">Sign up</a>
-          </p>
+         {/* Don't have account and Forgot password links */}
+<div className="flex flex-col items-center mt-6 space-y-2">
+  <p className="text-gray-400">
+    Don't have an account?{' '}
+    <a href="/Register" className="text-blue-500 hover:underline">Sign up</a>
+  </p>
+  <p className="text-gray-400">
+    Forgot your password?{' '}
+    <a href="/forgot-password" className="text-blue-500 hover:underline">Reset it</a>
+  </p>
+</div>
         </div>
       </div>
     </div>

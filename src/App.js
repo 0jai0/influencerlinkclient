@@ -18,7 +18,7 @@ import { requestNotificationPermission } from "./firebase"; // Import Firebase f
 import AdminLogin from "./pages/AdminLogin";
 import InstagramOTPDashboard from "./pages/InstagramOTPDashboard";
 import PrivacyPolicy from "./pages/Privacy";
-
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   const dispatch = useDispatch();
@@ -42,6 +42,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/adminLogin" element={<AdminLogin />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           {/* Protected Routes */}
           <Route path="/UpdateProfile" element={<PrivateRoute element={<UpdateProfile />} />} />
