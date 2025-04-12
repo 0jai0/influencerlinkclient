@@ -638,7 +638,7 @@ const PastPosts = ({ profile, setProfile }) => {
                   </div>
                 </div>
               )}
-            </div>
+            </div> 
           ))}
         </div>
       )}

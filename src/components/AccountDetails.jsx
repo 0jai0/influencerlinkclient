@@ -79,6 +79,24 @@ const AccountDetails = ({ profile, setProfile }) => {
       ],
     });
   };
+  const addLocation = (location) => {
+    setProfile({
+      ...profile,
+      averageLocationOfAudience: [
+        ...(profile.averageLocationOfAudience || []),
+        location
+      ]
+    });
+  };
+  
+  const removeLocation = (index) => {
+    const updatedLocations = [...profile.averageLocationOfAudience];
+    updatedLocations.splice(index, 1);
+    setProfile({
+      ...profile,
+      averageLocationOfAudience: updatedLocations
+    });
+  };
   
   return (
     <div className="w-full h-full bg-[#151515] p-5 shadow-md  flex flex-col items-center">
@@ -362,57 +380,36 @@ const AccountDetails = ({ profile, setProfile }) => {
   <div className="flex gap-2 mb-2">
     <input
       type="text"
-      placeholder="Type audience locations (press Enter to add)"
+      id="audience-location-input"
+      placeholder="Type audience locations"
       className="w-full px-3 py-2 rounded bg-[#272727] border border-[#272727] text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
       onKeyDown={(e) => {
         if (e.key === 'Enter' && e.target.value.trim()) {
-          setProfile({
-            ...profile,
-            averageLocationOfAudience: [
-              ...(profile.averageLocationOfAudience || []),
-              { 
-                value: e.target.value.trim(), 
-                label: e.target.value.trim(),
-                isCustom: true 
-              }
-            ]
-          });
+          addLocation(e.target.value.trim());
           e.target.value = '';
         }
       }}
     />
+    <button
+      onClick={() => {
+        const input = document.getElementById('audience-location-input');
+        if (input.value.trim()) {
+          addLocation(input.value.trim());
+          input.value = '';
+        }
+      }}
+      className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition whitespace-nowrap"
+    >
+      Add
+    </button>
   </div>
   
   <div className="flex flex-wrap gap-2 mt-2">
-    {/* Show locations from database */}
-    {profile.databaseLocations?.map((location, index) => (
-      <div key={`db-${index}`} className="flex items-center px-3 py-1 text-xs rounded-full bg-[#444] text-white">
-        {location.label}
-        <button 
-          onClick={() => setProfile({
-            ...profile,
-            databaseLocations: profile.databaseLocations.filter((_, i) => i !== index)
-          })}
-          className="ml-2 text-gray-300 hover:text-white"
-        >
-          ×
-        </button>
-      </div>
-    ))}
-    
-    {/* Show user-added locations */}
     {profile.averageLocationOfAudience?.map((location, index) => (
-      <div key={`loc-${index}`} className="flex items-center px-3 py-1 text-xs rounded-full bg-[#333] text-gray-300">
+      <div key={index} className="flex items-center px-3 py-1 text-xs rounded-full bg-[#333] text-gray-300">
         {location}
         <button 
-          onClick={() => {
-            const updatedLocations = [...profile.averageLocationOfAudience];
-            updatedLocations.splice(index, 1);
-            setProfile({
-              ...profile,
-              averageLocationOfAudience: updatedLocations
-            });
-          }}
+          onClick={() => removeLocation(index)}
           className="ml-2 text-gray-400 hover:text-white"
         >
           ×

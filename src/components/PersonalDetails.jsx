@@ -104,15 +104,17 @@ const PersonalDetails = ({ profile, setProfile }) => {
         <div className="order-2 md:order-1 flex flex-col gap-4 w-full md:w-7/12">
           <input
             type="text"
+
             name="ownerName"
             value={profile.ownerName}
             onChange={handleChange}
-            placeholder="Name"
+            placeholder="Insta or YouTube Username"
             className="w-full p-2 border border-black rounded-md bg-black text-white placeholder-gray-400"
           />
           <input
             type="email"
             name="email"
+            disabled={true}
             value={profile.email}
             onChange={handleChange}
             placeholder="Email"

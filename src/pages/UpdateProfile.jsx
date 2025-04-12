@@ -31,9 +31,37 @@ const UpdateProfile = () => {
   const [user1, setUser1] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [saving, setSaving] = useState(false);
-
+  const isAccountDetailsValid = (profile) => {
+    return (
+      profile.socialMediaPlatforms?.length > 0 &&
+      profile.adCategories?.length > 0 &&
+      profile.pageContentCategory?.length > 0 &&
+      profile.averageAudienceType?.length > 0 &&
+      profile.averageLocationOfAudience?.length > 0 &&
+      profile.profileDetails?.length > 0 &&
+      profile.profileDetails.every(detail => 
+        detail.platform && 
+        detail.profileName && 
+        detail.profilePicUrl && 
+        detail.followers
+      ) &&
+      profile.pricing.storyPost && 
+      profile.pricing.feedPost && 
+      profile.pricing.reel
+    );
+  };
   const navigate = useNavigate();
-
+  const isPastPostsValid = (pastPosts) => {
+    if (!pastPosts || pastPosts.length === 0) return true;
+    
+    return pastPosts.every(post => {
+      return (
+        post.category && 
+        post.platform && 
+        (post.postLink || (post._imageFile || post._originalImage)) // Either has link or is in process of uploading
+      );
+    });
+  };
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -128,6 +156,10 @@ const UpdateProfile = () => {
   const steps = getSteps();
 
   const handleSaveProfile = async () => {
+    if (currentStep === steps.length - 1 && !isPastPostsValid(profile.pastPosts)) {
+      alert("Please fill all required fields for past posts before submitting");
+      return;
+    }
     setSaving(true);
     try {
       const response = await fetch(
@@ -143,7 +175,9 @@ const UpdateProfile = () => {
       );
 
       if (!response.ok) throw new Error("Failed to update profile");
-
+      if (currentStep === steps.length - 1 ) {
+        navigate(`/profile/${user?._id}`);
+      }
       //alert("Profile updated successfully!");
     } catch (err) {
       alert(err.message);
@@ -172,6 +206,10 @@ const UpdateProfile = () => {
                           : "bg-gray-300"
                       }`}
                       onClick={() => {
+                        if (currentStep === 1 && !isAccountDetailsValid(profile)) {
+                          alert("Please fill all required account details before proceeding");
+                          return;
+                        }
                         setCurrentStep(index);
                         handleSaveProfile();
                       }}
@@ -180,6 +218,10 @@ const UpdateProfile = () => {
                     {/* Step Label */}
                     <span
                     onClick={() => {
+                      if (currentStep === 1 && !isAccountDetailsValid(profile)) {
+                        alert("Please fill all required account details before proceeding");
+                        return;
+                      }
                       setCurrentStep(index);
                       handleSaveProfile();
                     }}
@@ -201,6 +243,7 @@ const UpdateProfile = () => {
         <div className="p-5 w-full md:w-[80%]  flex bg-[#151515] justify-between">
           <button
             onClick={() => {
+              
               setCurrentStep((prev) => Math.max(prev - 1, 0));
               handleSaveProfile();
             }}
@@ -216,6 +259,10 @@ const UpdateProfile = () => {
           {currentStep < steps.length - 1 ? (
             <button
               onClick={() => {
+                if (currentStep === 1 && !isAccountDetailsValid(profile)) {
+                  alert("Please fill all required account details before proceeding");
+                  return;
+                }
                 setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
                 handleSaveProfile();
               }}
@@ -279,6 +326,10 @@ const UpdateProfile = () => {
           {currentStep < steps.length - 1 ? (
             <button
               onClick={() => {
+                if (currentStep === 1 && !isAccountDetailsValid(profile)) {
+                  alert("Please fill all required account details before proceeding");
+                  return;
+                }
                 setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
                 handleSaveProfile();
               }}
