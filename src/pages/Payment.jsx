@@ -121,7 +121,7 @@ const Payment = ({ onClose, initialCoins = 10 }) => {
   {/* Payment Button - Updated Gradient */}
   <button
     onClick={handlePayment}
-    disabled={loading}
+    disabled={true}
     className="w-full py-3 px-4 bg-gradient-to-r from-[#1FFFE0] to-[#249BCA] text-black font-bold rounded-lg hover:shadow-lg hover:shadow-[#1FFFE0]/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed mb-3 flex items-center justify-center gap-2"
   >
     {loading ? (
@@ -133,7 +133,7 @@ const Payment = ({ onClose, initialCoins = 10 }) => {
         Processing...
       </>
     ) : (
-      "Proceed to Payment"
+      "Comming Soon"
     )}
   </button>
 

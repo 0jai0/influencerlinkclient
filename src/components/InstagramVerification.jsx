@@ -19,8 +19,8 @@ const InstagramVerification = ({ profile, setProfile, userId }) => {
       setUserExists(userFound);
       setMessage(
         userFound 
-          ? "✅ User verified! Check your Instagram DMs - you'll receive an OTP shortly." 
-          : "❌ User not found. Please double-check your profile name and try again."
+          ? "✅ User verified! Check your Instagram DMs - you'll receive an Code within 5 hours." 
+          : "❌ User not found."
       );
     } catch (error) {
       setMessage(error.response?.data?.message || "Error checking user");
@@ -138,7 +138,7 @@ const InstagramVerification = ({ profile, setProfile, userId }) => {
             <div className="flex flex-col md:flex-row w-full pr-[30%] gap-3">
               <button
                 className="flex-1 bg-black text-[#2BFFF8] py-2 rounded hover:bg-[#2BFFF8] hover:text-black transition-colors"
-                onClick={() => window.open("https://instagram.com", "_blank")}
+                onClick={() => window.open("https://www.instagram.com/promoterlink_official/?igsh=ejJpbHc0NTJ2endm", "_blank")}
               >
                 Click to Redirect ➜
               </button>

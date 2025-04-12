@@ -101,6 +101,7 @@ const Navbar = () => {
    {/* LinkCoins Button */}
    {user && (
   <button
+    
     onClick={() => setShowPayment(true)}
     className="bg-[#202020] rounded-full h-10 px-1 pr-1 text-[#1FFFE0] text-sm font-medium flex items-center gap-2
       border border-[#1FFFE0]/30 hover:border-[#249BCA]/50 transition-colors
