@@ -167,7 +167,7 @@ const Login = () => {
 
           {/* Google OAuth */}
           <div className="text-center">
-            <GoogleOAuthProvider clientId="598325568359-cg0o29ageoaiosft1b95uk0pet9m0ve8.apps.googleusercontent.com">
+            <GoogleOAuthProvider clientId="446936445912-fogcabgjh9t9ar2e3qap1le4qjudnocp.apps.googleusercontent.com">
               <GoogleLogin 
                 onSuccess={handleGoogleSuccess} 
                 onError={handleGoogleFailure} 
