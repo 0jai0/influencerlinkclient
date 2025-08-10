@@ -19,6 +19,7 @@ import AdminLogin from "./pages/AdminLogin";
 import InstagramOTPDashboard from "./pages/InstagramOTPDashboard";
 import PrivacyPolicy from "./pages/Privacy";
 import ForgotPassword from "./pages/ForgotPassword";
+import LaunchPage from "./pages/LaunchPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -47,13 +48,14 @@ function App() {
           {/* Protected Routes */}
           <Route path="/UpdateProfile" element={<PrivateRoute element={<UpdateProfile />} />} />
           <Route path="/dashboard" element={<PrivateRoute element={<InstagramOTPDashboard />} />} />
-          <Route path="/" element={<Main />} />
+          <Route path="/Home" element={<Main />} />
           <Route path="/AboutUs" element={<AboutUs />} />
           <Route path="/Profile/:userId" element={<Profile />} />
           <Route path="/payment" element={<PrivateRoute element={<Payment />} />} />
           <Route path="/payment-success" element={<PrivateRoute element={<PaymentSuccess />} />} />
           <Route path="/payment-failure" element={<PrivateRoute element={<PaymentFailure />} />} />
           <Route path="/MessagingApp/:userId" element={<PrivateRoute element={<Chat />} />} />
+          <Route path="/" element={<LaunchPage />} />
         </Routes>
       </div>
     </Router>

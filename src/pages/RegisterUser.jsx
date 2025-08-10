@@ -154,7 +154,7 @@ const Register = () => {
     try {
       const resultAction = await dispatch(registerUser(formData));
       if (registerUser.fulfilled.match(resultAction)) {
-        navigate("/login");
+        navigate("/UpdateProfile");
       }
     } catch (err) {
       console.error("Registration failed:", err);
@@ -176,7 +176,7 @@ const Register = () => {
     };
 
     dispatch(registerUser(googleFormData));
-    navigate("/login");
+    navigate("/UpdateProfile");
   };
 
   // Handle Google login failure
@@ -415,7 +415,7 @@ const Register = () => {
           {/* Google OAuth - Only show if OTP is not verified */}
           {!otpVerified && (
             <div className="text-center">
-              <GoogleOAuthProvider clientId="598325568359-cg0o29ageoaiosft1b95uk0pet9m0ve8.apps.googleusercontent.com">
+              <GoogleOAuthProvider clientId="446936445912-fogcabgjh9t9ar2e3qap1le4qjudnocp.apps.googleusercontent.com">
                 <GoogleLogin 
                   onSuccess={handleGoogleSuccess} 
                   onError={handleGoogleFailure} 
