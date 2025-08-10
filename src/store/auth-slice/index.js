@@ -31,12 +31,27 @@ export const registerUser = createAsyncThunk(
   "/auth/register",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
+      await axios.post(
         `${API_BASE_URL}/register`, // Update URL here
         formData,
         { withCredentials: true }
       );
-      return response.data;
+      // Step 2: Log in immediately after registration
+      const loginResponse = await axios.post(
+        `${API_BASE_URL}/login`,
+        { email: formData.email, password: formData.password },
+        { withCredentials: true }
+      );
+
+      const { token, user } = loginResponse.data;
+      const decodedToken = jwtDecode(token);
+      const expirationDate = decodedToken.exp * 1000;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("tokenExpiration", expirationDate);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      return { success: true, user, token };
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Registration failed");
     }
@@ -208,10 +223,11 @@ const authSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state) => {
+      .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = null;
-        state.isAuthenticated = false;
+        state.user = action.payload.user;
+        state.isAuthenticated = true;
+        state.token = action.payload.token;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
