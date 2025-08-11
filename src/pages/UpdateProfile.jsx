@@ -33,17 +33,16 @@ const UpdateProfile = () => {
   const [saving, setSaving] = useState(false);
   const isAccountDetailsValid = (profile) => {
     return (
-      profile.socialMediaPlatforms?.length > 0 &&
-      profile.adCategories?.length > 0 &&
-      profile.pageContentCategory?.length > 0 &&
-      profile.averageAudienceType?.length > 0 &&
-      profile.averageLocationOfAudience?.length > 0 &&
-      profile.profileDetails?.length > 0 &&
+      profile.socialMediaPlatforms?.length >= 0 &&
+      profile.adCategories?.length >= 0 &&
+      profile.pageContentCategory?.length >= 0 &&
+      profile.averageAudienceType?.length >= 0 &&
+      profile.averageLocationOfAudience?.length >= 0 &&
+      profile.profileDetails?.length >= 0 &&
       profile.profileDetails.every(detail => 
         detail.platform && 
         detail.profileName && 
-        detail.profilePicUrl && 
-        detail.followers
+        detail.followers >= 0
       ) &&
       profile.pricing.storyPost && 
       profile.pricing.feedPost && 
@@ -175,9 +174,7 @@ const UpdateProfile = () => {
       );
 
       if (!response.ok) throw new Error("Failed to update profile");
-      if (currentStep === steps.length - 1 ) {
-        navigate(`/profile/${user?._id}`);
-      }
+      
       //alert("Profile updated successfully!");
     } catch (err) {
       alert(err.message);
