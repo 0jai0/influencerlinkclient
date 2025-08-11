@@ -8,7 +8,7 @@ const LaunchPage = () => {
 
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_CLIENT_ID}>
-      <div className="min-h-screen mt-[1300px] md:mt-[1300px] bg-black text-white">
+      <div className="min-h-screen mt-[2000px] md:mt-[1600px] bg-black text-white">
         {/* Navigation Bar */}
         <nav className="bg-black border-b border-gray-800 py-4 px-6">
           <div className="container mx-auto flex justify-between items-center">
