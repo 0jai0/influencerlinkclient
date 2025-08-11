@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import Navbar from "./Navbar";
 
 const LaunchPage = () => {
   const [role, setRole] = useState("influencer");
@@ -8,55 +9,10 @@ const LaunchPage = () => {
 
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_CLIENT_ID}>
-      <div className="min-h-screen mt-[2500px] md:mt-[1600px] bg-black text-white">
+      <div className="min-h-screen w-full mt-[2700px] md:mt-[1400px] bg-black text-white">
         {/* Navigation Bar */}
-        <nav className="bg-black border-b border-gray-800 py-4 px-6">
-          <div className="container mx-auto flex justify-between items-center">
-            <div className="flex items-center">
-              <img
-                src="/text_logo.png"
-                alt="Logo"
-                className="h-8 mr-2"
-                onClick={() => navigate("/")}
-              />
-            </div>
-            <div className="hidden md:flex space-x-6">
-              <button
-                onClick={() => navigate("/AboutUs")}
-                className="text-gray-300 hover:text-white"
-              >
-                About
-              </button>
-              <button
-                onClick={() => navigate("/features")}
-                className="text-gray-300 hover:text-white"
-              >
-                Features
-              </button>
-              <button
-                onClick={() => navigate("/contact")}
-                className="text-gray-300 hover:text-white"
-              >
-                Contact
-              </button>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate("/login")}
-                className="text-gray-300 hover:text-white"
-              >
-                Login
-              </button>
-              <button
-                onClick={() => navigate("/register")}
-                className="px-4 py-2 bg-gradient-to-r from-[#59FFA7] to-[#2BFFF8] text-black font-medium rounded-lg"
-              >
-                Sign Up
-              </button>
-            </div>
-          </div>
-        </nav>
-
+        
+        <Navbar />
         {/* Hero Section */}
         <div className="container mx-auto px-4 py-20 flex flex-col items-center justify-center text-center">
           <div className="max-w-3xl mx-auto">
