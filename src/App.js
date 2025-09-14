@@ -19,6 +19,7 @@ import AdminLogin from "./pages/AdminLogin";
 import InstagramOTPDashboard from "./pages/InstagramOTPDashboard";
 import PrivacyPolicy from "./pages/Privacy";
 import ForgotPassword from "./pages/ForgotPassword";
+import PublicProfileRedirect from "./pages/PublicProfileRedirect";
 
 function App() {
   const dispatch = useDispatch();
@@ -53,6 +54,7 @@ function App() {
           <Route path="/payment" element={<PrivateRoute element={<Payment />} />} />
           <Route path="/payment-success" element={<PrivateRoute element={<PaymentSuccess />} />} />
           <Route path="/payment-failure" element={<PrivateRoute element={<PaymentFailure />} />} />
+          <Route path="/PublicProfile" element={<PublicProfileRedirect />} />
           <Route path="/MessagingApp/:userId" element={<PrivateRoute element={<Chat />} />} />
         </Routes>
       </div>
