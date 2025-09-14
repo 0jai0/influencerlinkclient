@@ -49,7 +49,7 @@ function App() {
           {/* Protected Routes */}
           <Route path="/UpdateProfile" element={<PrivateRoute element={<UpdateProfile />} />} />
           <Route path="/dashboard" element={<PrivateRoute element={<InstagramOTPDashboard />} />} />
-          <Route path="/Home" element={<Main />} />
+          <Route path="/" element={<Main />} />
           <Route path="/AboutUs" element={<AboutUs />} />
           <Route path="/Profile/:userId" element={<Profile />} />
           <Route path="/payment" element={<PrivateRoute element={<Payment />} />} />
@@ -57,7 +57,7 @@ function App() {
           <Route path="/payment-failure" element={<PrivateRoute element={<PaymentFailure />} />} />
           <Route path="/PublicProfile" element={<PublicProfileRedirect />} />
           <Route path="/MessagingApp/:userId" element={<PrivateRoute element={<Chat />} />} />
-          <Route path="/" element={<LaunchPage />} />
+          <Route path="/launcPage" element={<LaunchPage />} />
         </Routes>
       </div>
     </Router>
